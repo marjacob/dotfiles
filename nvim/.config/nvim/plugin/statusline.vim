@@ -14,8 +14,11 @@ set statusline+=%#ModeMsg#%m\ %*
 
 " Right
 set statusline+=%=
-set statusline+=%#ModeMsg#\ %{strlen(&fenc)?&fenc:'none'}\ %*
-set statusline+=%Y\ %*
+set statusline+=\ %{strlen(&ff)?toupper(&ff):'NONE'}\ %*
+set statusline+=%#ModeMsg#\|%*
+set statusline+=\ %{strlen(&fenc)?toupper(&fenc):'NONE'}\ %*
+set statusline+=%#ModeMsg#\|%*
+set statusline+=\ %Y\ %*
 set statusline+=%#WildMenu#\ %p%%\ %l:%c\ %*
 
 augroup plugin.statusline
