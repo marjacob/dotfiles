@@ -1,24 +1,28 @@
-function! s:branch() abort
-  return trim(s:execute('rev-parse --abbrev-ref HEAD'))
-endfunction
-
-function! s:execute(command) abort
-  if &modifiable
-    try
-      const l:directory = expand('%:p:h')
-      const l:command = 'git -C "' . l:directory . '" ' . a:command
-      const l:result = system(l:command)
-      if !v:shell_error
-        return l:result
-      endif
-    catch
-    endtry
+function! s:callback(job_id, data, event) abort dict
+  if a:event == 'stdout'
+    const l:branch = trim(a:data[0])
+    if !empty(l:branch)
+      call setbufvar(self.buffer, 'branch', l:branch)
+    endif
   endif
-  return ''
 endfunction
 
 function! s:update() abort
-  call setbufvar(bufnr('%'), 'branch', s:branch())
+  if &modifiable
+    const l:cmd = [
+          \ 'git',
+          \ '-C',
+          \ expand('%:p:h'),
+          \ 'rev-parse',
+          \ '--abbrev-ref',
+          \ 'HEAD'
+          \ ]
+    const l:opt = {
+          \ 'buffer': bufnr('%'),
+          \ 'on_stdout': function('s:callback'),
+          \ }
+    call jobstart(l:cmd, l:opt)
+  endif
 endfunction
 
 augroup plugin.git
