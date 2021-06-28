@@ -3,7 +3,6 @@ set colorcolumn=+1
 set hidden
 set ignorecase
 set infercase
-set magic
 set mouse=a
 set nofoldenable
 set notimeout
