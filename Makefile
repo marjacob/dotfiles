@@ -1,3 +1,5 @@
+.SUFFIXES:
+
 define restow
 stow --restow "$1"
 
