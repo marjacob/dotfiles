@@ -1,0 +1,12 @@
+[submodule "nvim/.config/nvim/pack/submodules/start/editorconfig-vim"]
+	path = nvim/.config/nvim/pack/submodules/start/editorconfig-vim
+	url = https://github.com/editorconfig/editorconfig-vim.git
+[submodule "nvim/.config/nvim/pack/submodules/start/vim-markdown"]
+	path = nvim/.config/nvim/pack/submodules/start/vim-markdown
+	url = https://github.com/preservim/vim-markdown.git
+[submodule "nvim/.config/nvim/pack/submodules/start/neoformat"]
+	path = nvim/.config/nvim/pack/submodules/start/neoformat
+	url = https://github.com/sbdchd/neoformat.git
+[submodule "nvim/.config/nvim/pack/submodules/opt/NeoSolarized"]
+	path = nvim/.config/nvim/pack/submodules/opt/NeoSolarized
+	url = https://github.com/overcache/NeoSolarized.git
