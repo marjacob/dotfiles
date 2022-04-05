@@ -10,3 +10,15 @@
 [submodule "nvim/.config/nvim/pack/submodules/opt/NeoSolarized"]
 	path = nvim/.config/nvim/pack/submodules/opt/NeoSolarized
 	url = https://github.com/overcache/NeoSolarized.git
+[submodule "nvim/.config/nvim/pack/submodules/start/nvim-lspconfig"]
+	path = nvim/.config/nvim/pack/submodules/start/nvim-lspconfig
+	url = https://github.com/neovim/nvim-lspconfig.git
+[submodule "nvim/.config/nvim/pack/submodules/start/nvim-cmp"]
+	path = nvim/.config/nvim/pack/submodules/start/nvim-cmp
+	url = https://github.com/hrsh7th/nvim-cmp.git
+[submodule "nvim/.config/nvim/pack/submodules/start/cmp-nvim-lsp"]
+	path = nvim/.config/nvim/pack/submodules/start/cmp-nvim-lsp
+	url = https://github.com/hrsh7th/cmp-nvim-lsp.git
+[submodule "nvim/.config/nvim/pack/submodules/start/LuaSnip"]
+	path = nvim/.config/nvim/pack/submodules/start/LuaSnip
+	url = https://github.com/L3MON4D3/LuaSnip.git
