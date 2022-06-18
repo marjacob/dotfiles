@@ -23,15 +23,8 @@ function! s:update() abort
   const l:buf = bufnr('%')
 
   if &modifiable && s:due(l:buf, 3.0)
-    const l:cmd = [
-          \ 'git',
-          \ '-C',
-          \ expand('%:p:h'),
-          \ 'rev-parse',
-          \ '--abbrev-ref',
-          \ 'HEAD'
-          \ ]
-
+    const l:dir = expand('%:p:h')
+    const l:cmd = ['git', '-C', l:dir, 'rev-parse', '--abbrev-ref', 'HEAD']
     const l:opt = {
           \ 'git_buffer': l:buf,
           \ 'on_stdout': function('s:callback'),
