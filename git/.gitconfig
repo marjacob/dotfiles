@@ -9,4 +9,4 @@
 	autostash = true
 [alias]
 	uncommit = reset --soft HEAD^
-	unstage = reset HEAD
+	unstage = reset HEAD --
