@@ -1,12 +1,12 @@
-[user]
-	email = marjacob@users.noreply.github.com
-	name = marjacob
+[alias]
+	uncommit = reset --soft HEAD^
+	unstage = reset HEAD --
 [init]
 	defaultBranch = master
 [pull]
 	rebase = true
 [rebase]
 	autostash = true
-[alias]
-	uncommit = reset --soft HEAD^
-	unstage = reset HEAD --
+[user]
+	email = marjacob@users.noreply.github.com
+	name = marjacob
