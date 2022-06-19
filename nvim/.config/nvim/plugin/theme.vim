@@ -1,15 +1,15 @@
-function! s:on_colorscheme() abort
-  highlight ExtraWhitespace ctermbg=red guibg=red
+function! s:on_syntax_enabled() abort
+  syntax match TrailingWhitespace /\s\+$\| \+\ze\t/ containedin=ALL
 endfunction
 
-function! s:on_syntax() abort
-  syntax match ExtraWhitespace /\s\+$\| \+\ze\t/ containedin=ALL
+function! s:on_theme_changed() abort
+  highlight TrailingWhitespace ctermbg=red guibg=red
 endfunction
 
 augroup plugin.theme
   autocmd!
-  autocmd ColorScheme * call s:on_colorscheme()
-  autocmd Syntax * call s:on_syntax()
+  autocmd ColorScheme * call s:on_theme_changed()
+  autocmd Syntax * call s:on_syntax_enabled()
 augroup end
 
-colorscheme NeoSolarized
+colorscheme solarized8
