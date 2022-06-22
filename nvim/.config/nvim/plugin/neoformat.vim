@@ -7,5 +7,5 @@ let g:neoformat_enabled_lua = ['stylua']
 
 augroup plugin.neoformat
   autocmd!
-  autocmd BufWritePre * undojoin | Neoformat
+  autocmd BufWritePre * silent! undojoin | Neoformat
 augroup end
