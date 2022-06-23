@@ -1,8 +1,10 @@
 export BROWSER=firefox
-export VISUAL=vim
-export EDITOR=${VISUAL}
+export CC=clang
+export CXX=clang++
+export EDITOR=vim
 export PATH=${HOME}/.local/bin:${PATH}
 export SVDIR=${HOME}/.local/var/service
+export VISUAL=${EDITOR}
 
 import() {
   if [ -f "${1}" ]; then
