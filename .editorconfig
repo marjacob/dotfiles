@@ -6,6 +6,10 @@ end_of_line = lf
 insert_final_newline = true
 max_line_length = 80
 
+[*.fish]
+indent_size = 4
+indent_style = space
+
 [{*.sh, .profile}]
 indent_size = 2
 indent_style = space
