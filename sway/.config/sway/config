@@ -1,5 +1,6 @@
 # man 5 sway
 
+# xev -event keyboard
 # xmodmap -pm
 set $mod Mod4
 
