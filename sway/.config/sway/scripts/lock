@@ -1,0 +1,26 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+umask 077
+declare -r image=$(mktemp -t swaylock-XXXXXXXX.jpg)
+trap "rm -- \"${image}\"" EXIT
+
+if grim -t jpeg -q 1 "${image}"; then
+  ffmpeg \
+    -filter_complex "boxblur=luma_radius=20:luma_power=2" \
+    -hide_banner \
+    -i "${image}" \
+    -loglevel error \
+    -y "${image}"
+fi
+
+swaylock \
+  --color 000000 \
+  --hide-keyboard-layout \
+  --ignore-empty-password \
+  --image "${image}" \
+  --indicator-radius 96 \
+  --indicator-thickness 32 \
+  --line-uses-inside \
+  --show-failed-attempts
