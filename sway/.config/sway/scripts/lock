@@ -17,6 +17,7 @@ fi
 
 swaylock \
   --color 000000 \
+  --daemonize \
   --hide-keyboard-layout \
   --ignore-empty-password \
   --image "${image}" \
