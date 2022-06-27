@@ -5,7 +5,9 @@ function fish_user_key_bindings
 
     # Use jk as an alternative escape sequence.
     # https://stackoverflow.com/a/49040911
-    bind -M insert -m default jk backward-char force-repaint
+    for mode in insert visual
+        bind -M $mode -m default jk backward-char force-repaint
+    end
 
     # Use Ctrl-O to accept autosuggestions.
     # https://github.com/fish-shell/fish-shell/issues/3541
