@@ -3,17 +3,17 @@
 GIT_THREADS ?= 4
 
 define restow
-stow --restow "$1"
+stow --target "${HOME}" --restow "$1"
 
 endef
 
 define stow
-stow "$1"
+stow --target "${HOME}" --stow "$1"
 
 endef
 
 define unstow
-stow --delete "$1"
+stow --target "${HOME}" --delete "$1"
 
 endef
 
