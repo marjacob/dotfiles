@@ -1,2 +1,2 @@
-setlocal formatoptions+=acjoqr
+setlocal formatoptions+=acjoqrw
 setlocal textwidth=80
