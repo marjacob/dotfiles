@@ -3,6 +3,26 @@
 	url = https://github.com/lifepillar/vim-solarized8.git
 	branch = master
 	ignore = all
+[submodule "nvim/.config/nvim/pack/submodules/start/LuaSnip"]
+	path = nvim/.config/nvim/pack/submodules/start/LuaSnip
+	url = https://github.com/L3MON4D3/LuaSnip.git
+	branch = master
+	ignore = all
+[submodule "nvim/.config/nvim/pack/submodules/start/clangd_extensions.nvim"]
+	path = nvim/.config/nvim/pack/submodules/start/clangd_extensions.nvim
+	url = https://github.com/p00f/clangd_extensions.nvim.git
+	branch = main
+	ignore = all
+[submodule "nvim/.config/nvim/pack/submodules/start/cmp-nvim-lsp"]
+	path = nvim/.config/nvim/pack/submodules/start/cmp-nvim-lsp
+	url = https://github.com/hrsh7th/cmp-nvim-lsp.git
+	branch = main
+	ignore = all
+[submodule "nvim/.config/nvim/pack/submodules/start/cmp-nvim-lsp-signature-help"]
+	path = nvim/.config/nvim/pack/submodules/start/cmp-nvim-lsp-signature-help
+	url = https://github.com/hrsh7th/cmp-nvim-lsp-signature-help.git
+	branch = main
+	ignore = all
 [submodule "nvim/.config/nvim/pack/submodules/start/editorconfig-vim"]
 	path = nvim/.config/nvim/pack/submodules/start/editorconfig-vim
 	url = https://github.com/editorconfig/editorconfig-vim.git
@@ -11,6 +31,16 @@
 [submodule "nvim/.config/nvim/pack/submodules/start/neoformat"]
 	path = nvim/.config/nvim/pack/submodules/start/neoformat
 	url = https://github.com/sbdchd/neoformat.git
+	branch = master
+	ignore = all
+[submodule "nvim/.config/nvim/pack/submodules/start/nvim-cmp"]
+	path = nvim/.config/nvim/pack/submodules/start/nvim-cmp
+	url = https://github.com/hrsh7th/nvim-cmp.git
+	branch = main
+	ignore = all
+[submodule "nvim/.config/nvim/pack/submodules/start/nvim-lspconfig"]
+	path = nvim/.config/nvim/pack/submodules/start/nvim-lspconfig
+	url = https://github.com/neovim/nvim-lspconfig.git
 	branch = master
 	ignore = all
 [submodule "nvim/.config/nvim/pack/submodules/start/vim-markdown"]
