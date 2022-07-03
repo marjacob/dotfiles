@@ -1,3 +1,4 @@
+vim.opt.autochdir = true
 vim.opt.clipboard:prepend("unnamed,unnamedplus")
 vim.opt.colorcolumn = "+1"
 vim.opt.completeopt = "menu,menuone,noselect"
