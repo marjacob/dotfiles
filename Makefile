@@ -17,8 +17,8 @@ stow --target "${HOME}" --delete "$1"
 
 endef
 
-dirs := $(sort $(dir $(wildcard ./*/)))
-pkgs := $(dirs:./%/=%)
+dirs := $(sort $(dir $(wildcard */)))
+pkgs := $(dirs:%/=%)
 
 .PHONY: all
 all: $(pkgs)
