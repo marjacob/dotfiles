@@ -1,11 +1,11 @@
 local on_attach = function(client, bufnr)
   local options = { noremap = true, silent = true }
 
-  -- Show hover popup on Ctrl+N.
+  -- Show hover popup on Shift+K.
   vim.api.nvim_buf_set_keymap(
     bufnr,
     "n",
-    "<C-N>",
+    "<S-K>",
     "<Cmd>lua vim.lsp.buf.hover()<CR>",
     options
   )
