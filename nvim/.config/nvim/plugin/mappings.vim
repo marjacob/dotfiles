@@ -23,6 +23,7 @@ nnoremap <C-L> <C-W><C-L>
 
 " Fast file editing.
 nnoremap <silent> <Leader>eg :e! ~/.gitconfig<CR>
+nnoremap <silent> <Leader>eo :Explore!<CR>
 nnoremap <silent> <Leader>ev :e! $MYVIMRC<CR>
 
 " Support for the Dano-Norwegian alphabet.
