@@ -3,6 +3,7 @@ let g:neoformat_enabled_c = ['clangformat']
 let g:neoformat_enabled_cpp = ['clangformat']
 let g:neoformat_enabled_json = ['jq']
 let g:neoformat_enabled_lua = ['stylua']
+let g:neoformat_enabled_python = ['black', 'isort']
 "let g:neoformat_only_msg_on_error = 1
 
 augroup plugin.neoformat

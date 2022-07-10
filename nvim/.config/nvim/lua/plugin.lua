@@ -25,6 +25,11 @@ require("clangd_extensions").setup({
 local cmp = require("cmp")
 local luasnip = require("luasnip")
 
+require("lspconfig").pylsp.setup{
+  capabilities = capabilities,
+  on_attach = on_attach,
+}
+
 cmp.setup({
   mapping = cmp.mapping.preset.insert({
     ["<Tab>"] = function(fallback)
