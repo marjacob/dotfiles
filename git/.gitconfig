@@ -1,6 +1,11 @@
 [alias]
 	uncommit = reset --soft HEAD^
 	unstage = reset HEAD --
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	process = git-lfs filter-process
+	smudge = git-lfs smudge -- %f
+	required = true
 [init]
 	defaultBranch = master
 [pull]
