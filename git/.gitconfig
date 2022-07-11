@@ -12,3 +12,5 @@
 [user]
 	email = marjacob@users.noreply.github.com
 	name = marjacob
+[include]
+	path = ~/.gitconfig.local
