@@ -1,11 +1,6 @@
-[alias]
-	uncommit = reset --soft HEAD^
-	unstage = reset HEAD --
-[filter "lfs"]
-	clean = git-lfs clean -- %f
-	process = git-lfs filter-process
-	smudge = git-lfs smudge -- %f
-	required = true
+[user]
+	email = marjacob@users.noreply.github.com
+	name = marjacob
 [init]
 	defaultBranch = master
 [pull]
@@ -14,8 +9,13 @@
 	autostash = true
 [submodule]
 	recurse = true
-[user]
-	email = marjacob@users.noreply.github.com
-	name = marjacob
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	process = git-lfs filter-process
+	smudge = git-lfs smudge -- %f
+	required = true
+[alias]
+	uncommit = reset --soft HEAD^
+	unstage = reset HEAD --
 [include]
 	path = ~/.gitconfig.local
