@@ -13,3 +13,4 @@ import() {
 }
 
 import "${HOME}/.cargo/env"
+import "${HOME}/.profile.local"
