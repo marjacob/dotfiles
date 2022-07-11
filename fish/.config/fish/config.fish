@@ -11,4 +11,8 @@ if status is-interactive
     fish_add_path {$GOPATH}/bin
     fish_add_path {$HOME}/.cargo/bin
     fish_add_path {$HOME}/.local/bin
+
+    if test -r {$HOME}/.config.fish
+        source {$HOME}/.config.fish
+    end
 end
