@@ -1,5 +1,6 @@
 .SUFFIXES:
 
+BUNDLE_FILE ?= $(notdir $(CURDIR)).tar.gz
 GIT_THREADS ?= 4
 
 define restow
@@ -24,6 +25,13 @@ pkgs := $(dirs:%/=%)
 all: $(pkgs)
 	$(foreach pkg,$(pkgs),$(info $(pkg)))
 	@:
+
+.PHONY: bundle
+bundle: $(BUNDLE_FILE)
+
+.PHONY: clean
+clean:
+	$(RM) "$(BUNDLE_FILE)"
 
 .PHONY: init
 init: init-submodules update-nvim-helptags
@@ -68,3 +76,14 @@ update-repository:
 update-submodules:
 	git submodule update --init --jobs $(GIT_THREADS) --remote
 
+.PHONY: $(BUNDLE_FILE)
+$(BUNDLE_FILE):
+	touch "$(BUNDLE_FILE)"
+	tar \
+		--create \
+		--directory=".." \
+		--exclude-vcs \
+		--exclude="$(BUNDLE_FILE)" \
+		--file="$(BUNDLE_FILE)" \
+		--gzip \
+		"$(notdir $(CURDIR))"
