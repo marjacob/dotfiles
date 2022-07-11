@@ -9,6 +9,8 @@
 	autostash = true
 [submodule]
 	recurse = true
+[format]
+	pretty = oneline
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	process = git-lfs filter-process
