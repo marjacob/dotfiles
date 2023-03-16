@@ -1,0 +1,20 @@
+.editorconfig
+README.md
+
+{{- if ne .chezmoi.os "darwin" }}
+Library/
+{{- end }}
+
+{{- if ne .chezmoi.os "linux" }}
+.config/
+.local/
+{{- end }}
+
+{{- if ne .chezmoi.os "windows" }}
+AppData/
+{{- end }}
+
+{{- if ne .chezmoi.hostname "miporin" }}
+.config/sway/
+.config/xkb/
+{{- end }}

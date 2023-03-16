@@ -1,0 +1,6 @@
+{
+	"font_face": {{ .font.name | quote }},
+	"side_bar_layout": "tabs",
+	"theme": "auto",
+	"themed_title_bar": true
+}

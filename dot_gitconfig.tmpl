@@ -1,0 +1,25 @@
+[user]
+	email = {{ .git.mail }}
+	name = {{ .git.user }}
+[init]
+	defaultBranch = master
+[fetch]
+	prune = true
+[pull]
+	rebase = true
+[rebase]
+	autostash = true
+[submodule]
+	recurse = true
+[format]
+	pretty = oneline
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	process = git-lfs filter-process
+	smudge = git-lfs smudge -- %f
+	required = true
+[alias]
+	uncommit = reset --soft HEAD^
+	unstage = reset HEAD --
+[include]
+	path = ~/.gitconfig.local
