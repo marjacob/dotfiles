@@ -33,14 +33,3 @@ data:
 ~/.config/chezmoi/chezmoi.yaml
 ```
 
-Overrides
----------
-
-### Alacritty
-
-Create `~/.config/alacritty/local.yml` with the following contents to use WSL.
-
-```yaml
-shell:
-  program: "C:\\Windows\\System32\\wsl.exe --cd ~ --distribution <name>"
-```
