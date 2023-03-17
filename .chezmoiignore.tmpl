@@ -8,6 +8,9 @@ Library/
 {{- if ne .chezmoi.os "linux" }}
 .config/
 .local/
+.profile
+.tigrc
+.tmux.conf
 {{- end }}
 
 {{- if ne .chezmoi.os "windows" }}
