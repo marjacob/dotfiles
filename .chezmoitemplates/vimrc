@@ -10,7 +10,7 @@ colorscheme desert
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""" description
 set autoread                                               " read file on change
-set background=dark                                        "
+set backspace=eol,indent,start                             "
 set belloff=all                                            "
 set cindent                                                " indent c source
 set clipboard^=unnamed,unnamedplus                         " system clipboard
