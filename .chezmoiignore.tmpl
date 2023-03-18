@@ -1,6 +1,16 @@
 .editorconfig
 README.md
 
+{{- if and (ne .chezmoi.os "darwin") (ne .chezmoi.os "linux") }}
+.bash_logout
+.bash_profile
+.bashrc
+.local/
+.profile
+.tigrc
+.tmux.conf
+{{- end }}
+
 {{- if ne .chezmoi.os "darwin" }}
 Library/
 {{- end }}
@@ -8,10 +18,6 @@ Library/
 {{- if ne .chezmoi.os "linux" }}
 .config/
 .hushlogin
-.local/
-.profile
-.tigrc
-.tmux.conf
 {{- end }}
 
 {{- if ne .chezmoi.os "windows" }}
