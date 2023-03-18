@@ -10,6 +10,7 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""" description
 set autoread                                               " read file on change
 set background=dark                                        "
+set belloff=all                                            "
 set cindent                                                " indent c source
 set clipboard^=unnamed,unnamedplus                         " system clipboard
 set colorcolumn=+1                                         " highlight next
@@ -85,15 +86,6 @@ else
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
     let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   endif
-endif
-
-if has('gui_running')
-  augroup disable_audible_and_visual_bell
-    autocmd!
-    autocmd GUIEnter * set noerrorbells visualbell t_vb=
-  augroup end
-else
-  set noerrorbells visualbell t_vb=
 endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
