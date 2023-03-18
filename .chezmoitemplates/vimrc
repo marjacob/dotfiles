@@ -62,6 +62,8 @@ set wildmode=list:longest,full                             " autocompletion
 if has('gui_running')
   set columns=111
   set lines=35
+  set columns={{- .terminal.size.width }}
+  set lines={{- .terminal.size.height }}
 
   if has('win32')
     set linespace=0
