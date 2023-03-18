@@ -2,7 +2,6 @@ if has('vim_starting')
   if &compatible
     set nocompatible
   endif
-
   filetype indent plugin on
   syntax on
 endif
@@ -135,7 +134,6 @@ function! GetMode() abort
         \ "t": 'TERMINAL',
         \ "v": 'VISUAL',
         \ }
-
   return get(l:mode, mode(), mode())
 endfunction
 
