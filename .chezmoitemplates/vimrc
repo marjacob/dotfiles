@@ -6,6 +6,8 @@ if has('vim_starting')
   syntax on
 endif
 
+colorscheme desert
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""" description
 set autoread                                               " read file on change
 set background=dark                                        "
