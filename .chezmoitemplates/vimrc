@@ -141,7 +141,7 @@ function! GetMode() abort
   return get(l:mode, mode(), mode())
 endfunction
 
-function! StripTrailingWhitespace()
+function! StripTrailingWhitespace() abort
   let l:view = winsaveview()
   keeppatterns %s/\s\+$//e
   call winrestview(l:view)
