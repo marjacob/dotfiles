@@ -12,15 +12,18 @@ README.md
 {{- end }}
 
 {{- if ne .chezmoi.os "darwin" }}
+.chezmoiscripts/darwin/**
 Library/
 {{- end }}
 
 {{- if ne .chezmoi.os "linux" }}
+.chezmoiscripts/linux/**
 .config/
 .hushlogin
 {{- end }}
 
 {{- if ne .chezmoi.os "windows" }}
+.chezmoiscripts/windows/**
 AppData/
 vsvimrc
 {{- end }}
@@ -29,3 +32,4 @@ vsvimrc
 .config/sway/
 .config/xkb/
 {{- end }}
+
