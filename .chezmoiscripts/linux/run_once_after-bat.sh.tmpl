@@ -1,0 +1,12 @@
+#!/bin/sh
+
+readonly bat=$(which batcat)
+
+if [ $? -eq 0 ]; then
+  readonly bin=${HOME}/.local/bin
+
+  if mkdir -p "${bin}"; then
+    ln -fs "${bat}" "${bin}/bat"
+  fi
+fi
+
