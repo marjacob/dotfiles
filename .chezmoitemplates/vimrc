@@ -1,22 +1,24 @@
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Startup
+
 if has('vim_starting')
-  if &compatible
-    set nocompatible
-  endif
+  set encoding=utf-8
   filetype indent plugin on
   syntax on
 endif
 
+scriptencoding utf-8
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""" description
-set autoread                                               " read file on change
-set backspace=eol,indent,start                             "
-set belloff=all                                            "
+set autoread                                               " reload on change
+set backspace=eol,indent,start                             " use backspace
+set belloff=all                                            " no bell
 set cindent                                                " indent c source
 set clipboard^=unnamed,unnamedplus                         " system clipboard
 set colorcolumn=+1                                         " highlight next
 set complete-=i                                            "
 set display+=lastline                                      "
 set display+=truncate                                      "
-set encoding=utf-8                                         " use utf-8
 set fileformat=unix                                        " use lf
 set fillchars+=vert:\ "                                    " no separators
 set formatoptions+=jro                                     " use smart comments
@@ -56,9 +58,14 @@ set wildmenu                                               " use autocomplete
 set wildmode=list:longest,full                             " autocompletion
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Internal helper functions.
+
+function! GetEncoding() abort
+  return &fileencoding ? &fileencoding : &encoding
+endfunction
 
 function! GetFont() abort
-  const l:font = '{{- .font.name -}}:h{{- .font.size -}}'
+  let l:font = '{{- .font.name -}}:h{{- .font.size -}}'
   if has('mac')
     return l:font . ',Monaco:h{{- .font.size -}}'
   elseif has('win32')
@@ -67,18 +74,35 @@ function! GetFont() abort
   return l:font . ',Monospace Medium:h{{- .font.size -}}'
 endfunction
 
+function! GetMode() abort
+  let l:mode = {
+        \ "\<C-s>": 'S-BLOCK',
+        \ "\<C-v>": 'V-BLOCK',
+        \ 'R': 'REPLACE',
+        \ 'S': 'S-LINE',
+        \ 'V': 'V-LINE',
+        \ 'c': 'COMMAND',
+        \ 'i': 'INSERT',
+        \ 'n': 'NORMAL',
+        \ 's': 'SELECT',
+        \ 't': 'TERMINAL',
+        \ 'v': 'VISUAL',
+        \ }
+  return get(l:mode, mode(), mode())
+endfunction
+
+function! StripTrailingWhitespace() abort
+  let l:view = winsaveview()
+  keeppatterns %s/\s\+$//e
+  call winrestview(l:view)
+endfunction
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Ensure a consistent look and feel across CUI and GUI modes.
+
 if has('gui_running')
-  highlight Normal guibg=Black guifg=White
-
-  set columns={{- .terminal.size.width }}
-  set lines={{- .terminal.size.height }}
-
-  if has('win32')
-    set linespace=0
-    if has('directx')
-      set renderoptions=type:directx
-    endif
-  endif
+  set columns={{ .terminal.size.width }}
+  set lines={{ .terminal.size.height }}
 
   set guioptions+=a
   set guioptions+=c
@@ -93,45 +117,19 @@ if has('gui_running')
   set guioptions-=r
 
   " Set list of fonts in order of preference.
-  let &g:guifont = substitute(&g:guifont, '^$', GetFont(), '')
+  let &g:guifont=substitute(&g:guifont, '^$', GetFont(), '')
+
+  if has('win32')
+    set linespace=0
+    if has('directx')
+      set renderoptions='type:directx'
+    endif
+  endif
+
+  highlight Normal guibg=Black guifg=White
 else
   highlight Normal ctermbg=Black ctermfg=White
-
-  " Support true color in terminals other than xterm (e.g. tmux).
-  if &term ==# "screen-256color"
-    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-  endif
 endif
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-function! GetEncoding() abort
-  return &fileencoding ? &fileencoding : &encoding
-endfunction
-
-function! GetMode() abort
-  const l:mode = {
-        \ "R": 'REPLACE',
-        \ "S": 'S-LINE',
-        \ "V": 'V-LINE',
-        \ "\<C-s>": 'S-BLOCK',
-        \ "\<C-v>": 'V-BLOCK',
-        \ "c": 'COMMAND',
-        \ "i": 'INSERT',
-        \ "n": 'NORMAL',
-        \ "s": 'SELECT',
-        \ "t": 'TERMINAL',
-        \ "v": 'VISUAL',
-        \ }
-  return get(l:mode, mode(), mode())
-endfunction
-
-function! StripTrailingWhitespace() abort
-  let l:view = winsaveview()
-  keeppatterns %s/\s\+$//e
-  call winrestview(l:view)
-endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Refer to :highlight for a list of available colors.
@@ -173,8 +171,8 @@ set statusline+=%*                                         " end color
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-let mapleader = ","
-let maplocalleader = ";"
+let mapleader = ','
+let maplocalleader = ';'
 
 inoremap <silent> <Leader>" Æ
 inoremap <silent> <Leader>' æ
@@ -190,35 +188,48 @@ inoremap jk <Esc>
 nnoremap <silent> <C-L> :noh<C-R>=has('diff')?'<Bar>dif':''<CR><CR><C-L>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Load matchit.vim, but only if the user hasn't installed a newer version.
 
-augroup vimrc
+if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
+  runtime! macros/matchit.vim
+endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Enable the :Man command shipped with Vim's man filetype plugin.
+
+if exists(':Man') != 2 && !exists('g:loaded_man') && &filetype !=? 'man'
+  runtime ftplugin/man.vim
+endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Custom autocommands.
+
+augroup vimrc.custom
   autocmd!
 
-  autocmd BufNewFile,BufRead *.sls,.clang-format
-        \ setfiletype yaml
-
-  autocmd BufWritePost $MYVIMRC
-        \ source % |
-        \ redraw! |
-        \ redrawstatus!
-
+  " Remove trailing whitespace on save (unless binary or Markdown).
   " https://vi.stackexchange.com/a/456
   autocmd BufWritePre *
         \ if !&binary && &filetype !=# 'markdown' |
         \   call StripTrailingWhitespace() |
         \ endif
 
-  autocmd FileType json,vim,yaml
-        \ setlocal expandtab softtabstop=2 tabstop=2
+  autocmd BufNewFile,BufRead *.sls,.clang-format setfiletype yaml
+  autocmd BufWritePost $MYVIMRC source % | redraw! | redrawstatus!
+  autocmd FileType json,vim,yaml setlocal expandtab softtabstop=2 tabstop=2
+  autocmd FileType vim setlocal keywordprg=:help
 
-  autocmd FileType vim
-        \ setlocal keywordprg=:help
-
+  if exists(':Man') == 2
+    autocmd FileType c,cpp,sh setlocal keywordprg=:Man
+  endif
 augroup end
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Allow local overrides.
 
 if filereadable(expand('~/.vimrc.local'))
   source ~/.vimrc.local
 endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
