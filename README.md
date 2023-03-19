@@ -21,8 +21,8 @@ data:
     user: example
   terminal:
     size:
-      height: 43
-      width: 132
+      x: 132
+      y: 43
 ```
 
 ### Windows
