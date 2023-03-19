@@ -9,6 +9,10 @@ Configuration
 
 ```yaml
 data:
+  editor:
+    size:
+      x: 86
+      y: 27
   font:
     name: Consolas
     size: 12

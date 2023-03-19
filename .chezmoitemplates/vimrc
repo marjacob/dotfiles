@@ -102,8 +102,8 @@ endfunction
 " Ensure a consistent look and feel across CUI and GUI modes.
 
 if has('gui_running')
-  set columns={{ .terminal.size.width }}
-  set lines={{ .terminal.size.height }}
+  set columns={{ .editor.size.x }}
+  set lines={{ .editor.size.y }}
 
   set guioptions+=a
   set guioptions+=c
