@@ -5,4 +5,5 @@ Host *
 	PermitLocalCommand yes
 	Port 22
 	ServerAliveInterval 60
+	VisualHostKey yes
 
