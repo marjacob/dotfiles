@@ -65,13 +65,14 @@ function! GetEncoding() abort
 endfunction
 
 function! GetFont() abort
-  let l:font = '{{- .font.name -}}:h{{- .font.size -}}'
+{{- $font := print .font.name ":h" .font.size }}
   if has('mac')
-    return l:font . ',Monaco:h{{- .font.size -}}'
+    return '{{ $font }},Monaco:h{{- .font.size -}}'
   elseif has('win32')
-    return l:font . ',Consolas:h{{- .font.size -}}'
+    return '{{ $font }},Consolas:h{{- .font.size -}}'
+  else
+    return '{{ $font }},Monospace Medium:h{{- .font.size -}}'
   endif
-  return l:font . ',Monospace Medium:h{{- .font.size -}}'
 endfunction
 
 function! GetMode() abort
