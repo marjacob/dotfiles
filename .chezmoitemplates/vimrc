@@ -106,33 +106,6 @@ endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-augroup vimrc
-  autocmd!
-
-  autocmd BufNewFile,BufRead *.sls,.clang-format
-        \ setfiletype yaml
-
-  autocmd BufWritePost $MYVIMRC
-        \ source % |
-        \ redraw! |
-        \ redrawstatus!
-
-  " https://vi.stackexchange.com/a/456
-  autocmd BufWritePre *
-        \ if !&binary && &filetype !=# 'markdown' |
-        \   call StripTrailingWhitespace() |
-        \ endif
-
-  autocmd FileType json,vim,yaml
-        \ setlocal expandtab softtabstop=2 tabstop=2
-
-  autocmd FileType vim
-        \ setlocal keywordprg=:help
-
-augroup end
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 function! GetEncoding() abort
   return &fileencoding ? &fileencoding : &encoding
 endfunction
@@ -215,6 +188,33 @@ inoremap jk <Esc>
 
 " Use CTRL-L to clear the current highlight.
 nnoremap <silent> <C-L> :noh<C-R>=has('diff')?'<Bar>dif':''<CR><CR><C-L>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+augroup vimrc
+  autocmd!
+
+  autocmd BufNewFile,BufRead *.sls,.clang-format
+        \ setfiletype yaml
+
+  autocmd BufWritePost $MYVIMRC
+        \ source % |
+        \ redraw! |
+        \ redrawstatus!
+
+  " https://vi.stackexchange.com/a/456
+  autocmd BufWritePre *
+        \ if !&binary && &filetype !=# 'markdown' |
+        \   call StripTrailingWhitespace() |
+        \ endif
+
+  autocmd FileType json,vim,yaml
+        \ setlocal expandtab softtabstop=2 tabstop=2
+
+  autocmd FileType vim
+        \ setlocal keywordprg=:help
+
+augroup end
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
