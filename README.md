@@ -15,10 +15,10 @@ data:
       y: 27
   font:
     name: Consolas
-    size: 12
+    size: 11
   git:
-    mail: user@example.com
-    user: user
+    mail: example@users.noreply.github.com
+    user: example
   terminal:
     size:
       height: 43
