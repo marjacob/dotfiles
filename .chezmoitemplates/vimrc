@@ -122,7 +122,7 @@ if has('gui_running')
   if has('win32')
     set linespace=0
     if has('directx')
-      set renderoptions='type:directx'
+      set renderoptions=type:directx
     endif
   endif
 
