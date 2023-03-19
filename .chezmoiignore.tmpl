@@ -28,6 +28,11 @@ AppData/
 vsvimrc
 {{- end }}
 
+{{- if eq .chezmoi.hostname "shion" }}
+.config/sublime-merge/
+.config/sublime-text/
+{{- end }}
+
 {{- if ne .chezmoi.hostname "miporin" }}
 .config/sway/
 .config/xkb/
