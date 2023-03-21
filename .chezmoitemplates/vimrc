@@ -232,6 +232,12 @@ augroup vimrc.custom
   autocmd FileType vim
         \ setlocal keywordprg=:help
 
+  autocmd FileType markdown
+        \ setlocal linebreak      |
+        \ setlocal showbreak=+++\ |
+        \ setlocal textwidth=0    |
+        \ setlocal wrap
+
   if exists(':Man') == 2
     autocmd FileType c,cpp,sh setlocal keywordprg=:Man
   endif
