@@ -223,8 +223,14 @@ augroup vimrc.custom
 
   autocmd BufNewFile,BufRead *.sls,.clang-format setfiletype yaml
   autocmd BufWritePost $MYVIMRC source % | redraw! | redrawstatus!
-  autocmd FileType json,sh,vim,yaml setlocal expandtab softtabstop=2 tabstop=2
-  autocmd FileType vim setlocal keywordprg=:help
+
+  autocmd FileType json,sh,vim,yaml
+        \ setlocal expandtab      |
+        \ setlocal softtabstop=2  |
+        \ setlocal tabstop=2
+
+  autocmd FileType vim
+        \ setlocal keywordprg=:help
 
   if exists(':Man') == 2
     autocmd FileType c,cpp,sh setlocal keywordprg=:Man
