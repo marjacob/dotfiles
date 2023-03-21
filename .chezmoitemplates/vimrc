@@ -217,7 +217,7 @@ augroup vimrc.custom
   " Remove trailing whitespace on save (unless binary or Markdown).
   " https://vi.stackexchange.com/a/456
   autocmd BufWritePre *
-        \ if !&binary && &filetype !=# 'markdown' |
+        \ if !&binary |
         \   call StripTrailingWhitespace() |
         \ endif
 
