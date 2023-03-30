@@ -65,14 +65,13 @@ function! GetEncoding() abort
 endfunction
 
 function! GetFont() abort
-{{- $font := print .font.name ":h" .font.size }}
-  if has('mac')
-    return '{{ $font }},Monaco:h{{- .font.size -}}'
-  elseif has('win32')
-    return '{{ $font }},Consolas:h{{- .font.size -}}'
-  else
-    return '{{ $font }},Monospace Medium:h{{- .font.size -}}'
-  endif
+{{- if eq .chezmoi.os "darwin" }}
+  return '{{- print .font.name ":h" .font.size ",Monaco:h" .font.size -}}'
+{{- else if eq .chezmoi.os "linux" }}
+  return '{{- print .font.name " " .font.size ",Monospace " .font.size }}'
+{{- else }}
+  return '{{- print .font.name ":h" .font.size ",Consolas:h" .font.size -}}'
+{{- end }}
 endfunction
 
 function! GetMode() abort
