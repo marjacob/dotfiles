@@ -14,7 +14,6 @@ set autoread                                               " reload on change
 set backspace=eol,indent,start                             " use backspace
 set belloff=all                                            " no bell
 set cindent                                                " indent c source
-set clipboard^=unnamed,unnamedplus                         " system clipboard
 set colorcolumn=+1                                         " highlight next
 set complete-=i                                            "
 set display+=lastline                                      "
@@ -56,6 +55,12 @@ set viminfo^=!                                             " use upper globals
 set virtualedit=block                                      " block mode
 set wildmenu                                               " use autocomplete
 set wildmode=list:longest,full                             " autocompletion
+
+if has('unnamedplus')
+  set clipboard^=unnamed,unnamedplus
+else
+  set clipboard^=unnamed
+endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Internal helper functions.
