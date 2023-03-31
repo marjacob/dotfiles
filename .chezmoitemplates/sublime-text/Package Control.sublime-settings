@@ -19,4 +19,5 @@
 		"Pretty JSON",
 		"TOML",
 	],
+	"submit_usage": false
 }
