@@ -1,0 +1,62 @@
+{
+	"[c][cpp]": {},
+	"[json][jsonc][yaml]": {
+		"editor.insertSpaces": true,
+		"editor.tabSize": 2
+	},
+	"[markdown]": {
+		"editor.insertSpaces": true,
+		"editor.tabSize": 4,
+		"rewrap.autoWrap.enabled": true
+	},
+	"breadcrumbs.enabled": true,
+	"cmake.configureOnOpen": false,
+	"editor.acceptSuggestionOnEnter": "smart",
+	"editor.detectIndentation": false,
+	"editor.fontFamily": "'{{ .font.name }}', 'Consolas', 'monospace'",
+	"editor.fontLigatures": true,
+	"editor.fontSize": "{{ .font.size }}",
+	"editor.formatOnSave": true,
+	"editor.formatOnType": true,
+	"editor.insertSpaces": false,
+	"editor.minimap.showSlider": "always",
+	"editor.quickSuggestions": {
+		"comments": "on",
+		"other": "on",
+		"strings": "on"
+	},
+	"editor.renderWhitespace": "trailing",
+	"editor.rulers": [80],
+	"editor.semanticHighlighting.enabled": true,
+	"editor.tabSize": 8,
+	"extensions.ignoreRecommendations": true,
+	"files.trimFinalNewlines": true,
+	"files.trimTrailingWhitespace": true,
+	"git.ignoreWindowsGit27Warning": true,
+	"gitlens.showWhatsNewAfterUpgrades": false,
+	"python.analysis.typeCheckingMode": "strict",
+	"python.formatting.provider": "black",
+	"telemetry.telemetryLevel": "off",
+	"update.showReleaseNotes": false,
+	"vim.insertModeKeyBindings": [
+		{
+			"after": ["<Esc>"],
+			"before": ["j", "k"]
+		}
+	],
+	"vim.useSystemClipboard": true,
+	"workbench.colorCustomizations": {
+		"[Solarized Dark]": {
+			"editorIndentGuide.activeBackground": "#073642ff",
+			"editorIndentGuide.background": "#00000000"
+		},
+		"[Solarized Light]": {
+			"editorIndentGuide.activeBackground": "#eee8d5ff",
+			"editorIndentGuide.background": "#00000000"
+		}
+	},
+	"workbench.colorTheme": "Solarized Dark",
+	"workbench.editor.untitled.hint": "hidden",
+	"workbench.enableExperiments": false,
+	"workbench.startupEditor": "newUntitledFile"
+}
