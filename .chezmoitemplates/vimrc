@@ -233,7 +233,7 @@ augroup vimrc.custom
         \ redraw!  |
         \ redrawstatus!
 
-  autocmd FileType json,sh,vim,yaml
+  autocmd FileType json,sh,swayconfig,vim,yaml
         \ setlocal expandtab     |
         \ setlocal softtabstop=2 |
         \ setlocal tabstop=2
