@@ -1,0 +1,4 @@
+ENTRY "Chezmoi" URL {{ joinPath .chezmoi.homeDir ".local" "share" "chezmoi" | quote}}
+ENTRY "Home"    URL {{ .chezmoi.homeDir | quote }}
+ENTRY "Source"  URL {{ joinPath .chezmoi.homeDir "src" | quote }}
+
