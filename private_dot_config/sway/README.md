@@ -1,7 +1,7 @@
 Audio
 -----
 
-Configured in [`audio.conf`](audio.conf).
+Configured in [`audio.conf`](config.d/audio.conf).
 
 ### Requirements
 
