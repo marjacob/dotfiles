@@ -91,11 +91,9 @@ free_space=true
 horizontal_equal=true
 horizontal_split=false
 keybar_visible=true
-left_panel_size=94
 menubar_visible=true
-message_visible=true
+message_visible=false
 output_lines=0
-top_panel_size=0
 vertical_equal=true
 xterm_title=true
 
@@ -114,6 +112,7 @@ timeformat_recent=%b %e %H:%M
 base_color=
 color_terminals=
 screen-256color=
+xterm-256color=
 
 [Panels]
 auto_save_setup_panels=false
