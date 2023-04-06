@@ -1,0 +1,31 @@
+" vim: ft=vim:
+
+colorscheme gruvbox
+
+set dotfiles
+set fastrun
+set ignorecase
+set incsearch
+set nohlsearch
+set norunexec
+set number
+set smartcase
+set sortnumbers
+set suggestoptions=normal,visual,view,otherpane,keys,marks,registers
+set syscalls
+set timefmt=%F\ %H:%M
+set wildmenu
+set wildstyle=popup
+
+mark c ~/.local/share/chezmoi
+mark h ~/
+mark s ~/src
+
+nnoremap <f3>  :view<cr>
+nnoremap <f4>  :edit<cr>
+nnoremap <f5>  :copy<cr>
+nnoremap <f6>  :move<cr>
+nnoremap <f7>  :mkdir<space>
+nnoremap <f8>  :delete<cr>
+nnoremap <f10> :quit<cr>
+
