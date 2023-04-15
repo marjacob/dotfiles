@@ -1,7 +1,8 @@
 # vim: ft=swayconfig:
 # man 5 sway
 
-font pango:{{- print .font.name " Regular " .font.size }}
+set $font_menu {{ print .font.name "-" .font.size | quote }}
+set $font_sway {{ print "pango:" .font.name " Regular " .font.size | quote }}
 
 # xev -event keyboard
 # xmodmap -pm
@@ -13,9 +14,12 @@ set $up k
 set $down j
 
 set $lockscreen ~/.config/sway/scripts/lock
-set $menu dmenu_path | dmenu | xargs swaymsg exec --
+set $menu dmenu_path | dmenu -fn $font_menu | xargs swaymsg exec --
 set $terminal alacritty
 set $wallpaper ~/.wallpaper.jpg
 
+font $font_sway
+
 include /etc/sway/config.d/*
 include config.d/*.conf
+
