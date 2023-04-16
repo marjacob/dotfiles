@@ -36,4 +36,3 @@ data:
 ```shell
 ~/.config/chezmoi/chezmoi.yaml
 ```
-
