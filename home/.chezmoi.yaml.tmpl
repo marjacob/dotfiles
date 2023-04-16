@@ -1,0 +1,40 @@
+{{- $fontList := list -}}
+{{- $fontName := "Berkeley Mono" -}}
+
+{{/* Query the system for available fonts. */}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   $fontList = output "fc-list" "-f" "%{family} %{style}\n" $fontName -}}
+{{- else if eq .chezmoi.os "windows" -}}
+{{-   $fontList = output
+	"REG"
+	"QUERY"
+	"HKLM\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts"
+	"/S" -}}
+{{- end -}}
+
+{{/* Select a standard font if $fontName is unavailable. */}}
+{{- if not (contains $fontName $fontList) -}}
+{{-   if eq .chezmoi.os "darwin" }}
+{{-     $fontName = "Monaco" -}}
+{{-   else if eq .chezmoi.os "linux" }}
+{{-     $fontName = "Monospace" -}}
+{{-   else }}
+{{-     $fontName = "Consolas" -}}
+{{-   end }}
+{{- end -}}
+
+data:
+  editor:
+    size:
+      x: 86
+      y: 27
+  font:
+    name: {{ $fontName }}
+    size: 11
+  git:
+    mail: marjacob@users.noreply.github.com
+    user: marjacob
+  terminal:
+    size:
+      x: 132
+      y: 43
