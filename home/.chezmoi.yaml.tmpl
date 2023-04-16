@@ -1,9 +1,12 @@
-{{- $fontList := list -}}
+{{- $fontList := "" -}}
 {{- $fontName := "Berkeley Mono" -}}
 
 {{/* Query the system for available fonts. */}}
 {{- if eq .chezmoi.os "linux" -}}
-{{-   $fontList = output "fc-list" "-f" "%{family} %{style}\n" $fontName -}}
+{{-   $command := "fc-list" -}}
+{{-   if lookPath $command -}}
+{{-     $fontList = output $command "-f" "%{family} %{style}\n" $fontName -}}
+{{-   end -}}
 {{- else if eq .chezmoi.os "windows" -}}
 {{-   $fontList = output
 	"REG"
@@ -14,13 +17,13 @@
 
 {{/* Select a standard font if $fontName is unavailable. */}}
 {{- if not (contains $fontName $fontList) -}}
-{{-   if eq .chezmoi.os "darwin" }}
+{{-   if eq .chezmoi.os "darwin" -}}
 {{-     $fontName = "Monaco" -}}
-{{-   else if eq .chezmoi.os "linux" }}
+{{-   else if eq .chezmoi.os "linux" -}}
 {{-     $fontName = "Monospace" -}}
-{{-   else }}
+{{-   else -}}
 {{-     $fontName = "Consolas" -}}
-{{-   end }}
+{{-   end -}}
 {{- end -}}
 
 data:
