@@ -1,5 +1,6 @@
 {
 	"font_face": {{ .font.name | quote }},
+	"font_size": {{ .font.size }},
 	"side_bar_layout": "tabs",
 	"theme": "auto",
 	"themed_title_bar": true
