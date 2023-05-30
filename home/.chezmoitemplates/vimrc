@@ -198,6 +198,11 @@ inoremap jk <Esc>
 " Use CTRL-L to clear the current highlight.
 nnoremap <silent> <C-L> :noh<C-R>=has('diff')?'<Bar>dif':''<CR><CR><C-L>
 
+" Bind j to gj and k to gk without messing up relative line jumps.
+" https://old.reddit.com/r/vim/comments/jplc5x/_/gbfqm6y/
+noremap <expr> j (v:count? 'j' : 'gj')
+noremap <expr> k (v:count? 'k' : 'gk')
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Load matchit.vim, but only if the user hasn't installed a newer version.
 
