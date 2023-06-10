@@ -221,6 +221,12 @@ endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Custom autocommands.
 
+function! FormatBuffer()
+  let l:view = winsaveview()
+  silent! normal gggqG
+  call winrestview(l:view)
+endfunction
+
 augroup vimrc.custom
   autocmd!
 
@@ -231,6 +237,11 @@ augroup vimrc.custom
         \   call StripTrailingWhitespace() |
         \ endif
 
+  autocmd BufWritePre *
+        \ if !empty(&formatprg) |
+        \   call FormatBuffer() |
+        \ endif
+
   autocmd BufNewFile,BufRead *.sls,.clang-format
         \ setfiletype yaml
 
@@ -238,6 +249,11 @@ augroup vimrc.custom
         \ source % |
         \ redraw!  |
         \ redrawstatus!
+
+  autocmd FileType c,cpp
+        \ if executable('clang-format') |
+        \   setlocal formatprg=clang-format |
+        \ endif
 
   autocmd FileType json,sh,swayconfig,vim,yaml
         \ setlocal expandtab     |
