@@ -227,6 +227,12 @@ function! FormatBuffer()
   call winrestview(l:view)
 endfunction
 
+const s:shfmt = 'shfmt\ '
+      \ . '--case-indent\ '
+      \ . '--indent\ ' . &shiftwidth . '\ '
+      \ . '--simplify\ '
+      \ . '--space-redirects'
+
 augroup vimrc.custom
   autocmd!
 
@@ -259,6 +265,11 @@ augroup vimrc.custom
         \ setlocal expandtab     |
         \ setlocal softtabstop=2 |
         \ setlocal tabstop=2
+
+  autocmd FileType sh
+        \ if executable('shfmt') |
+        \   silent! execute 'setlocal formatprg=' . s:shfmt |
+        \ endif
 
   autocmd FileType vim
         \ setlocal keywordprg=:help
