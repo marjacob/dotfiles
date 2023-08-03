@@ -186,6 +186,13 @@ set statusline+=%*                                         " end color
 let mapleader = ','
 let maplocalleader = ';'
 
+{{- if eq .chezmoi.os "linux" }}
+
+" Write the contents of the current buffer as the root user.
+cnoremap w!! w !sudo tee > /dev/null %
+
+{{- end }}
+
 inoremap <silent> <Leader>" Æ
 inoremap <silent> <Leader>' æ
 inoremap <silent> <Leader>: Ø
