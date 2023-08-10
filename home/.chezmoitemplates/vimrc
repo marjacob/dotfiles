@@ -230,7 +230,7 @@ endif
 " Custom autocommands.
 
 function! FormatBuffer()
-  let l:view = winsaveview()
+  const l:view = winsaveview()
   silent! normal gggqG
   call winrestview(l:view)
 endfunction
