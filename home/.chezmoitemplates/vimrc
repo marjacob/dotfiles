@@ -235,11 +235,38 @@ function! FormatBuffer()
   call winrestview(l:view)
 endfunction
 
-const s:shfmt = 'shfmt\ '
-      \ . '--case-indent\ '
-      \ . '--indent\ ' . &shiftwidth . '\ '
-      \ . '--simplify\ '
-      \ . '--space-redirects'
+" Format the buffer in a temporary file using a :h formatexpr.
+" https://vi.stackexchange.com/a/42361
+function! ShellFormat()
+  const l:l1 = v:lnum
+  const l:l2 = (v:lnum + v:count) - 1
+  const l:lines = getline(l:l1, l:l2)
+  const l:tempfile = tempname()
+
+  call writefile(l:lines, tempfile)
+
+  const l:command = [
+        \ &formatprg,
+        \ '--case-indent',
+        \ '--indent',
+        \ &tabstop,
+        \ '--simplify',
+        \ '--space-redirects',
+        \ l:tempfile,
+        \ ]
+
+  const l:output = systemlist(join(l:command, ' '))
+
+  if v:shell_error
+    echoerr &formatprg .. ' error: ' .. v:shell_error
+  else
+    execute l:l1 .. ',' .. l:l2 .. 'd_'
+    execute (l:l1 - 1) .. 'put=l:output'
+  endif
+
+  call delete(l:tempfile)
+  return 0
+endfunction
 
 augroup vimrc.custom
   autocmd!
@@ -275,8 +302,9 @@ augroup vimrc.custom
         \ setlocal tabstop=2
 
   autocmd FileType sh
-        \ if executable('shfmt') |
-        \   silent! execute 'setlocal formatprg=' . s:shfmt |
+        \ if executable('shfmt')              |
+        \   setlocal formatprg=shfmt          |
+        \   setlocal formatexpr=ShellFormat() |
         \ endif
 
   autocmd FileType vim
