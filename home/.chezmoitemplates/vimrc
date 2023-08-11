@@ -247,11 +247,10 @@ function! ShellFormat()
 
   const l:command = [
         \ &formatprg,
-        \ '--case-indent',
-        \ '--indent',
-        \ &tabstop,
-        \ '--simplify',
-        \ '--space-redirects',
+        \ '-ci',
+        \ '-i=' .. &tabstop,
+        \ '-s',
+        \ '-sr',
         \ l:tempfile,
         \ ]
 
