@@ -243,7 +243,7 @@ function! ShellFormat()
   const l:lines = getline(l:l1, l:l2)
   const l:tempfile = tempname()
 
-  call writefile(l:lines, tempfile)
+  call writefile(l:lines, l:tempfile)
 
   const l:command = [
         \ &formatprg,
