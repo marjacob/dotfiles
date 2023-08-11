@@ -235,7 +235,7 @@ function! FormatBuffer()
   call winrestview(l:view)
 endfunction
 
-" Format the buffer in a temporary file using a :h formatexpr.
+" Format the buffer in a temporary file using a |formatexpr|.
 " https://vi.stackexchange.com/a/42361
 function! ShellFormat()
   const l:l1 = v:lnum
