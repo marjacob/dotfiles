@@ -265,7 +265,9 @@ function! ShellFormat()
   const l:output = systemlist(join(l:command, ' '))
 
   if v:shell_error
-    echoerr &formatprg .. ' error: ' .. v:shell_error
+    echohl ErrorMsg
+    echomsg &formatprg .. ' error: ' .. v:shell_error
+    echohl None
   else
     execute l:l1 .. ',' .. l:l2 .. 'd_'
     execute (l:l1 - 1) .. 'put=l:output'
