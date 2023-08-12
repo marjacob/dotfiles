@@ -284,13 +284,12 @@ augroup vimrc.custom
   " Remove trailing whitespace on save (unless binary)
   " https://vi.stackexchange.com/a/456
   autocmd BufWritePre *
-        \ if !&binary |
-        \   call StripTrailingWhitespace() |
-        \ endif
-
-  autocmd BufWritePre *
-        \ if !empty(&formatprg) |
-        \   call FormatBuffer() |
+        \ if &binary == 0                    |
+        \   if empty(&formatprg)             |
+        \     call StripTrailingWhitespace() |
+        \   else                             |
+        \     call FormatBuffer()            |
+        \   endif                            |
         \ endif
 
   autocmd BufNewFile,BufRead *.sls,.clang-format
@@ -339,4 +338,3 @@ if filereadable(expand('~/.vimrc.local'))
 endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
