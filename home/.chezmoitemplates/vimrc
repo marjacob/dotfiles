@@ -251,12 +251,17 @@ function! ShellFormat()
 
   call writefile(l:lines, l:tempfile)
 
+  const l:language = {
+        \ 'sh': 'posix',
+        \ 'bash': 'bash',
+        \ }
+
   const l:command = [
         \ &formatprg,
         \ '-bn',
         \ '-ci',
         \ '-i=' .. &tabstop,
-        \ '-ln=posix',
+        \ '-ln=' .. get(l:language, &filetype, 'auto'),
         \ '-s',
         \ '-sr',
         \ '-w',
@@ -307,12 +312,12 @@ augroup vimrc.custom
         \   setlocal formatprg=clang-format |
         \ endif
 
-  autocmd FileType json,sh,swayconfig,vim,yaml
+  autocmd FileType bash,json,sh,swayconfig,vim,yaml
         \ setlocal expandtab     |
         \ setlocal softtabstop=2 |
         \ setlocal tabstop=2
 
-  autocmd FileType sh
+  autocmd FileType bash,sh
         \ if executable('shfmt')              |
         \   setlocal formatprg=shfmt          |
         \   setlocal formatexpr=ShellFormat() |
