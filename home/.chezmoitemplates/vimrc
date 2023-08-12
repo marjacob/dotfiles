@@ -259,10 +259,12 @@ function! ShellFormat()
         \ '-ln=posix',
         \ '-s',
         \ '-sr',
+        \ '-w',
         \ l:tempfile,
         \ ]
 
-  const l:output = systemlist(join(l:command, ' '))
+  " BUG: Does not work without the assignment to l:output.
+  const l:output = system(join(l:command, ' '))
 
   if v:shell_error
     echohl ErrorMsg
@@ -270,10 +272,8 @@ function! ShellFormat()
     echohl None
   else
     execute l:l1 .. ',' .. l:l2 .. 'd_'
-    execute (l:l1 - 1) .. 'put=l:output'
-
-    " BUG: The above operation adds an empty line that this call removes.
-    call StripTrailingEmptyLines()
+    silent execute l:l1 .. 'read ' .. l:tempfile
+    0delete_
   endif
 
   call delete(l:tempfile)
