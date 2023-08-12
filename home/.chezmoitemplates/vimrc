@@ -97,6 +97,12 @@ function! GetMode() abort
   return get(l:mode, mode(), mode())
 endfunction
 
+function! StripTrailingEmptyLines() abort
+  let l:view = winsaveview()
+  keeppatterns v/\_s*\S/d
+  call winrestview(l:view)
+endfunction
+
 function! StripTrailingWhitespace() abort
   let l:view = winsaveview()
   keeppatterns %s/\s\+$//e
@@ -263,6 +269,9 @@ function! ShellFormat()
   else
     execute l:l1 .. ',' .. l:l2 .. 'd_'
     execute (l:l1 - 1) .. 'put=l:output'
+
+    " BUG: The above operation adds an empty line that this call removes.
+    call StripTrailingEmptyLines()
   endif
 
   call delete(l:tempfile)
