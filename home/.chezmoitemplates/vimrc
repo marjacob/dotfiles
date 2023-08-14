@@ -237,7 +237,7 @@ endif
 
 function! FormatBuffer()
   const l:view = winsaveview()
-  silent normal gggqG
+  normal gggqG
   call winrestview(l:view)
 endfunction
 
