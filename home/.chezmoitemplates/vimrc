@@ -66,6 +66,28 @@ endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Internal helper functions.
 
+function! ExecuteFormatter(command)
+  const l:tempfile = tempname()
+  silent execute 'noautocmd write ' .. l:tempfile
+
+  " Assumes that the file to be formatted should be the last argument.
+  const l:error = system(join(a:command + [l:tempfile], ' '))
+
+  if v:shell_error
+    " This error is unfortunately hidden by the |write| confirmation message.
+    " Use |messages| to examine previously given messages.
+    echohl ErrorMsg
+    echomsg a:command[0] .. ' (' .. v:shell_error .. '): ' .. l:error
+    echohl None
+  else
+    1,$delete_
+    silent execute '1read ' .. l:tempfile
+    0delete_
+  endif
+  call delete(l:tempfile)
+  return 0
+endfunction
+
 function! GetEncoding() abort
   return &fileencoding ? &fileencoding : &encoding
 endfunction
@@ -251,9 +273,8 @@ function! ShellFormat()
 
   call writefile(l:lines, l:tempfile)
 
-  " sh.vim sets b:current_syntax to the current dialect.
-  " The l:dialect dictionary maps that value to something shfmt understands.
-  " See $VIMRUNTIME/syntax/sh.vim
+function! ShellFormat()
+  " Map b:current_syntax from $VIMRUNTIME/syntax/sh.vim to shfmt:
   const l:dialect = {
         \ 'bash':  'bash',
         \ 'ksh':   'auto',
@@ -270,24 +291,9 @@ function! ShellFormat()
         \ '-s',
         \ '-sr',
         \ '-w',
-        \ l:tempfile,
         \ ]
 
-  " BUG: Does not work without the assignment to l:output.
-  const l:output = system(join(l:command, ' '))
-
-  if v:shell_error
-    echohl ErrorMsg
-    echomsg &formatprg .. ' error: ' .. v:shell_error
-    echohl None
-  else
-    execute l:l1 .. ',' .. l:l2 .. 'd_'
-    silent execute l:l1 .. 'read ' .. l:tempfile
-    0delete_
-  endif
-
-  call delete(l:tempfile)
-  return 0
+  return ExecuteFormatter(l:command)
 endfunction
 
 augroup vimrc.custom
