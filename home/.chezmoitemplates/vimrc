@@ -263,15 +263,9 @@ function! FormatBuffer()
   call winrestview(l:view)
 endfunction
 
-" Format the buffer in a temporary file using a |formatexpr|.
-" https://vi.stackexchange.com/a/42361
-function! ShellFormat()
-  const l:l1 = v:lnum
-  const l:l2 = (v:lnum + v:count) - 1
-  const l:lines = getline(l:l1, l:l2)
-  const l:tempfile = tempname()
-
-  call writefile(l:lines, l:tempfile)
+function! PythonFormat()
+  return ExecuteFormatter([&formatprg, '-l', &textwidth, '-q'])
+endfunction
 
 function! ShellFormat()
   " Map b:current_syntax from $VIMRUNTIME/syntax/sh.vim to shfmt:
@@ -332,6 +326,13 @@ augroup vimrc.custom
         \ if executable('shfmt')              |
         \   setlocal formatprg=shfmt          |
         \   setlocal formatexpr=ShellFormat() |
+        \ endif
+
+  autocmd FileType python
+        \ if executable('black')               |
+        \   setlocal formatexpr=PythonFormat() |
+        \   setlocal formatprg=black           |
+        \   setlocal keywordprg=pydoc          |
         \ endif
 
   autocmd FileType vim
