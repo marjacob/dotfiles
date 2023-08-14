@@ -66,19 +66,38 @@ endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Internal helper functions.
 
-function! ExecuteFormatter(command)
+function! s:OnBufWritePost() abort
+    augroup vimrc.custom.formatexpr
+      autocmd!
+    augroup end
+
+    const l:message = get(b:, 'formatexpr_message', '')
+
+    if empty(l:message) == 0
+      unlet b:formatexpr_message
+      echohl ErrorMsg
+      echomsg l:message
+      echohl None
+    endif
+endfunction
+
+function! s:FormatExpression(command) abort
   const l:tempfile = tempname()
   silent execute 'noautocmd write ' .. l:tempfile
 
-  " Assumes that the file to be formatted should be the last argument.
+  " Assuming that the last argument is the file to be formatted.
   const l:error = system(join(a:command + [l:tempfile], ' '))
 
   if v:shell_error
-    " This error is unfortunately hidden by the |write| confirmation message.
-    " Use |messages| to examine previously given messages.
-    echohl ErrorMsg
-    echomsg a:command[0] .. ' (' .. v:shell_error .. '): ' .. l:error
-    echohl None
+    " Record the error so that OnBufWritePost can display it.
+    let b:formatexpr_message =
+          \ a:command[0] .. ' (' .. v:shell_error .. '): ' .. l:error
+
+    " The error message must be displayed after the file is written.
+    augroup vimrc.custom.formatexpr
+      autocmd!
+      autocmd BufWritePost <buffer> call s:OnBufWritePost()
+    augroup end
   else
     1,$delete_
     silent execute '1read ' .. l:tempfile
@@ -264,7 +283,7 @@ function! FormatBuffer()
 endfunction
 
 function! PythonFormat()
-  return ExecuteFormatter([&formatprg, '-l', &textwidth, '-q'])
+  return s:FormatExpression([&formatprg, '-l', &textwidth, '-q'])
 endfunction
 
 function! ShellFormat()
@@ -287,7 +306,7 @@ function! ShellFormat()
         \ '-w',
         \ ]
 
-  return ExecuteFormatter(l:command)
+  return s:FormatExpression(l:command)
 endfunction
 
 augroup vimrc.custom
