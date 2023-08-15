@@ -111,6 +111,14 @@ function! GetEncoding() abort
   return &fileencoding ? &fileencoding : &encoding
 endfunction
 
+function! s:GetEnvironment(name, default) abort
+  let l:value = getenv(a:name)
+  if l:value == v:null
+    return a:default
+  endif
+  return l:value
+endfunction
+
 function! GetFont() abort
 {{- if eq .chezmoi.os "darwin" }}
   return '{{- print .font.name ":h" .font.size ",Monaco:h" .font.size -}}'
