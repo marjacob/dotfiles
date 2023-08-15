@@ -282,6 +282,10 @@ function! FormatBuffer()
   call winrestview(l:view)
 endfunction
 
+function! GoFormat()
+  return s:FormatExpression([&formatprg, '-s', '-w'])
+endfunction
+
 function! PythonFormat()
   return s:FormatExpression([&formatprg, '-l', &textwidth, '-q'])
 endfunction
@@ -345,6 +349,12 @@ augroup vimrc.custom
         \ if executable('shfmt')              |
         \   setlocal formatprg=shfmt          |
         \   setlocal formatexpr=ShellFormat() |
+        \ endif
+
+  autocmd FileType go
+        \ if executable('gofmt')           |
+        \   setlocal formatprg=gofmt       |
+        \   setlocal formatexpr=GoFormat() |
         \ endif
 
   autocmd FileType python
