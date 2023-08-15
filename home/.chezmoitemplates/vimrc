@@ -146,6 +146,26 @@ function! GetMode() abort
   return get(l:mode, mode(), mode())
 endfunction
 
+function! s:SetFormatter(name, default) abort
+  if exists('g:formatters') == 0
+    let g:formatters = {}
+  endif
+
+  let l:formatter = get(g:formatters, a:name)
+
+  if l:formatter == 0
+    let l:formatter = s:GetEnvironment(a:name, a:default)
+  endif
+
+  if executable(l:formatter) == 1
+    execute 'setlocal formatprg=' .. l:formatter
+    let g:formatters[a:name] = l:formatter
+    return 1
+  endif
+
+  return 0
+endfunction
+
 function! StripTrailingEmptyLines() abort
   let l:view = winsaveview()
   keeppatterns v/\_s*\S/d
@@ -354,22 +374,18 @@ augroup vimrc.custom
         \ setlocal tabstop=2
 
   autocmd FileType bash,sh
-        \ if executable('shfmt')              |
-        \   setlocal formatprg=shfmt          |
+        \ if s:SetFormatter('SHFMT', 'shfmt') |
         \   setlocal formatexpr=ShellFormat() |
         \ endif
 
   autocmd FileType go
-        \ if executable('gofmt')           |
-        \   setlocal formatprg=gofmt       |
-        \   setlocal formatexpr=GoFormat() |
+        \ if s:SetFormatter('GOFMT', 'gofmt') |
+        \   setlocal formatexpr=GoFormat()    |
         \ endif
 
   autocmd FileType python
-        \ if executable('black')               |
+        \ if s:SetFormatter('BLACK', 'black')  |
         \   setlocal formatexpr=PythonFormat() |
-        \   setlocal formatprg=black           |
-        \   setlocal keywordprg=pydoc          |
         \ endif
 
   autocmd FileType vim
