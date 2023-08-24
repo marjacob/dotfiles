@@ -368,7 +368,7 @@ augroup vimrc.custom
         \   setlocal formatprg=clang-format |
         \ endif
 
-  autocmd FileType bash,json,sh,swayconfig,vim,yaml
+  autocmd FileType bash,html,json,sh,swayconfig,vim,yaml
         \ setlocal expandtab     |
         \ setlocal softtabstop=2 |
         \ setlocal tabstop=2
