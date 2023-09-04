@@ -364,7 +364,8 @@ augroup vimrc.custom
         \ redrawstatus!
 
   autocmd FileType c,cpp
-        \ if executable('clang-format') |
+        \ syntax keyword Keyword countof    |
+        \ if executable('clang-format')     |
         \   setlocal formatprg=clang-format |
         \ endif
 
