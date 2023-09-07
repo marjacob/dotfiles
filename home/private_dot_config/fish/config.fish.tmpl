@@ -18,6 +18,13 @@ if status is-interactive
     fish_add_path {$HOME}/.local/bin
     fish_add_path /opt/bin
 
+    if type -fq lsd
+        alias ls="lsd"
+        alias tree="lsd --tree"
+    else
+        alias ls="ls --color=auto"
+    end
+
     if test -r {$HOME}/.config.fish
         source {$HOME}/.config.fish
     end

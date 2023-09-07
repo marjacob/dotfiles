@@ -9,7 +9,12 @@ if [ -f "${HOME}/.profile" ]; then
   source "${HOME}/.profile"
 fi
 
-alias ls="ls --color=auto"
+if command -v lsd > /dev/null 2>&1; then
+  alias ls="lsd"
+  alias tree="lsd --tree"
+else
+  alias ls="ls --color=auto"
+fi
 
 export HISTCONTROL="erasedups:ignorespace"
 export PS1="\u@\h \w \\$ \[$(tput sgr0)\]"
