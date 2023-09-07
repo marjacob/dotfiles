@@ -364,9 +364,9 @@ augroup vimrc.custom
         \ redrawstatus!
 
   autocmd FileType c,cpp
-        \ syntax keyword Keyword countof    |
-        \ if executable('clang-format')     |
-        \   setlocal formatprg=clang-format |
+        \ syntax keyword Keyword countof offsetof |
+        \ if executable('clang-format')           |
+        \   setlocal formatprg=clang-format       |
         \ endif
 
   autocmd FileType bash,html,json,sh,swayconfig,vim,yaml
