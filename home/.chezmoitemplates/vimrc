@@ -379,6 +379,11 @@ augroup vimrc.custom
         \   setlocal formatexpr=ShellFormat() |
         \ endif
 
+  autocmd FileType fish
+        \ setlocal expandtab     |
+        \ setlocal softtabstop=4 |
+        \ setlocal tabstop=4
+
   autocmd FileType go
         \ if s:SetFormatter('GOFMT', 'gofmt') |
         \   setlocal formatexpr=GoFormat()    |
