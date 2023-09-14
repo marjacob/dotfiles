@@ -33,6 +33,7 @@ set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+  "
 set mouse=a                                                " use mouse
 set nofoldenable                                           "
 set noshowmode                                             " no insert mode
+set nostartofline                                          " preserve cursor
 set noswapfile                                             " no swap file
 set nowrap                                                 "
 set number                                                 " use line numbers
