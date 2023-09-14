@@ -287,6 +287,11 @@ nnoremap <silent> <C-L> :noh<C-R>=has('diff')?'<Bar>dif':''<CR><CR><C-L>
 noremap <expr> j (v:count? 'j' : 'gj')
 noremap <expr> k (v:count? 'k' : 'gk')
 
+" Next buffer with TAB and previous buffer with SHIFT-TAB.
+" https://stackoverflow.com/a/5563142
+nnoremap <silent> <S-Tab> :bprevious<CR>
+nnoremap <silent> <Tab>   :bnext<CR>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Load matchit.vim, but only if the user hasn't installed a newer version.
 
