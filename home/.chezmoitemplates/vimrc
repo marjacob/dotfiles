@@ -222,8 +222,14 @@ endif
 " Refer to :highlight for a list of available colors.
 " Select colors that look good with both :set bg=dark and :set bg=light.
 
-highlight! link StatusLine   Question
-highlight! link StatusLineNC Title
+" Set popup menu colors.
+highlight! link Pmenu         LineNr
+highlight! link PopupSelected CursorLineNr
+
+" Set status line colors.
+highlight! link StatusLine    Question
+highlight! link StatusLineNC  Title
+highlight! link StatusLine    Question
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""" left
 set statusline=                                            " clear
@@ -291,6 +297,55 @@ noremap <expr> k (v:count? 'k' : 'gk')
 " https://stackoverflow.com/a/5563142
 nnoremap <silent> <S-Tab> :bprevious<CR>
 nnoremap <silent> <Tab>   :bnext<CR>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let s:buffers = {}
+
+function! s:switch_buffer(id, result)
+  if a:result != -1
+    const l:buffers = remove(s:buffers, a:id)
+    if type(l:buffers) == v:t_list
+      execute "buffer " . get(l:buffers, a:result - 1, bufnr('%'))
+    endif
+  endif
+endfunction
+
+function! s:select_buffer()
+  let l:buffers = []
+  let l:current = 0
+
+  for l:buffer in range(1, bufnr('$'))
+    if buflisted(l:buffer)
+      call add(l:buffers, bufname(l:buffer))
+
+      " Save the menu index that corresponds to the current buffer.
+      if l:buffer == bufnr('%')
+        let l:current = len(l:buffers)
+      endif
+    endif
+  endfor
+
+  if len(l:buffers) > 0
+    const l:popup = popup_menu(l:buffers, #{
+          \ callback: "<SID>switch_buffer",
+          \ hidden: v:true,
+          \ highlight: 'LineNr',
+          \ padding: [0, 1, 0, 1],
+          \ })
+
+    let s:buffers[l:popup] = copy(l:buffers)
+
+    " Make sure that the current buffer is initially selected.
+    if l:current > 0
+      call win_execute(l:popup, 'call cursor(' .. l:current .. ', 1)')
+    endif
+
+    call popup_show(l:popup)
+  endif
+endfunction
+
+nnoremap <silent> <C-P> :call <SID>select_buffer()<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Load matchit.vim, but only if the user hasn't installed a newer version.
