@@ -312,29 +312,37 @@ function! s:switch_buffer(id, result)
 endfunction
 
 function! s:select_buffer()
-  let l:buffers = []
+  let l:captions = []
   let l:current = 0
+  let l:identifiers = []
 
   for l:buffer in range(1, bufnr('$'))
     if buflisted(l:buffer)
-      call add(l:buffers, bufname(l:buffer))
+      let l:caption = bufname(l:buffer)
+
+      if empty(l:caption)
+        let l:caption = '[Buffer #' .. l:buffer .. ']'
+      endif
+
+      call add(l:captions, l:caption)
+      call add(l:identifiers, l:buffer)
 
       " Save the menu index that corresponds to the current buffer.
       if l:buffer == bufnr('%')
-        let l:current = len(l:buffers)
+        let l:current = len(l:captions)
       endif
     endif
   endfor
 
-  if len(l:buffers) > 1
-    const l:popup = popup_menu(l:buffers, #{
+  if len(l:captions) > 1
+    const l:popup = popup_menu(l:captions, #{
           \ callback: "<SID>switch_buffer",
           \ hidden: v:true,
           \ highlight: 'LineNr',
           \ padding: [0, 1, 0, 1],
           \ })
 
-    let s:buffers[l:popup] = copy(l:buffers)
+    let s:buffers[l:popup] = copy(l:identifiers)
 
     " Make sure that the current buffer is initially selected.
     if l:current > 0
