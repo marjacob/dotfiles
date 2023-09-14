@@ -326,7 +326,7 @@ function! s:select_buffer()
     endif
   endfor
 
-  if len(l:buffers) > 0
+  if len(l:buffers) > 1
     const l:popup = popup_menu(l:buffers, #{
           \ callback: "<SID>switch_buffer",
           \ hidden: v:true,
