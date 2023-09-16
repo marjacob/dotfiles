@@ -207,11 +207,7 @@ if has('gui_running')
       set renderoptions=type:directx
     endif
   endif
-
-  highlight Normal guibg=Black guifg=White
 else
-  highlight Normal ctermbg=Black ctermfg=White
-
   " Support true color in terminals other than xterm (e.g. tmux).
   if &term ==# "screen-256color"
     let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
@@ -222,15 +218,6 @@ endif
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Refer to :highlight for a list of available colors.
 " Select colors that look good with both :set bg=dark and :set bg=light.
-
-" Set popup menu colors.
-highlight! link Pmenu         LineNr
-highlight! link PopupSelected CursorLineNr
-
-" Set status line colors.
-highlight! link StatusLine    Question
-highlight! link StatusLineNC  Title
-highlight! link StatusLine    Question
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""" left
 set statusline=                                            " clear
@@ -427,10 +414,16 @@ augroup vimrc.custom
   autocmd BufNewFile,BufRead *.sls,.clang-format
         \ setfiletype yaml
 
-  autocmd BufWritePost $MYVIMRC
+  autocmd BufWritePost $MYVIMRC nested
         \ source % |
         \ redraw!  |
         \ redrawstatus!
+
+  autocmd ColorScheme *
+        \ highlight! link Pmenu         LineNr       |
+        \ highlight! link PopupSelected CursorLineNr |
+        \ highlight! link StatusLine    LineNr       |
+        \ highlight! link StatusLineNC  Title
 
   autocmd FileType c,cpp
         \ syntax keyword Keyword countof offsetof |
@@ -471,6 +464,9 @@ augroup vimrc.custom
         \ setlocal showbreak=+++\ |
         \ setlocal textwidth=0    |
         \ setlocal wrap
+
+  autocmd VimEnter * nested
+        \ colorscheme koehler
 
   if exists(':Man') == 2
     autocmd FileType c,cpp,sh setlocal keywordprg=:Man
