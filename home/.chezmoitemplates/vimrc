@@ -347,12 +347,12 @@ nnoremap <silent> <C-P> :call <SID>select_buffer()<CR>
 
 const s:header_by_language = {
       \ 'c':   ['h'],
-      \ 'cpp': ['h', 'h++', 'hh', 'hp', 'hpp', 'hxx'],
+      \ 'cpp': ['h++', 'hh', 'hp', 'hpp', 'hxx', 'h'],
       \ }
 
 const s:source_by_language = {
       \ 'c':   ['c'],
-      \ 'cpp': ['c++', 'cc', 'cpp', 'cxx'],
+      \ 'cpp': ['c++', 'cc', 'cpp', 'cxx', 'c'],
       \ }
 
 function! s:switch_source_header()
