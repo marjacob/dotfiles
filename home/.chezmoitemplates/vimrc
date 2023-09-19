@@ -344,6 +344,42 @@ endfunction
 nnoremap <silent> <C-P> :call <SID>select_buffer()<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+const s:header_by_language = {
+      \ 'c':   ['h'],
+      \ 'cpp': ['h', 'h++', 'hh', 'hp', 'hpp', 'hxx'],
+      \ }
+
+const s:source_by_language = {
+      \ 'c':   ['c'],
+      \ 'cpp': ['c++', 'cc', 'cpp', 'cxx'],
+      \ }
+
+function! s:switch_source_header()
+  const l:basename  = expand('%<')
+  const l:extension = expand('%:e')
+
+  " Switch to header or source based on the current extension.
+  if index(get(s:header_by_language, &filetype, []), l:extension) >= 0
+    const l:candidates = get(s:source_by_language, &filetype, [])
+  else
+    const l:candidates = get(s:header_by_language, &filetype, [])
+  endif
+
+  " Get the full path of the directory containing the current file.
+  const l:directory = fnamemodify(expand('%:p:h'), ':p')
+
+  for l:candidate in l:candidates
+    let l:name = l:basename .. '.' .. l:candidate
+    let l:path = l:directory .. l:name
+    if filereadable(l:path)
+      execute ':edit ' .. l:path
+      break
+    endif
+  endfor
+endfunction
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Load matchit.vim, but only if the user hasn't installed a newer version.
 
 if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
@@ -426,6 +462,8 @@ augroup vimrc.custom
         \ highlight! link StatusLineNC  Title
 
   autocmd FileType c,cpp
+        \ nnoremap <silent> <Leader>e
+        \   :call <SID>switch_source_header()<CR> |
         \ syntax keyword Keyword countof offsetof |
         \ if executable('clang-format')           |
         \   setlocal formatprg=clang-format       |
