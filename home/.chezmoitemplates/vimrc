@@ -490,6 +490,9 @@ augroup vimrc.custom
         \   setlocal formatexpr=GoFormat()    |
         \ endif
 
+  autocmd FileType man
+        \ setlocal textwidth=0
+
   autocmd FileType python
         \ if s:SetFormatter('BLACK', 'black')  |
         \   setlocal formatexpr=PythonFormat() |
