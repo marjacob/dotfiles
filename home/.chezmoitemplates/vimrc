@@ -390,6 +390,7 @@ endif
 " Enable the :Man command shipped with Vim's man filetype plugin.
 
 if exists(':Man') != 2 && !exists('g:loaded_man') && &filetype !=? 'man'
+  let g:ft_man_open_mode = 'vert'
   runtime ftplugin/man.vim
 endif
 
