@@ -19,7 +19,6 @@ set colorcolumn=+1                                         " highlight next
 set complete-=i                                            "
 set display+=lastline                                      "
 set display+=truncate                                      "
-set fileformat=unix                                        " use lf
 set fillchars+=vert:\ "                                    " no separators
 set formatoptions+=jro                                     " use smart comments
 set hidden                                                 " use hidden buffers
@@ -446,6 +445,11 @@ augroup vimrc.custom
         \   else                             |
         \     call FormatBuffer()            |
         \   endif                            |
+        \ endif
+
+  autocmd BufNewFile,BufRead *
+        \ if &modifiable             |
+        \   setlocal fileformat=unix |
         \ endif
 
   autocmd BufNewFile,BufRead *.sls,.clang-format
