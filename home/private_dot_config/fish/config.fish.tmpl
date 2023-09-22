@@ -7,6 +7,11 @@ if status is-interactive
     set -gx EDITOR vim
     set -gx GOPATH {$HOME}/.go
     set -gx LESS R
+{{- if eq .chezmoi.osRelease.id "void" }}
+    set -gx MANPAGER "vim -M +MANPAGER"
+{{- else }}
+    set -gx MANPAGER "vim -M +MANPAGER -"
+{{- end }}
     set -gx PREFIX {$HOME}/.local
 {{- if eq .chezmoi.osRelease.id "void" }}
     set -gx SVDIR {$HOME}/.local/var/service

@@ -18,6 +18,11 @@ export CXX=clang++
 export EDITOR=vim
 export GOPATH=${HOME}/.go
 export LESS=R
+{{- if eq .chezmoi.osRelease.id "void" }}
+export MANPAGER="vim -M +MANPAGER"
+{{- else }}
+export MANPAGER="vim -M +MANPAGER -"
+{{- end }}
 export PREFIX=${HOME}/.local
 {{- if eq .chezmoi.osRelease.id "void" }}
 export SVDIR=${HOME}/.local/var/service
