@@ -1,0 +1,31 @@
+[env]
+TERM = "xterm-256color"
+
+[font]
+builtin_box_drawing = false
+size = {{ .font.size }}
+
+[font.bold]
+family = {{ .font.name | quote }}
+style = "Bold"
+
+[font.bold_italic]
+family = {{ .font.name | quote }}
+style = "Bold Italic"
+
+[font.italic]
+family = {{ .font.name | quote }}
+style = "Italic"
+
+[font.normal]
+family = {{ .font.name | quote }}
+style = "Regular"
+
+{{  if eq .chezmoi.os "windows" -}}
+[shell]
+program = "C:\\Windows\\System32\\wsl.exe --cd ~"
+{{- end  }}
+
+[window.dimensions]
+columns = {{ .terminal.size.x }}
+lines = {{ .terminal.size.y }}
