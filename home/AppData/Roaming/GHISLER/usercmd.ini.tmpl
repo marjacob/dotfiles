@@ -1,0 +1,73 @@
+{{- /* vim: set ft=dosini: */ -}}
+
+[em_baregrep]
+button=BareGrepPro.exe
+cmd=BareGrepPro.exe
+param=--directory "%P"
+menu=Grep in current directory
+
+[em_baretail]
+button=BareTailPro.exe
+cmd=BareTailPro.exe
+param=%P%S
+menu=Tail selected files
+
+[em_certutil_decode]
+button=%$System%\certutil.exe
+cmd=%$System%\certutil.exe
+param=-v -decode %P%S "%P%O"
+menu=Decode Base64
+
+[em_certutil_encode]
+button=%$System%\certutil.exe
+cmd=%$System%\certutil.exe
+param=-v -encode %P%S %P%S.base64
+menu=Encode Base64
+
+[em_exeinfo]
+button=exeinfope.exe
+cmd=exeinfope.exe
+menu=Exeinfo PE
+param=%P%S
+
+[em_explorer]
+button=%$Windows%\explorer.exe
+cmd=%$Windows%\explorer.exe
+param=/select,%P%S
+menu=Windows Explorer
+
+[em_hiew]
+button=%$ComSpec%
+cmd=%$ComSpec%
+menu=Hacker's view
+param=/C "MODE 132,43 & hiew.exe %P%S"
+path=%$UserProgramFiles%\Hiew
+
+[em_innounp]
+button=%$ComSpec%
+cmd=innounp.exe
+param=-x -m -d"%O" -y %P%S
+menu=Inno Setup Unpacker
+
+[em_reshacker]
+button=ResourceHacker.exe
+cmd=ResourceHacker.exe
+menu=Resource Hacker
+param=%P%S
+
+[em_sumatra]
+button=SumatraPDF.exe
+cmd=SumatraPDF.exe
+menu=Sumatra PDF
+
+[em_upx_pack]
+button=%$System%\zipfldr.dll
+cmd=upx.exe
+param=--best %P%S
+menu=Compress executable
+
+[em_upx_unpack]
+button=%$System%\zipfldr.dll
+cmd=upx.exe
+param=-d %P%S
+menu=Decompress executable
