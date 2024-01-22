@@ -49,6 +49,13 @@ menu14=--
 [DirMenu]
 {{- $i := 0  }}
 
+{{- $chezmoi := ".local\\share\\chezmoi\\home" -}}
+{{- if (glob (printf "%s\\%s" (expandenv "$UserProfile") $chezmoi))  }}
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=&Chezmoi
+cmd{{- $i -}}=CD "%$UserProfile%\{{- $chezmoi -}}"
+{{- end -}}
+
 {{- if $cloudplugin  }}
 {{- $i = (add1 $i) }}
 menu{{- $i -}}=Clou&d
