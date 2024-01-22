@@ -1,5 +1,25 @@
 {{- /* vim: set ft=dosini: */ -}}
 
+{{/* Root directory for plugins. */}}
+{{- $plugins := expandenv "$AppData\\GHISLER\\plugins" -}}
+
+{{/* Directory for packer plugins. */}}
+{{- $wcx := (printf "%s\\%s" $plugins "wcx") -}}
+
+{{/* Directory for content plugins. */}}
+{{- $wdx := (printf "%s\\%s" $plugins "wdx") -}}
+
+{{/* Directory for file system plugins. */}}
+{{- $wfx := (printf "%s\\%s" $plugins "wfx") -}}
+
+{{/* Directory for lister plugins. */}}
+{{- $wlx := (printf "%s\\%s" $plugins "wlx") -}}
+
+{{/* List with one element if the plugin is present, or an empty list. */}}
+{{- $cloudplugin := (glob (printf "%s\\%s" $wfx "cloudplugin")) -}}
+{{- $sftpplug    := (glob (printf "%s\\%s" $wfx "sftpplug")) -}}
+{{- $webdav      := (glob (printf "%s\\%s" $wfx "webdav")) -}}
+
 [user]
 menu1=Bare&Grep Pro
 cmd1=em_baregrep
@@ -27,30 +47,79 @@ cmd13=em_upx_unpack
 menu14=--
 
 [DirMenu]
-menu1=Com&puter
-cmd1=CD ::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
-menu2=Desk&top
-cmd2=CD "%$Desktop%"
-menu3=Down&loads
-cmd3=CD "%$Downloads%"
-menu4=&Ghisler
-cmd4=CD "%COMMANDER_INI%\.."
-menu5=&Home
-cmd5=CD "%$Profile%"
-menu6=Recycle &Bin
-cmd6=CD ::{645FF040-5081-101B-9F08-00AA002F954E}
-menu7=Shar&es
-cmd7=CD "\\localhost"
-menu8=&Startup
-cmd8=CD "%$RoamingAppData%\Microsoft\Windows\Start Menu\Programs\Startup"
-menu9=&Windows Terminal
-cmd9=CD "%$LocalAppData%\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
-menu10=-
-menu11=Lin&ux
-cmd11=CD ::{B2B4A4D1-2754-4140-A2EB-9A76D9D7CDC6}
-menu12=L&ocal AppData
-cmd12=CD "%$LocalAppData%"
-menu13=&Roaming AppData
-cmd13=CD "%$RoamingAppData%"
-menu14=Te&mp
-cmd14=CD "%TEMP%"
+{{- $i := 0  }}
+
+{{- if $cloudplugin  }}
+{{- $i = (add1 $i) }}
+menu{{- $i -}}=Clou&d
+cmd{{- $i -}}=CD "\\\Cloud"
+{{- end -}}
+
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=Com&puter
+cmd{{- $i -}}=CD ::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
+
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=Desk&top
+cmd{{- $i -}}=CD "%$Desktop%"
+
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=Down&loads
+cmd{{- $i -}}=CD "%$Downloads%"
+
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=&Ghisler
+cmd{{- $i -}}=CD "%COMMANDER_INI%\.."
+
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=&Home
+cmd{{- $i -}}=CD "%$Profile%"
+
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=Recycle &Bin
+cmd{{- $i -}}=CD ::{645FF040-5081-101B-9F08-00AA002F954E}
+
+{{- if $sftpplug  }}
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=S&FTP
+cmd{{- $i -}}=CD "\\\Secure FTP"
+{{- end -}}
+
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=Shar&es
+cmd{{- $i -}}=CD "\\localhost"
+
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=&Startup
+cmd{{- $i -}}=CD "%$RoamingAppData%\Microsoft\Windows\Start Menu\Programs\Startup"
+
+{{- if $webdav  }}
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=WebDA&V
+cmd{{- $i -}}=CD "\\\WebDAV"
+{{- end -}}
+
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=&Windows Terminal
+cmd{{- $i -}}=CD "%$LocalAppData%\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
+
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=-
+
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=Lin&ux
+cmd{{- $i -}}=CD ::{B2B4A4D1-2754-4140-A2EB-9A76D9D7CDC6}
+
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=L&ocal AppData
+cmd{{- $i -}}=CD "%$LocalAppData%"
+
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=&Roaming AppData
+cmd{{- $i -}}=CD "%$RoamingAppData%"
+
+{{- $i = (add1 $i)  }}
+menu{{- $i -}}=Te&mp
+cmd{{- $i -}}=CD "%TEMP%"
+
+{{- $i = (add1 $i)  }}
