@@ -51,7 +51,26 @@
         "menu"    "Notepad")
 -}}
 
-{{/* Create button for Au3Info if available. */}}
+{{- $programFiles := tuple (env "ProgramFiles") -}}
+{{- if eq .chezmoi.arch "amd64" -}}
+{{-   $programFiles = append $programFiles (env "ProgramFiles(x86)") -}}
+{{- end -}}
+
+{{/* 010 Editor */}}
+{{- range $i, $directory := $programFiles }}
+{{-   $exe := printf "%s\\010 Editor\\010Editor.exe" $directory }}
+{{-   if glob $exe }}
+{{-     $buttons = append $buttons
+          (dict "arguments" "%P%S"
+                "command"   $exe
+                "icon"      $exe
+                "menu"      "010 Editor"
+                "path"      (osDir $exe)) -}}
+{{-     break }}
+{{-   end }}
+{{- end }}
+
+{{/* Au3Info */}}
 {{- $au3info32 := "Au3Info.exe" -}}
 {{- $au3info64 := "Au3Info_x64.exe" -}}
 {{- $au3info   := $au3info32 -}}
