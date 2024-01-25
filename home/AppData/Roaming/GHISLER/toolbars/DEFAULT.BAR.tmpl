@@ -1,53 +1,53 @@
 {{- /* vim: set ft=dosini: */ -}}
 
 {{- $buttons := tuple
-  (dict "icon" "wcmicons.dll,0"
-        "cmd"  "cm_Rereadsource")
+  (dict "cmd"  "cm_Rereadsource"
+        "icon" "wcmicons.dll,0")
   (dict)
-  (dict "icon" "wcmicons.dll,3"
-        "cmd"  "cm_srcshort")
-  (dict "icon" "wcmicons.dll,4"
-        "cmd"  "cm_srclong")
-  (dict "icon" "wcmicons.dll,26"
-        "cmd"  "cm_SrcThumbs")
-  (dict "icon" "wcmicons.dll,51"
-        "cmd"  "cm_SwitchSeparateTree")
+  (dict "cmd"  "cm_srcshort"
+        "icon" "wcmicons.dll,3")
+  (dict "cmd"  "cm_srclong"
+        "icon" "wcmicons.dll,4")
+  (dict "cmd"  "cm_SrcThumbs"
+        "icon" "wcmicons.dll,26")
+  (dict "cmd"  "cm_SwitchSeparateTree"
+        "icon" "wcmicons.dll,51")
   (dict)
-  (dict "icon" "wcmicons.dll,50"
-        "cmd"  "cm_DirBranch")
+  (dict "cmd"  "cm_DirBranch"
+        "icon" "wcmicons.dll,50")
   (dict)
-  (dict "icon" "wcmicons.dll,11"
-        "cmd"  "cm_ExchangeSelection")
+  (dict "cmd"  "cm_ExchangeSelection"
+        "icon" "wcmicons.dll,11")
   (dict)
-  (dict "icon" "wcmicons.dll,18"
-        "cmd"  "cm_GotoPreviousDir")
-  (dict "icon" "wcmicons.dll,19"
-        "cmd"  "cm_GotoNextDir")
+  (dict "cmd"  "cm_GotoPreviousDir"
+        "icon" "wcmicons.dll,18")
+  (dict "cmd"  "cm_GotoNextDir"
+        "icon" "wcmicons.dll,19")
   (dict)
-  (dict "icon" "wcmicons.dll,30"
-        "cmd"  "cm_PackFiles")
-  (dict "icon" "wcmicons.dll,31"
-        "cmd"  "cm_UnpackFiles")
+  (dict "cmd"  "cm_PackFiles"
+        "icon" "wcmicons.dll,30")
+  (dict "cmd"  "cm_UnpackFiles"
+        "icon" "wcmicons.dll,31")
   (dict)
-  (dict "icon" "wcmicons.dll,16"
-        "cmd"  "cm_FtpConnect")
-  (dict "icon" "wcmicons.dll,17"
-        "cmd"  "cm_FtpNew")
+  (dict "cmd"  "cm_FtpConnect"
+        "icon" "wcmicons.dll,16")
+  (dict "cmd"  "cm_FtpNew"
+        "icon" "wcmicons.dll,17")
   (dict)
-  (dict "icon" "wcmicons.dll,47"
-        "cmd"  "cm_SearchFor")
-  (dict "icon" "wcmicons.dll,46"
-        "cmd"  "cm_MultiRenameFiles")
-  (dict "icon" "wcmicons.dll,48"
-        "cmd"  "cm_FileSync")
-  (dict "icon" "wcmicons.dll,45"
-        "cmd"  "cm_CopyFullNamesToClip")
+  (dict "cmd"  "cm_SearchFor"
+        "icon" "wcmicons.dll,47")
+  (dict "cmd"  "cm_MultiRenameFiles"
+        "icon" "wcmicons.dll,46")
+  (dict "cmd"  "cm_FileSync"
+        "icon" "wcmicons.dll,48")
+  (dict "cmd"  "cm_CopyFullNamesToClip"
+        "icon" "wcmicons.dll,45")
   (dict)
-  (dict "icon" "%$Windows%\\explorer.exe"
-        "cmd"  "em_explorer"
+  (dict "cmd"  "em_explorer"
+        "icon" "%$Windows%\\explorer.exe"
         "menu" "Windows Explorer")
-  (dict "icon" "notepad.exe"
-        "cmd"  "notepad.exe"
+  (dict "cmd"  "notepad.exe"
+        "icon" "notepad.exe"
         "menu" "Notepad")
 -}}
 
@@ -61,10 +61,10 @@
 {{- $au3info = lookPath $au3info -}}
 {{- if $au3info -}}
 {{-   $buttons = append $buttons
-	(dict "icon" $au3info
-	      "cmd"  $au3info
-	      "path" "%$UserProfile%\\"
-	      "menu" "Au3Info") -}}
+	(dict "cmd"  $au3info
+	      "icon" $au3info
+	      "menu" "Au3Info"
+	      "path" "%$UserProfile%\\") -}}
 {{- end -}}
 
 [Buttonbar]
