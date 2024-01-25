@@ -74,13 +74,16 @@ Buttoncount={{- len $buttons }}
 {{- range $i, $button := $buttons }}
 {{-   $i = (add1 $i) }}
 {{-   if $button }}
-button{{- $i -}}={{ $button.icon }}
-cmd{{- $i -}}={{ $button.command }}
-{{-     if index $button "path" }}
-path{{- $i -}}={{ $button.path }}
-{{-     end }}
+button{{- $i -}}={{- $button.icon }}
+cmd{{- $i -}}={{- $button.command }}
 {{-     if index $button "menu" }}
-menu{{- $i -}}={{ $button.menu }}
+menu{{- $i -}}={{- $button.menu }}
+{{-     end }}
+{{-     if index $button "arguments" }}
+param{{- $i -}}={{- $button.arguments }}
+{{-     end }}
+{{-     if index $button "path" }}
+path{{- $i -}}={{- $button.path }}
 {{-     end }}
 {{-   else }}
 button{{- $i -}}=
