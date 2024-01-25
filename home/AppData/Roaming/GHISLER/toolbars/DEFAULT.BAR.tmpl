@@ -71,8 +71,7 @@
 
 [Buttonbar]
 Buttoncount={{- len $buttons }}
-{{- $i := 0 -}}
-{{- range $button := $buttons }}
+{{- range $i, $button := $buttons }}
 {{-   $i = (add1 $i) }}
 {{-   if $button }}
 button{{- $i -}}={{ $button.icon }}
