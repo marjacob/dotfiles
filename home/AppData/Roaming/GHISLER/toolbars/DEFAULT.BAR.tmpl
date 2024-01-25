@@ -74,10 +74,10 @@ Buttoncount={{- len $buttons }}
 {{-   if $button }}
 button{{- $i -}}={{ $button.icon }}
 cmd{{- $i -}}={{ $button.cmd }}
-{{-     if (index $button "path") }}
+{{-     if index $button "path" }}
 path{{- $i -}}={{ $button.path }}
 {{-     end }}
-{{-     if (index $button "menu") }}
+{{-     if index $button "menu" }}
 menu{{- $i -}}={{ $button.menu }}
 {{-     end }}
 {{-   else }}
