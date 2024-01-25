@@ -51,11 +51,13 @@
         "menu" "Notepad")
 -}}
 
-{{- $au3info := "Au3Info" -}}
+{{- $au3info32 := "Au3Info.exe" -}}
+{{- $au3info64 := "Au3Info_x64.exe" -}}
+{{- $au3info   := $au3info32 -}}
 {{- if eq .chezmoi.arch "amd64" -}}
-{{-   $au3info = printf "%s_x64.exe" $au3info -}}
-{{- else -}}
-{{-   $au3info = printf "%s.exe" $au3info -}}
+{{-   if lookPath $au3info64 -}}
+{{-     $au3info = $au3info64 -}}
+{{-   end -}}
 {{- end -}}
 {{- $au3info = lookPath $au3info -}}
 {{- if $au3info -}}
