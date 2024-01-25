@@ -68,7 +68,8 @@
 {{- end -}}
 
 [Buttonbar]
-{{- range $index, $button := $buttons }}
+Buttoncount={{- len $buttons }}
+{{- range $button := $buttons }}
 {{-   $i = (add1 $i) }}
 {{-   if $button }}
 button{{- $i -}}={{ $button.icon }}
@@ -83,4 +84,3 @@ menu{{- $i -}}={{ $button.menu }}
 button{{- $i -}}=
 {{-   end }}
 {{- end }}
-Buttoncount={{- $i -}}
