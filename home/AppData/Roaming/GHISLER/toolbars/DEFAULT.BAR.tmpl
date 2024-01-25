@@ -51,7 +51,6 @@
         "menu" "Notepad")
 -}}
 
-{{- $i := 0 -}}
 {{- $au3info := "Au3Info" -}}
 {{- if eq .chezmoi.arch "amd64" -}}
 {{-   $au3info = printf "%s_x64.exe" $au3info -}}
@@ -69,6 +68,7 @@
 
 [Buttonbar]
 Buttoncount={{- len $buttons }}
+{{- $i := 0 -}}
 {{- range $button := $buttons }}
 {{-   $i = (add1 $i) }}
 {{-   if $button }}
