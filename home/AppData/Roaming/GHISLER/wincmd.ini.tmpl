@@ -1,5 +1,20 @@
 {{- /* vim: set ft=dosini: */ -}}
 
+{{- $programFiles := tuple (env "ProgramFiles") -}}
+{{- if eq .chezmoi.arch "amd64" -}}
+{{-   $programFiles = append $programFiles (env "ProgramFiles(x86)") -}}
+{{- end -}}
+
+{{/* GVim */}}
+{{- $gvim := "" -}}
+{{- range $i, $dir := $programFiles -}}
+{{-   $pattern := printf "%s\\Vim\\vim*\\gvim.exe" $dir -}}
+{{-   range $i, $exe := glob $pattern -}}
+{{-     $gvim = osClean $exe -}}
+{{-     break -}}
+{{-   end -}}
+{{- end -}}
+
 [Alias]
 
 [AllResolutions]
@@ -107,7 +122,11 @@ ExplorerForCopy=0
 Win95Delete=0
 UseTrash=1
 Viewer=none
-Editor=""%$ProgramFiles%\Vim\vim90\gvim.exe" --remote-silent "%1""
+{{- if $gvim }}
+Editor=""{{- $gvim -}}" --remote-silent "%1""
+{{- else }}
+Editor=""gvim.exe" --remote-silent "%1""
+{{- end }}
 Viewertype=1
 AutoReUpload=2
 ShowCentury=1
