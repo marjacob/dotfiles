@@ -57,18 +57,18 @@
 {{- end -}}
 
 {{/* 010 Editor */}}
-{{- range $i, $directory := $programFiles }}
-{{-   $exe := printf "%s\\010 Editor\\010Editor.exe" $directory }}
-{{-   if glob $exe }}
+{{- range $i, $directory := $programFiles -}}
+{{-   $exe := printf "%s\\010 Editor\\010Editor.exe" $directory -}}
+{{-   if glob $exe -}}
 {{-     $buttons = append $buttons
           (dict "arguments" "%P%S"
                 "command"   $exe
                 "icon"      $exe
                 "menu"      "010 Editor"
                 "path"      (osDir $exe)) -}}
-{{-     break }}
-{{-   end }}
-{{- end }}
+{{-     break -}}
+{{-   end -}}
+{{- end -}}
 
 {{/* Au3Info */}}
 {{- $au3info32 := "Au3Info.exe" -}}
