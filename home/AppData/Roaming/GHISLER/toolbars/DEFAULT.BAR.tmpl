@@ -95,10 +95,10 @@
 {{-   $pattern := printf "%s\\IDA Pro *\\ida*.exe" $dir -}}
 {{-   range $i, $exe := glob $pattern -}}
 {{-     if and (not $ida32) (eq (osBase $exe) "ida.exe") -}}
-{{-       $ida32 = $exe -}}
+{{-       $ida32 = osClean $exe -}}
 {{-     end -}}
 {{-     if and (not $ida64) (eq (osBase $exe) "ida64.exe") -}}
-{{-       $ida64 = $exe -}}
+{{-       $ida64 = osClean $exe -}}
 {{-     end -}}
 {{-     if and $ida32 $ida64 -}}
 {{-       break -}}
