@@ -88,6 +88,37 @@
 	      "path"    (osDir $au3info)) -}}
 {{- end -}}
 
+{{/* IDA Pro */}}
+{{- $ida32 := "" -}}
+{{- $ida64 := "" -}}
+{{- range $i, $dir := $programFiles -}}
+{{-   $pattern := printf "%s\\IDA Pro *\\ida*.exe" $dir -}}
+{{-   range $i, $exe := glob $pattern | sortAlpha -}}
+{{-     if and (not $ida32) (eq (osBase $exe) "ida.exe") -}}
+{{-       $ida32 = $exe -}}
+{{-     end -}}
+{{-     if and (not $ida64) (eq (osBase $exe) "ida64.exe") -}}
+{{-       $ida64 = $exe -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+{{- if $ida32 -}}
+{{-   $buttons = append $buttons
+        (dict "arguments" "%P%S"
+              "command"   $ida32
+              "icon"      $ida32
+              "menu"      "IDA Pro x86"
+              "path"      (osDir $ida32)) -}}
+{{- end -}}
+{{- if $ida64 -}}
+{{-   $buttons = append $buttons
+        (dict "arguments" "%P%S"
+              "command"   $ida64
+              "icon"      $ida64
+              "menu"      "IDA Pro x64"
+              "path"      (osDir $ida64)) -}}
+{{- end -}}
+
 [Buttonbar]
 Buttoncount={{- len $buttons }}
 {{- range $i, $button := $buttons }}
