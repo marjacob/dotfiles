@@ -1,54 +1,54 @@
 {{- /* vim: set ft=dosini: */ -}}
 
 {{- $buttons := tuple
-  (dict "command" "cm_Rereadsource"
-        "icon"    "wcmicons.dll,0")
+  (dict "exec" "cm_Rereadsource"
+        "icon" "wcmicons.dll,0")
   (dict)
-  (dict "command" "cm_srcshort"
-        "icon"    "wcmicons.dll,3")
-  (dict "command" "cm_srclong"
-        "icon"    "wcmicons.dll,4")
-  (dict "command" "cm_SrcThumbs"
-        "icon"    "wcmicons.dll,26")
-  (dict "command" "cm_SwitchSeparateTree"
-        "icon"    "wcmicons.dll,51")
+  (dict "exec" "cm_srcshort"
+        "icon" "wcmicons.dll,3")
+  (dict "exec" "cm_srclong"
+        "icon" "wcmicons.dll,4")
+  (dict "exec" "cm_SrcThumbs"
+        "icon" "wcmicons.dll,26")
+  (dict "exec" "cm_SwitchSeparateTree"
+        "icon" "wcmicons.dll,51")
   (dict)
-  (dict "command" "cm_DirBranch"
-        "icon"    "wcmicons.dll,50")
+  (dict "exec" "cm_DirBranch"
+        "icon" "wcmicons.dll,50")
   (dict)
-  (dict "command" "cm_ExchangeSelection"
-        "icon"    "wcmicons.dll,11")
+  (dict "exec" "cm_ExchangeSelection"
+        "icon" "wcmicons.dll,11")
   (dict)
-  (dict "command" "cm_GotoPreviousDir"
-        "icon"    "wcmicons.dll,18")
-  (dict "command" "cm_GotoNextDir"
-        "icon"    "wcmicons.dll,19")
+  (dict "exec" "cm_GotoPreviousDir"
+        "icon" "wcmicons.dll,18")
+  (dict "exec" "cm_GotoNextDir"
+        "icon" "wcmicons.dll,19")
   (dict)
-  (dict "command" "cm_PackFiles"
-        "icon"    "wcmicons.dll,30")
-  (dict "command" "cm_UnpackFiles"
-        "icon"    "wcmicons.dll,31")
+  (dict "exec" "cm_PackFiles"
+        "icon" "wcmicons.dll,30")
+  (dict "exec" "cm_UnpackFiles"
+        "icon" "wcmicons.dll,31")
   (dict)
-  (dict "command" "cm_FtpConnect"
-        "icon"    "wcmicons.dll,16")
-  (dict "command" "cm_FtpNew"
-        "icon"    "wcmicons.dll,17")
+  (dict "exec" "cm_FtpConnect"
+        "icon" "wcmicons.dll,16")
+  (dict "exec" "cm_FtpNew"
+        "icon" "wcmicons.dll,17")
   (dict)
-  (dict "command" "cm_SearchFor"
-        "icon"    "wcmicons.dll,47")
-  (dict "command" "cm_MultiRenameFiles"
-        "icon"    "wcmicons.dll,46")
-  (dict "command" "cm_FileSync"
-        "icon"    "wcmicons.dll,48")
-  (dict "command" "cm_CopyFullNamesToClip"
-        "icon"    "wcmicons.dll,45")
+  (dict "exec" "cm_SearchFor"
+        "icon" "wcmicons.dll,47")
+  (dict "exec" "cm_MultiRenameFiles"
+        "icon" "wcmicons.dll,46")
+  (dict "exec" "cm_FileSync"
+        "icon" "wcmicons.dll,48")
+  (dict "exec" "cm_CopyFullNamesToClip"
+        "icon" "wcmicons.dll,45")
   (dict)
-  (dict "command" "em_explorer"
-        "icon"    "%$Windows%\\explorer.exe"
-        "menu"    "Windows Explorer")
-  (dict "command" "notepad.exe"
-        "icon"    "notepad.exe"
-        "menu"    "Notepad")
+  (dict "exec" "em_explorer"
+        "icon" "%$Windows%\\explorer.exe"
+        "menu" "Windows Explorer")
+  (dict "exec" "notepad.exe"
+        "icon" "notepad.exe"
+        "menu" "Notepad")
 -}}
 
 {{- $programFiles := tuple (env "ProgramFiles") -}}
@@ -61,11 +61,11 @@
 {{-   $exe := printf "%s\\010 Editor\\010Editor.exe" $directory -}}
 {{-   if glob $exe -}}
 {{-     $buttons = append $buttons
-          (dict "arguments" "%P%S"
-                "command"   $exe
-                "icon"      $exe
-                "menu"      "010 Editor"
-                "path"      (osDir $exe)) -}}
+          (dict "args" "%P%S"
+                "exec" $exe
+                "icon" $exe
+                "menu" "010 Editor"
+                "path" (osDir $exe)) -}}
 {{-     break -}}
 {{-   end -}}
 {{- end -}}
@@ -82,10 +82,10 @@
 {{- $au3info = lookPath $au3info -}}
 {{- if $au3info -}}
 {{-   $buttons = append $buttons
-	(dict "command" $au3info
-	      "icon"    $au3info
-	      "menu"    "Au3Info"
-	      "path"    (osDir $au3info)) -}}
+	(dict "exec" $au3info
+	      "icon" $au3info
+	      "menu" "Au3Info"
+	      "path" (osDir $au3info)) -}}
 {{- end -}}
 
 {{/* IDA Pro */}}
@@ -107,36 +107,36 @@
 {{- end -}}
 {{- if $ida32 -}}
 {{-   $buttons = append $buttons
-        (dict "arguments" "%P%S"
-              "command"   $ida32
-              "icon"      $ida32
-              "menu"      "IDA Pro x86"
-              "path"      (osDir $ida32)) -}}
+        (dict "args" "%P%S"
+              "exec" $ida32
+              "icon" $ida32
+              "menu" "IDA Pro x86"
+              "path" (osDir $ida32)) -}}
 {{- end -}}
 {{- if $ida64 -}}
 {{-   $buttons = append $buttons
-        (dict "arguments" "%P%S"
-              "command"   $ida64
-              "icon"      $ida64
-              "menu"      "IDA Pro x64"
-              "path"      (osDir $ida64)) -}}
+        (dict "args" "%P%S"
+              "exec" $ida64
+              "icon" $ida64
+              "menu" "IDA Pro x64"
+              "path" (osDir $ida64)) -}}
 {{- end -}}
 
 [Buttonbar]
 Buttoncount={{- len $buttons }}
-{{- range $i, $button := $buttons }}
+{{- range $i, $element := $buttons }}
 {{-   $i = (add1 $i) }}
-{{-   if $button }}
-button{{- $i -}}={{- $button.icon }}
-cmd{{- $i -}}={{- $button.command }}
-{{-     if index $button "menu" }}
-menu{{- $i -}}={{- $button.menu }}
+{{-   if $element }}
+button{{- $i -}}={{- $element.icon }}
+cmd{{- $i -}}={{- $element.exec }}
+{{-     if index $element "menu" }}
+menu{{- $i -}}={{- $element.menu }}
 {{-     end }}
-{{-     if index $button "arguments" }}
-param{{- $i -}}={{- $button.arguments }}
+{{-     if index $element "args" }}
+param{{- $i -}}={{- $element.args }}
 {{-     end }}
-{{-     if index $button "path" }}
-path{{- $i -}}={{- $button.path }}
+{{-     if index $element "path" }}
+path{{- $i -}}={{- $element.path }}
 {{-     end }}
 {{-   else }}
 button{{- $i -}}=
