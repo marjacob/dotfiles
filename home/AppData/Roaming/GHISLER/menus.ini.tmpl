@@ -1,24 +1,71 @@
 {{- /* vim: set ft=dosini: */ -}}
 
-{{/* Root directory for plugins. */}}
+{{/* Plugin directories for Total Commander. */}}
 {{- $plugins := expandenv "$AppData\\GHISLER\\plugins" -}}
+{{- $wcx     := printf "%s\\%s" $plugins "wcx" -}}
+{{- $wdx     := printf "%s\\%s" $plugins "wdx" -}}
+{{- $wfx     := printf "%s\\%s" $plugins "wfx" -}}
+{{- $wlx     := printf "%s\\%s" $plugins "wlx" -}}
 
-{{/* Directory for packer plugins. */}}
-{{- $wcx := (printf "%s\\%s" $plugins "wcx") -}}
+{{/* Find the Chezmoi source directory. */}}
+{{- $chezmoi  := ".local\\share\\chezmoi\\home" -}}
+{{- $mChezmoi := (dict "name" "&Chezmoi") -}}
+{{- if (glob (printf "%s\\%s" (expandenv "$UserProfile") $chezmoi))  }}
+{{-   $exec := printf "CD \"%%$UserProfile%%\\%s\"" $chezmoi -}}
+{{-   $mChezmoi = (dict "exec" $exec "name" $mChezmoi.name) -}}
+{{- end -}}
 
-{{/* Directory for content plugins. */}}
-{{- $wdx := (printf "%s\\%s" $plugins "wdx") -}}
+{{/* Find the Cloud plugin. */}}
+{{- $mCloud := (dict "name" "Clou&d") -}}
+{{- if glob (printf "%s\\%s" $wfx "cloudplugin") -}}
+{{-   $mCloud = (dict "exec" "CD \"\\\\\\Cloud\"" "name" $mCloud.name) -}}
+{{- end -}}
 
-{{/* Directory for file system plugins. */}}
-{{- $wfx := (printf "%s\\%s" $plugins "wfx") -}}
+{{/* Find the SFTP plugin. */}}
+{{- $mSFTP := (dict "name" "S&FTP") -}}
+{{- if glob (printf "%s\\%s" $wfx "sftpplug") -}}
+{{-   $mSFTP = (dict "exec" "CD \"\\\\\\Secure FTP\"" "name" $mSFTP.name) -}}
+{{- end -}}
 
-{{/* Directory for lister plugins. */}}
-{{- $wlx := (printf "%s\\%s" $plugins "wlx") -}}
+{{/* Find the WebDAV plugin. */}}
+{{- $mWebDAV := (dict "name" "WebDA&V") -}}
+{{- if glob (printf "%s\\%s" $wfx "webdav") -}}
+{{-   $mWebDAV = (dict "exec" "CD \"\\\\\\WebDAV\"" "name" $mWebDAV.name) -}}
+{{- end -}}
 
-{{/* List with one element if the plugin is present, or an empty list. */}}
-{{- $cloudplugin := (glob (printf "%s\\%s" $wfx "cloudplugin")) -}}
-{{- $sftpplug    := (glob (printf "%s\\%s" $wfx "sftpplug")) -}}
-{{- $webdav      := (glob (printf "%s\\%s" $wfx "webdav")) -}}
+{{- $dirmenu := tuple
+  $mChezmoi
+  $mCloud
+  (dict "exec" "CD ::{20D04FE0-3AEA-1069-A2D8-08002B30309D}"
+        "name" "Com&puter")
+  (dict "exec" "CD \"%$Desktop%\""
+        "name" "Desk&top")
+  (dict "exec" "CD \"%$Downloads%\""
+        "name" "Down&loads")
+  (dict "exec" "CD \"%COMMANDER_INI%\\..\""
+        "name" "&Ghisler")
+  (dict "exec" "CD \"%$Profile%\""
+        "name" "&Home")
+  (dict "exec" "CD ::{645FF040-5081-101B-9F08-00AA002F954E}"
+        "name" "Recycle &Bin")
+  $mSFTP
+  (dict "exec" "CD \"\\\\localhost\""
+        "name" "Shar&es")
+  (dict "exec" "CD \"%$RoamingAppData%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\""
+        "name" "&Startup")
+  $mWebDAV
+  (dict "exec" "CD \"%$LocalAppData%\\Packages\\Microsoft.WindowsTerminal_8wekyb3d8bbwe\\LocalState\""
+        "name" "&Windows Terminal")
+  (dict)
+  (dict "exec" "CD ::{B2B4A4D1-2754-4140-A2EB-9A76D9D7CDC6}"
+        "name" "Lin&ux")
+  (dict "exec" "CD \"%$LocalAppData%\""
+        "name" "L&ocal AppData")
+  (dict "exec" "CD \"%$RoamingAppData%\""
+        "name" "&Roaming AppData")
+  (dict "exec" "CD \"%TEMP%\""
+        "name" "Te&mp")
+-}}
 
 [user]
 menu1=Bare&Grep Pro
@@ -47,86 +94,16 @@ cmd13=em_upx_unpack
 menu14=--
 
 [DirMenu]
-{{- $i := 0  }}
-
-{{- $chezmoi := ".local\\share\\chezmoi\\home" -}}
-{{- if (glob (printf "%s\\%s" (expandenv "$UserProfile") $chezmoi))  }}
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=&Chezmoi
-cmd{{- $i -}}=CD "%$UserProfile%\{{- $chezmoi -}}"
-{{- end -}}
-
-{{- if $cloudplugin  }}
-{{- $i = (add1 $i) }}
-menu{{- $i -}}=Clou&d
-cmd{{- $i -}}=CD "\\\Cloud"
-{{- end -}}
-
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=Com&puter
-cmd{{- $i -}}=CD ::{20D04FE0-3AEA-1069-A2D8-08002B30309D}
-
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=Desk&top
-cmd{{- $i -}}=CD "%$Desktop%"
-
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=Down&loads
-cmd{{- $i -}}=CD "%$Downloads%"
-
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=&Ghisler
-cmd{{- $i -}}=CD "%COMMANDER_INI%\.."
-
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=&Home
-cmd{{- $i -}}=CD "%$Profile%"
-
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=Recycle &Bin
-cmd{{- $i -}}=CD ::{645FF040-5081-101B-9F08-00AA002F954E}
-
-{{- if $sftpplug  }}
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=S&FTP
-cmd{{- $i -}}=CD "\\\Secure FTP"
-{{- end -}}
-
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=Shar&es
-cmd{{- $i -}}=CD "\\localhost"
-
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=&Startup
-cmd{{- $i -}}=CD "%$RoamingAppData%\Microsoft\Windows\Start Menu\Programs\Startup"
-
-{{- if $webdav  }}
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=WebDA&V
-cmd{{- $i -}}=CD "\\\WebDAV"
-{{- end -}}
-
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=&Windows Terminal
-cmd{{- $i -}}=CD "%$LocalAppData%\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
-
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=-
-
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=Lin&ux
-cmd{{- $i -}}=CD ::{B2B4A4D1-2754-4140-A2EB-9A76D9D7CDC6}
-
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=L&ocal AppData
-cmd{{- $i -}}=CD "%$LocalAppData%"
-
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=&Roaming AppData
-cmd{{- $i -}}=CD "%$RoamingAppData%"
-
-{{- $i = (add1 $i)  }}
-menu{{- $i -}}=Te&mp
-cmd{{- $i -}}=CD "%TEMP%"
-
-{{- $i = (add1 $i)  }}
+{{- $index := 0 }}
+{{- range $element := $dirmenu }}
+{{-   if index $element "name" }}
+{{-     if index $element "exec" }}
+{{-       $index = (add1 $index) }}
+menu{{- $index -}}={{- $element.name }}
+cmd{{- $index -}}={{- $element.exec }}
+{{-     end }}
+{{-   else }}
+{{-     $index = (add1 $index) }}
+menu{{- $index -}}=-
+{{-   end }}
+{{- end }}
