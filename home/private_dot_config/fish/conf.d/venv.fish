@@ -1,0 +1,34 @@
+function __on_cd_source_venv --on-variable PWD
+    if status --is-command-substitution
+        return
+    end
+
+    set dir $PWD
+    set git (command -v git 2>/dev/null)
+
+    if test $status -eq 0
+        set repository ($git rev-parse --show-toplevel 2>/dev/null)
+        if test $status -eq 0
+            set dir (realpath $repository)
+        end
+    end
+
+    set candidates .env .venv env venv
+
+    for venv in $dir/$candidates
+        set activate $venv/bin/activate.fish
+        if test -e "$activate"
+            break
+        end
+    end
+
+    if test "$VIRTUAL_ENV" != "$venv" -a -r "$activate"
+        source "$activate"
+    else if not test -z "$VIRTUAL_ENV" -o -d "$venv"
+        if functions -q deactivate
+            deactivate
+        end
+    end
+end
+
+__on_cd_source_venv
