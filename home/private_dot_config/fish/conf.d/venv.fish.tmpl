@@ -1,36 +1,59 @@
 {{- /* vim: set ft=fish: */ -}}
 
-function __on_cd_source_venv --on-variable PWD
-    if status --is-command-substitution
-        return
-    end
+function __venv_activate
+    if test (count $argv) -eq 2
+        set -l venv_activate "$argv[1]"
+        set -l venv_directory "$argv[2]"
 
-    set dir $PWD
-    set git (command -v git 2>/dev/null)
-
-    if test $status -eq 0
-        set repository ($git rev-parse --show-toplevel 2>/dev/null)
-        if test $status -eq 0
-            set dir (realpath $repository)
+        # Activate the environment unless it is already active.
+        if test "$VIRTUAL_ENV" != "$venv_directory"
+            source "$venv_activate"
         end
     end
+end
 
-    set candidates .env .venv env venv
-
-    for venv in $dir/$candidates
-        set activate $venv/bin/activate.fish
-        if test -e "$activate"
-            break
-        end
-    end
-
-    if test "$VIRTUAL_ENV" != "$venv" -a -r "$activate"
-        source "$activate"
-    else if not test -z "$VIRTUAL_ENV" -o -d "$venv"
+function __venv_deactivate
+    if test -n "$VIRTUAL_ENV"
         if functions -q deactivate
             deactivate
         end
     end
 end
 
-__on_cd_source_venv
+function __venv_on_event --on-variable PWD
+    if status --is-command-substitution
+        return
+    end
+
+    set -l venv_activate ""
+    set -l venv_directory ""
+    set -l venv_parent $PWD
+
+    while test "$venv_parent" != /
+        for name in .env .venv env venv
+            set -l directory "$venv_parent/$name"
+            set -l activate "$directory/bin/activate.fish"
+            if test -r "$activate"
+                set venv_activate "$activate"
+                set venv_directory "$directory"
+                break
+            end
+        end
+
+        if test -n "$venv_activate"
+            break
+        end
+
+        # Move up to the parent directory.
+        set venv_parent (dirname "$venv_parent")
+    end
+
+    if test -n "$venv_activate"
+        __venv_activate "$venv_activate" "$venv_directory"
+    else
+        __venv_deactivate
+    end
+end
+
+# Ensure that the function is applied to the startup directory as well.
+__venv_on_event
