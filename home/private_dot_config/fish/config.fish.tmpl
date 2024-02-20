@@ -8,9 +8,10 @@ if status is-interactive
     set -gx GOPATH {$HOME}/.go
     set -gx LESS R
     set -gx PREFIX {$HOME}/.local
-{{- if eq .chezmoi.osRelease.id "void" }}
+    set -gx export PYTHONDONTWRITEBYTECODE 1
+    {{- if eq .chezmoi.osRelease.id "void" }}
     set -gx SVDIR {$HOME}/.local/var/service
-{{- end }}
+    {{- end }}
     set -gx VISUAL {$EDITOR}
 
     fish_add_path {$GOPATH}/bin
