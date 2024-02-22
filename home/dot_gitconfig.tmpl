@@ -23,6 +23,8 @@
 	smudge = git-lfs smudge -- %f
 	required = true
 [alias]
+	recommit = commit --amend --no-edit
+	repush = push --force-with-lease
 	revise = rebase --interactive --root
 	uncommit = reset --soft HEAD^
 	unstage = reset HEAD --
