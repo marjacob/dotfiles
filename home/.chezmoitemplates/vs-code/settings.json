@@ -38,6 +38,9 @@
 	"python.formatting.provider": "black",
 	"telemetry.telemetryLevel": "off",
 	"update.showReleaseNotes": false,
+	"vim.handleKeys": {
+		"<C-p>": false
+	},
 	"vim.insertModeKeyBindings": [
 		{
 			"after": ["<Esc>"],
