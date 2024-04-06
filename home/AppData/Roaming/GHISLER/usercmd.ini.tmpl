@@ -3,26 +3,26 @@
 [em_baregrep]
 button=BareGrepPro.exe
 cmd=BareGrepPro.exe
-param=--directory "%P"
 menu=Grep in current directory
+param=--directory "%P"
 
 [em_baretail]
 button=BareTailPro.exe
 cmd=BareTailPro.exe
-param=%P%S
 menu=Tail selected files
+param=%P%S
 
 [em_certutil_decode]
 button=%$System%\certutil.exe
 cmd=%$System%\certutil.exe
-param=-v -decode %P%S "%P%O"
 menu=Decode Base64
+param=-v -decode %P%S "%P%O"
 
 [em_certutil_encode]
 button=%$System%\certutil.exe
 cmd=%$System%\certutil.exe
-param=-v -encode %P%S %P%S.base64
 menu=Encode Base64
+param=-v -encode %P%S %P%S.base64
 
 [em_exeinfo]
 button=exeinfope.exe
@@ -33,8 +33,8 @@ param=%P%S
 [em_explorer]
 button=%$Windows%\explorer.exe
 cmd=%$Windows%\explorer.exe
-param=/select,%P%S
 menu=Windows Explorer
+param=/select,%P%S
 
 [em_hiew]
 button=%$ComSpec%
@@ -45,8 +45,8 @@ param=/C "MODE {{ .terminal.size.x }},{{ .terminal.size.y }} & hiew.exe %P%S"
 [em_innounp]
 button=%$ComSpec%
 cmd=innounp.exe
-param=-x -m -d"%O" -y %P%S
 menu=Inno Setup Unpacker
+param=-x -m -d"%O" -y %P%S
 
 [em_reshacker]
 button=ResourceHacker.exe
@@ -62,11 +62,11 @@ menu=Sumatra PDF
 [em_upx_pack]
 button=%$System%\zipfldr.dll
 cmd=upx.exe
-param=--best %P%S
 menu=Compress executable
+param=--best %P%S
 
 [em_upx_unpack]
 button=%$System%\zipfldr.dll
 cmd=upx.exe
-param=-d %P%S
 menu=Decompress executable
+param=-d %P%S
