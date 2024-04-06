@@ -40,8 +40,7 @@ menu=Windows Explorer
 button=%$ComSpec%
 cmd=%$ComSpec%
 menu=Hacker's view
-param=/C "MODE 132,43 & hiew.exe %P%S"
-path=%$UserProgramFiles%\Hiew
+param=/C "MODE {{ .terminal.size.x }},{{ .terminal.size.y }} & hiew.exe %P%S"
 
 [em_innounp]
 button=%$ComSpec%
