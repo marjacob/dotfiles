@@ -447,11 +447,6 @@ augroup vimrc.custom
         \   endif                            |
         \ endif
 
-  autocmd BufNewFile,BufRead *
-        \ if &modifiable             |
-        \   setlocal fileformat=unix |
-        \ endif
-
   autocmd BufNewFile,BufRead *.sls,.clang-format
         \ setfiletype yaml
 
