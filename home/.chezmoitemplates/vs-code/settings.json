@@ -36,6 +36,7 @@
 	"gitlens.showWhatsNewAfterUpgrades": false,
 	"python.analysis.typeCheckingMode": "strict",
 	"python.formatting.provider": "black",
+  "remote.downloadExtensionsLocally": true,
 	"telemetry.telemetryLevel": "off",
 	"update.showReleaseNotes": false,
 	"vim.handleKeys": {
