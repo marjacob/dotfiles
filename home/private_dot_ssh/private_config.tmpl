@@ -6,7 +6,7 @@ Host *
 {{- if ne .chezmoi.os "windows" }}
 	ControlMaster auto
 	ControlPath ~/.ssh/share/%r@%h:%p
-	ControlPersist 10m
+	ControlPersist 15m
 {{- end }}
 	ForwardX11 no
 	PermitLocalCommand yes
