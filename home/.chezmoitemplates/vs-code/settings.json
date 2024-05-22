@@ -25,7 +25,7 @@
 		"other": "on",
 		"strings": "on"
 	},
-	"editor.renderWhitespace": "trailing",
+	"editor.renderWhitespace": "selection",
 	"editor.rulers": [80],
 	"editor.semanticHighlighting.enabled": true,
 	"editor.tabSize": 8,
