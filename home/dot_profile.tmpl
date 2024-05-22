@@ -26,6 +26,10 @@ export SVDIR=${HOME}/.local/var/service
 {{- end }}
 export VISUAL=${EDITOR}
 
+for package in "${HOME}/.opt"/*/; do
+  search "${package}bin"
+done
+
 search "${GOPATH}/bin"
 search "${HOME}/.cargo/bin"
 search "${HOME}/.local/bin"
