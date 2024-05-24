@@ -9,7 +9,7 @@ if status is-interactive
     set -gx LESS R
     set -gx MANSECT 2:3:1:n:l:8:0:5:4:9:6:7
     set -gx PREFIX {$HOME}/.local
-    set -gx export PYTHONDONTWRITEBYTECODE 1
+    set -gx PYTHONDONTWRITEBYTECODE 1
     {{- if eq .chezmoi.osRelease.id "void" }}
     set -gx SVDIR {$HOME}/.local/var/service
     {{- end }}
