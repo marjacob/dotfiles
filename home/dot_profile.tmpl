@@ -35,5 +35,18 @@ search "${HOME}/.cargo/bin"
 search "${HOME}/.local/bin"
 search "/opt/bin"
 
+{{ $bat := lookPath "batcat" -}}
+{{ if not $bat -}}
+{{   $bat = "cat" -}}
+{{ end -}}
+{{ printf "alias bat=%q\n" $bat -}}
+
+{{ $lsd  := lookPath "lsd" -}}
+{{ if $lsd -}}
+{{   printf "alias ls=%q\n" $lsd -}}
+{{   printf "alias tree=%q\n" (printf "%s --tree" $lsd) -}}
+{{ end -}}
+{{ printf "\n" -}}
+
 import "${HOME}/.cargo/env"
 import "${HOME}/.profile.local"
