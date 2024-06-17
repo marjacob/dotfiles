@@ -1,0 +1,26 @@
+{{- /* vim: set ft=fish: */ -}}
+
+set -gx BROWSER firefox
+set -gx CC clang
+set -gx CXX clang++
+set -gx EDITOR vim
+set -gx GOPATH {$HOME}/.go
+set -gx LESS R
+set -gx MANSECT 2:3:1:n:l:8:0:5:4:9:6:7
+set -gx PREFIX {$HOME}/.local
+set -gx PYTHONDONTWRITEBYTECODE 1
+{{- if eq .chezmoi.osRelease.id "void" }}
+set -gx SVDIR {$HOME}/.local/var/service
+{{- end }}
+set -gx VISUAL {$EDITOR}
+
+for package in {$HOME}/.opt/*
+    if test -d {$package}/bin
+        set -gx PATH {$package}/bin {$PATH}
+    end
+end
+
+fish_add_path {$GOPATH}/bin
+fish_add_path {$HOME}/.cargo/bin
+fish_add_path {$HOME}/.local/bin
+fish_add_path /opt/bin

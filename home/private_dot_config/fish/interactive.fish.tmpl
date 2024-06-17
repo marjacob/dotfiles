@@ -1,0 +1,14 @@
+{{- /* vim: set ft=fish: */ -}}
+
+{{ $bat := lookPath "batcat" -}}
+{{ if not $bat -}}
+{{   $bat = "cat" -}}
+{{ end -}}
+{{ printf "alias bat=%q\n" $bat -}}
+
+{{ $lsd  := lookPath "lsd" -}}
+{{ if $lsd -}}
+{{   printf "alias ls=%q\n" $lsd -}}
+{{   printf "alias tree=%q\n" (printf "%s --tree" $lsd) -}}
+{{ end -}}
+{{ printf "\n" -}}
