@@ -31,6 +31,11 @@ fish_add_path /opt/bin
 {{ end -}}
 {{ printf "alias bat=%q\n" $bat -}}
 
+{{ $code := lookPath "code-oss" -}}
+{{ if $code -}}
+{{   printf "alias code=%q\n" $code -}}
+{{ end -}}
+
 {{ $lsd  := lookPath "lsd" -}}
 {{ if $lsd -}}
 {{   printf "alias ls=%q\n" $lsd -}}
