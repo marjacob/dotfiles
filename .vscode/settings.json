@@ -1,4 +1,17 @@
 {
+	"[python]": {
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": "always"
+		},
+		"editor.detectIndentation": false,
+		"editor.insertSpaces": true,
+		"editor.tabSize": 4
+	},
+	"editor.formatOnSave": true,
 	"editor.renderFinalNewline": "dimmed",
-	"files.insertFinalNewline": true
+	"files.insertFinalNewline": true,
+	"isort.args": [
+		"--profile",
+		"black"
+	]
 }
