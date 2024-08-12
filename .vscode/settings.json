@@ -9,9 +9,5 @@
 	},
 	"editor.formatOnSave": true,
 	"editor.renderFinalNewline": "dimmed",
-	"files.insertFinalNewline": true,
-	"isort.args": [
-		"--profile",
-		"black"
-	]
+	"files.insertFinalNewline": true
 }
