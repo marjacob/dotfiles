@@ -9,6 +9,7 @@ set -gx LESS R
 set -gx MANSECT 2:3:1:n:l:8:0:5:4:9:6:7
 set -gx PREFIX {$HOME}/.local
 set -gx PYTHONDONTWRITEBYTECODE 1
+set -gx RUBYOPT "-E utf-8:utf-8"
 {{- if eq .chezmoi.osRelease.id "void" }}
 set -gx SVDIR {$HOME}/.local/var/service
 {{- end }}
