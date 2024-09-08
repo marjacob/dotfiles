@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+if [ "${GITHUB_ACTIONS:-false}" = "true" ]; then
+	exec echo "${GITHUB_WORKSPACE}"
+elif [ "${GITLAB_CI:-false}" = "true" ]; then
+	exec echo "${CI_PROJECT_DIR}"
+fi
+
+if [ "$(git rev-parse --is-inside-work-tree)" = "true" ]; then
+	exec echo "${PWD:-.}"
+fi
+
+exit 1

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+if [ "${GITHUB_ACTIONS:-false}" = "true" ]; then
+	exec echo "${GITHUB_BASE_REF}"
+elif [ "${GITLAB_CI:-false}" = "true" ]; then
+	exec echo "${CI_MERGE_REQUEST_DIFF_BASE_SHA}"
+fi
+
+if [ "$(git rev-parse --is-inside-work-tree)" = "true" ]; then
+	# https://stackoverflow.com/a/4991675
+	(diff --new-line-format="" --old-line-format="" \
+		<(git rev-list --first-parent "${1:-master}") \
+		<(git rev-list --first-parent "${2:-HEAD}") || true) | head -1
+else
+	exit 1
+fi
