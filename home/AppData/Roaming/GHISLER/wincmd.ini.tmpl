@@ -23,9 +23,17 @@ dy=768
 
 [Associations]
 Filter1=*.pdf
-Filter1_open=""SumatraPDF.exe" "%1""
+{{- with $default := "%$UserProgramFiles%\\SumatraPDF\\SumatraPDF.exe" }}
+{{-   with $program := (default $default (lookPath "SumatraPDF.exe")) }}
+Filter1_open=""{{- $program -}}" "%1""
+{{-   end }}
+{{- end }}
 Filter2=*.swf
-Filter2_open=""flashplayer_32_sa.exe" "%1""
+{{- with $default := "%$UserProgramFiles%\\FlashPlayer\\flashplayer_32_sa.exe" }}
+{{-   with $program := (default $default (lookPath "flashplayer_32_sa.exe")) }}
+Filter2_open=""{{- $program -}}" "%1""
+{{-   end }}
+{{- end }}
 Filter3=>Image
 Filter3_open="%$System%\rundll32.exe" "%$ProgramFiles%\Windows Photo Viewer\PhotoViewer.dll", ImageView_Fullscreen %1
 Filter3.icon=%$ProgramFiles%\Windows Photo Viewer\PhotoViewer.dll

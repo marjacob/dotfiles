@@ -1,14 +1,22 @@
 {{- /* vim: set ft=dosini: */ -}}
 
 [em_baregrep]
-button=BareGrepPro.exe
-cmd=BareGrepPro.exe
+{{- with $default := "%$UserProgramFiles%\\BareGrepPro\\BareGrepPro.exe" }}
+{{-   with $program := (default $default (lookPath "BareGrepPro.exe")) }}
+button={{ $program }}
+cmd={{ $program }}
+{{-   end }}
+{{- end }}
 menu=Grep in current directory
 param=--directory "%P"
 
 [em_baretail]
-button=BareTailPro.exe
-cmd=BareTailPro.exe
+{{- with $default := "%$UserProgramFiles%\\BareTailPro\\BareTailPro.exe" }}
+{{-   with $program := (default $default (lookPath "BareTailPro.exe")) }}
+button={{ $program }}
+cmd={{ $program }}
+{{-   end }}
+{{- end }}
 menu=Tail selected files
 param=%P%S
 
@@ -25,8 +33,12 @@ menu=Encode Base64
 param=-v -encode %P%S %P%S.base64
 
 [em_exeinfo]
-button=exeinfope.exe
-cmd=exeinfope.exe
+{{- with $default := "%$UserProgramFiles%\\ExeinfoPe\\exeinfope.exe" }}
+{{-   with $program := (default $default (lookPath "exeinfope.exe")) }}
+button={{ $program }}
+cmd={{ $program }}
+{{-   end }}
+{{- end }}
 menu=Exeinfo PE
 param=%P%S
 
@@ -37,42 +49,70 @@ menu=Windows Explorer
 param=/select,%P%S
 
 [em_hiew]
+{{- with $default := "%$UserProgramFiles%\\Hiew\\hiew.exe" }}
+{{-   with $program := (default $default (lookPath "hiew.exe")) }}
 button=%$ComSpec%
-cmd=%$UserProgramFiles%\Hiew\hiew.exe
+cmd={{ $program }}
+{{-   end }}
+{{- end }}
 menu=Hacker's view
 param=%P%S
 
 [em_innounp]
+{{- with $default := "%$UserProgramFiles%\\Innounp\\innounp.exe" }}
+{{-   with $program := (default $default (lookPath "innounp.exe")) }}
 button=%$ComSpec%
-cmd=innounp.exe
+cmd={{ $program }}
+{{-   end }}
+{{- end }}
 menu=Inno Setup Unpacker
 param=-x -m -d"%O" -y %P%S
 
 [em_mpv]
-button=%$ComSpec%
-cmd=%$UserProgramFiles%\mpv\mpv.exe
+{{- with $default := "%$UserProgramFiles%\\mpv\\mpv.exe" }}
+{{-   with $program := (default $default (lookPath "mpv.exe")) }}
+button=%$System%\wmploc.dll
+cmd={{ $program }}
+{{-   end }}
+{{- end }}
 menu=mpv
 param=%P%S
 
 [em_reshacker]
-button=%$UserProgramFiles%\Resource Hacker\ResourceHacker.exe
-cmd=%$UserProgramFiles%\Resource Hacker\ResourceHacker.exe
+{{- with $default := "%$UserProgramFiles%\\Resource Hacker\\ResourceHacker.exe" }}
+{{-   with $program := (default $default (lookPath "ResourceHacker.exe")) }}
+button={{ $program }}
+cmd={{ $program }}
+{{-   end }}
+{{- end }}
 menu=Resource Hacker
 param=%P%S
 
 [em_sumatra]
-button=SumatraPDF.exe
-cmd=SumatraPDF.exe
+{{- with $default := "%$UserProgramFiles%\\SumatraPDF\\SumatraPDF.exe" }}
+{{-   with $program := (default $default (lookPath "SumatraPDF.exe")) }}
+button={{ $program }}
+cmd={{ $program }}
+{{-   end }}
+{{- end }}
 menu=Sumatra PDF
 
 [em_upx_pack]
+{{- with $default := "%$UserProgramFiles%\\UPX\\upx.exe" }}
+{{-   with $program := (default $default (lookPath "upx.exe")) }}
 button=%$System%\zipfldr.dll
 cmd=%$UserProgramFiles%\UPX\upx.exe
+{{-   end }}
+{{- end }}
 menu=Compress executable
 param=--best %P%S
 
 [em_upx_unpack]
+{{- with $default := "%$UserProgramFiles%\\UPX\\upx.exe" }}
+{{-   with $program := (default $default (lookPath "upx.exe")) }}
 button=%$System%\zipfldr.dll
 cmd=%$UserProgramFiles%\UPX\upx.exe
+{{-   end }}
+{{- end }}
 menu=Decompress executable
 param=-d %P%S
