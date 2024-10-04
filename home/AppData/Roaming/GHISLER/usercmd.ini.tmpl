@@ -71,7 +71,7 @@ param=-x -m -d"%O" -y %P%S
 [em_mpv]
 {{- with $default := "%$UserProgramFiles%\\mpv\\mpv.exe" }}
 {{-   with $program := (default $default (lookPath "mpv.exe")) }}
-button=%$System%\wmploc.dll
+button={{ $program }}
 cmd={{ $program }}
 {{-   end }}
 {{- end }}
