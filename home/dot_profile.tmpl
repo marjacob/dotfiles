@@ -36,11 +36,13 @@ search "${HOME}/.cargo/bin"
 search "${HOME}/.local/bin"
 search "/opt/bin"
 
-{{ $bat := lookPath "batcat" -}}
-{{ if not $bat -}}
-{{   $bat = "cat" -}}
+{{ if not (lookPath "bat") -}}
+{{   $bat := lookPath "batcat" -}}
+{{   if not $bat -}}
+{{     $bat = "cat" -}}
+{{   end -}}
+{{   printf "alias bat=%q\n" $bat -}}
 {{ end -}}
-{{ printf "alias bat=%q\n" $bat -}}
 
 {{ $code := lookPath "code-oss" -}}
 {{ if $code -}}
