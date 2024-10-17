@@ -5,6 +5,10 @@
 	name = {{ .git.user }}
 [core]
 	editor = vim
+{{ if lookPath "vimdiff" -}}
+[diff]
+	tool = vimdiff
+{{ end -}}
 [init]
 	defaultBranch = master
 [fetch]
