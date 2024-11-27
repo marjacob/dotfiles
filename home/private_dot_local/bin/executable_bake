@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# Formatting:
+# shfmt -bn -ci -i 2 -l -s -sr -w bake.sh
+
+# Testing:
+# $ bake --eval '$(info $(VERSION))'
+
+declare -r git=${GIT:-git}
+declare -r make=${MAKE:-make}
+declare -r repository=$(${git} rev-parse --show-toplevel)
+
+declare -r version=$(
+  "${git}" describe \
+    --abbrev=8 \
+    --always \
+    --dirty \
+    --tags \
+    2> /dev/null
+)
+
+# Create a Makefile for force-inclusion.
+declare -r preamble=$(mktemp)
+printf "VERSION := %s\n" "${version}" >> "${preamble}"
+trap 'rm -f "${preamble}"' EXIT
+
+"${make}" \
+  --directory "${repository}" \
+  --eval "include ${preamble}" \
+  --no-print-directory \
+  "$@"
