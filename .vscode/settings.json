@@ -9,5 +9,12 @@
 	},
 	"editor.formatOnSave": true,
 	"editor.renderFinalNewline": "dimmed",
-	"files.insertFinalNewline": true
+	"files.insertFinalNewline": true,
+	"shfmt.executableArgs": [
+		"-bn",
+		"-ci",
+		"-i=2",
+		"-s",
+		"-sr"
+	]
 }
