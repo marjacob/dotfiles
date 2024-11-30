@@ -1,0 +1,8 @@
+	{
+		"recommendations": [
+			"bmalehorn.vscode-fish",
+			"editorconfig.editorconfig",
+			"mkhl.shfmt",
+			"timonwong.shellcheck"
+		]
+	}
