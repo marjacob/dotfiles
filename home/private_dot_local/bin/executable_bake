@@ -75,7 +75,7 @@ path.walk = \$(sort\\
 )
 
 ifneq (${git_user},)
--include %smk/user/${git_user}.mk
+-include ${git_worktree}/mk/user/${git_user}.mk
 endif
 EOF
 
