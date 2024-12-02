@@ -52,13 +52,13 @@ cat << EOF > "${preamble}"
 .SUFFIXES:
 
 BLANK        :=
-CURDIR       := ${PWD}
 GIT          := ${GIT}
 GIT_BRANCH   := ${git_branch}
 GIT_COMMIT   := ${git_commit}
 GIT_USER     := ${git_user}
 GIT_VERSION  := ${git_version}
 GIT_WORKTREE := ${git_worktree}
+ORIGIN       := ${PWD}
 PREAMBLE     := ${preamble}
 SPACE        := \$(BLANK) \$(BLANK)
 
