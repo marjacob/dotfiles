@@ -3,7 +3,7 @@
 set -o errexit
 set -o nounset
 
-readonly GIT="${GIT:-git}"
+readonly GIT="${GIT:-${GIT_EXECUTABLE:-${GIT_BINARY:-git}}}"
 readonly MAKE="${MAKE:-make}"
 readonly MKTEMP="${MKTEMP:-mktemp}"
 
