@@ -62,6 +62,9 @@ ORIGIN       := ${PWD}
 PREAMBLE     := ${preamble}
 SPACE        := \$(BLANK) \$(BLANK)
 
+# Example: \$(call path.parent,/foo/bar/baz)
+path.parent = \$(patsubst %/,%,\$(dir \$(1)))
+
 # Example: \$(call path.stem,/foo/bar.baz)
 path.stem = \$(notdir \$(basename \$(1)))
 
