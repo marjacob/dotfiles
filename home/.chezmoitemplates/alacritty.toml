@@ -22,8 +22,8 @@ family = {{ .font.name | quote }}
 style = "Regular"
 
 {{  if eq .chezmoi.os "windows" -}}
-[shell]
-program = "C:\\Windows\\System32\\wsl.exe --cd ~"
+[terminal.shell]
+{{ dict "program" (env "COMSPEC") | toToml }}
 {{- end  }}
 
 [window.dimensions]
