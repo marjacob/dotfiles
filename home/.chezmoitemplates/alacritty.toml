@@ -41,7 +41,7 @@
             "builtin_box_drawing" false
             "italic"              $fontItalic
             "normal"              $fontNormal
-	    "size"                .font.size) -}}
+            "size"                .font.size) -}}
 
 {{- $windowDimensions :=
       (dict "columns"    .terminal.size.x
