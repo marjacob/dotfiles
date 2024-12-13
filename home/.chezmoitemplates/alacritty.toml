@@ -43,25 +43,28 @@
             "normal"              $fontNormal
             "size"                .font.size) -}}
 
+{{- $general := (dict "working_directory" (env "USERPROFILE")) -}}
+
 {{- $windowDimensions :=
       (dict "columns"    .terminal.size.x
             "lines"      .terminal.size.y) -}}
 
-{{- $window :=
-      (dict "dimensions" $windowDimensions) -}}
+{{- $window := (dict "dimensions" $windowDimensions) -}}
 
 {{- $config :=
-      (dict "colors" $colors
-            "env"    $env
-            "font"   $font
-            "window" $window) -}}
+      (dict "colors"  $colors
+            "env"     $env
+            "font"    $font
+            "general" $general
+            "window"  $window) -}}
 
 {{- /* Use cmd.exe as the default shell on Windows. */ -}}
 {{- if eq .chezmoi.os "windows" -}}
 {{-   $config = merge $config
         (dict "terminal"
           (dict "shell"
-            (dict "program" (env "COMSPEC")))) -}}
+            (dict "program" (env "COMSPEC")
+                  "args"    (list "/F:ON" "/V:ON")))) -}}
 {{- end -}}
 
 {{- /* Render the configuration as TOML. */ -}}
