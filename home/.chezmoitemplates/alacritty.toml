@@ -1,55 +1,68 @@
-[colors.bright]
-black      = '#767676'
-red        = '#e74856'
-green      = '#16c60c'
-yellow     = '#f9f1a5'
-blue       = '#3b78ff'
-magenta    = '#b4009e'
-cyan       = '#61d6d6'
-white      = '#f2f2f2'
+{{- $colorsBright :=
+      (dict "black"      "#767676"
+            "blue"       "#3b78ff"
+            "cyan"       "#61d6d6"
+            "green"      "#16c60c"
+            "magenta"    "#b4009e"
+            "red"        "#e74856"
+            "white"      "#f2f2f2"
+            "yellow"     "#f9f1a5") -}}
 
-[colors.normal]
-black      = '#0c0c0c'
-red        = '#c50f1f'
-green      = '#13a10e'
-yellow     = '#c19c00'
-blue       = '#0037da'
-magenta    = '#881798'
-cyan       = '#3a96dd'
-white      = '#cccccc'
+{{- $colorsNormal :=
+      (dict "black"      "#0c0c0c"
+            "blue"       "#0037da"
+            "cyan"       "#3a96dd"
+            "green"      "#13a10e"
+            "magenta"    "#881798"
+            "red"        "#c50f1f"
+            "white"      "#cccccc"
+            "yellow"     "#c19c00") -}}
 
-[colors.primary]
-background = '#0c0c0c'
-foreground = '#cccccc'
+{{- $colorsPrimary :=
+      (dict "background" "#0c0c0c"
+            "foreground" "#cccccc") -}}
 
-[env]
-TERM = "xterm-256color"
+{{- $colors :=
+      (dict "bright"     $colorsBright
+            "normal"     $colorsNormal
+            "primary"    $colorsPrimary) -}}
 
-[font]
-builtin_box_drawing = false
-size = {{ .font.size }}
+{{- $env :=
+      (dict "TERM"       "xterm-256color") -}}
 
-[font.bold]
-family = {{ .font.name | quote }}
-style = "Bold"
+{{- $fontBold       := (dict "family" .font.name "style" "Bold")        -}}
+{{- $fontBoldItalic := (dict "family" .font.name "style" "Bold Italic") -}}
+{{- $fontItalic     := (dict "family" .font.name "style" "Italic")      -}}
+{{- $fontNormal     := (dict "family" .font.name "style" "Regular")     -}}
 
-[font.bold_italic]
-family = {{ .font.name | quote }}
-style = "Bold Italic"
+{{- $font :=
+      (dict "bold"                $fontBold
+            "bold_italic"         $fontBoldItalic
+            "builtin_box_drawing" false
+            "italic"              $fontItalic
+            "normal"              $fontNormal
+	    "size"                .font.size) -}}
 
-[font.italic]
-family = {{ .font.name | quote }}
-style = "Italic"
+{{- $windowDimensions :=
+      (dict "columns"    .terminal.size.x
+            "lines"      .terminal.size.y) -}}
 
-[font.normal]
-family = {{ .font.name | quote }}
-style = "Regular"
+{{- $window :=
+      (dict "dimensions" $windowDimensions) -}}
 
-{{  if eq .chezmoi.os "windows" -}}
-[terminal.shell]
-{{ dict "program" (env "COMSPEC") | toToml }}
-{{- end  }}
+{{- $config :=
+      (dict "colors" $colors
+            "env"    $env
+            "font"   $font
+            "window" $window) -}}
 
-[window.dimensions]
-columns = {{ .terminal.size.x }}
-lines = {{ .terminal.size.y }}
+{{- /* Use cmd.exe as the default shell on Windows. */ -}}
+{{- if eq .chezmoi.os "windows" -}}
+{{-   $config = merge $config
+        (dict "terminal"
+          (dict "shell"
+            (dict "program" (env "COMSPEC")))) -}}
+{{- end -}}
+
+{{- /* Render the configuration as TOML. */ -}}
+{{- $config | toToml -}}
