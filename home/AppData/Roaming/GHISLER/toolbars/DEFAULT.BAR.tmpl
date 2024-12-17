@@ -88,6 +88,41 @@
 	      "path" (osDir $au3info)) -}}
 {{- end -}}
 
+
+{{/* Error Lookup */}}
+{{- $errlook := "" -}}
+{{- range $i, $dir := $programFiles -}}
+{{-   $pattern := printf "%s\\Microsoft Visual Studio\\*\\Community\\Common7\\Tools\\errlook.exe" $dir -}}
+{{-   range $i, $exe := glob $pattern -}}
+{{-     if and (not $errlook) (eq (osBase $exe) "errlook.exe") -}}
+{{-       $errlook = osClean $exe -}}
+{{-       $buttons = append $buttons
+            (dict "exec" $errlook
+                  "icon" "%$System%\\mmcndmgr.dll,125"
+                  "menu" "Error Lookup"
+                  "path" (osDir $errlook)) -}}
+{{-       break -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* GUID Generator */}}
+{{- $guidgen := "" -}}
+{{- range $i, $dir := $programFiles -}}
+{{-   $pattern := printf "%s\\Microsoft Visual Studio\\*\\Community\\Common7\\Tools\\guidgen.exe" $dir -}}
+{{-   range $i, $exe := glob $pattern -}}
+{{-     if and (not $guidgen) (eq (osBase $exe) "guidgen.exe") -}}
+{{-       $guidgen = osClean $exe -}}
+{{-       $buttons = append $buttons
+            (dict "exec" $guidgen
+                  "icon" $guidgen
+                  "menu" "GUID Generator"
+                  "path" (osDir $guidgen)) -}}
+{{-       break -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+
 {{/* IDA Pro */}}
 {{- $ida32 := "" -}}
 {{- $ida64 := "" -}}
@@ -120,6 +155,38 @@
               "icon" $ida64
               "menu" "IDA Pro x64"
               "path" (osDir $ida64)) -}}
+{{- end -}}
+
+{{/* Spy++ */}}
+{{- $spy32 := "" -}}
+{{- $spy64 := "" -}}
+{{- range $i, $dir := $programFiles -}}
+{{-   $pattern := printf "%s\\Microsoft Visual Studio\\*\\Community\\Common7\\Tools\\spyxx*.exe" $dir -}}
+{{-   range $i, $exe := glob $pattern -}}
+{{-     if and (not $spy32) (eq (osBase $exe) "spyxx.exe") -}}
+{{-       $spy32 = osClean $exe -}}
+{{-     end -}}
+{{-     if and (not $spy64) (eq (osBase $exe) "spyxx_amd64.exe") -}}
+{{-       $spy64 = osClean $exe -}}
+{{-     end -}}
+{{-     if and $spy32 $spy64 -}}
+{{-       break -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+{{- if $spy32 -}}
+{{-   $buttons = append $buttons
+        (dict "exec" $spy32
+              "icon" $spy32
+              "menu" "Spy++ x86"
+              "path" (osDir $spy32)) -}}
+{{- end -}}
+{{- if $spy64 -}}
+{{-   $buttons = append $buttons
+        (dict "exec" $spy64
+              "icon" $spy64
+              "menu" "Spy++ x64"
+              "path" (osDir $spy64)) -}}
 {{- end -}}
 
 [Buttonbar]
