@@ -10,8 +10,9 @@ max_line_length = 80
 indent_size = 4
 indent_style = space
 
-[*.{json,yaml}]
+[*.{json,yaml,yml}]
 indent_size = 2
+indent_style = space
 
 [{*.sh,.profile,home/private_dot_local/bin/*}]
 indent_size = 2
