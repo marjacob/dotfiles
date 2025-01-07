@@ -1,0 +1,24 @@
+environment:
+  BAKE: dotfiles/home/private_dot_local/bin/executable_bake
+  GIST: 728cef658cd0057fc912cf1a2bff7912
+  SECRET: secrets/github.com.txt
+image: alpine/edge
+packages:
+  - bat
+  - github-cli
+secrets:
+  - 63cdfb1c-820b-4770-a7b7-5f5299ea54fc
+tasks:
+  - github-login: |
+      gh auth login --with-token < "${SECRET}"
+      rm -frv "${SECRET}"
+  - github-publish: |
+      gh gist view "${GIST}" --raw > "/tmp/${GIST}.txt"
+      if ! diff "/tmp/${GIST}.txt" "${BAKE}" > "/tmp/${GIST}.diff"; then
+        bat --color always \
+            --decorations always \
+            --paging never \
+            "/tmp/${GIST}.diff"
+        gh gist edit "${GIST}" --filename bake "${BAKE}"
+      fi
+      rm -frv "/tmp/${GIST}.diff" "/tmp/${GIST}.txt"
