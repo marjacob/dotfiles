@@ -6,6 +6,7 @@ set -o nounset
 readonly GIT="${GIT:-${GIT_EXECUTABLE:-${GIT_BINARY:-git}}}"
 readonly MAKE="${MAKE:-make}"
 readonly MKTEMP="${MKTEMP:-mktemp}"
+readonly XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
 
 git_version() {
   "${GIT}" describe \
@@ -76,6 +77,10 @@ path.walk = \$(sort\\
    \$(call path.walk,\$(directory)/,\$(2))\\
   )\\
 )
+
+-include ${XDG_CONFIG_HOME}/bake/preamble.mk
+-include ${HOME}/.bake.mk
+-include ${git_worktree}/mk/bake.mk
 
 ifneq (${git_user},)
 -include ${git_worktree}/mk/user/${git_user}.mk
