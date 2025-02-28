@@ -6,19 +6,3 @@ inoremap jk <ESC>
 set visualbell
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" Workaround for using the system clipboard without slowing down Visual Studio.
-" https://github.com/VsVim/VsVim/issues/2035
-noremap y  "*y
-noremap yy "*yy
-noremap Y  "*y$
-noremap d  "*d
-noremap dd "*dd
-noremap D  "*D
-noremap p  "*p
-noremap P  "*P
-
-" Use the black hole register to discard characters deleted by x.
-noremap x "_x
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
