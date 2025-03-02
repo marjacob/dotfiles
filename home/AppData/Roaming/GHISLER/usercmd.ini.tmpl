@@ -48,15 +48,32 @@ cmd=%$Windows%\explorer.exe
 menu=Windows Explorer
 param=/select,%P%S
 
-[em_hiew]
-{{- with $default := "%$UserProgramFiles%\\Hiew\\hiew.exe" }}
-{{-   with $program := (default $default (lookPath "hiew.exe")) }}
-button=%$ComSpec%
-cmd={{ $program }}
+{{- with $hexEditors := tuple
+  (dict "name" "010 Editor"
+        "home" (printf "%s\\010 Editor" (env "ProgramFiles"))
+        "exec" "010Editor.exe")
+  (dict "icon" "%$ComSpec%"
+        "name" "Hacker's View"
+        "home" (printf "%s\\Programs\\Hiew" (env "LocalAppData"))
+        "exec" "hiew.exe") -}}
+{{- "" }}
+{{-   range $editor := $hexEditors }}
+{{-     with $defaultPath := printf "%s\\%s" $editor.home $editor.exec }}
+{{-       with $programPath := (default $defaultPath (lookPath $editor.exec)) }}
+{{-         if (lookPath $programPath) }}
+[em_hex]
+{{-           if index $editor "icon" }}
+button={{ $editor.icon }}
+{{-           end }}
+cmd={{ $programPath }}
+menu={{ $editor.name }}
+param=%P%S
+{{-           break }}
+{{-         end }}
+{{-       end }}
+{{-     end }}
 {{-   end }}
 {{- end }}
-menu=Hacker's view
-param=%P%S
 
 [em_innounp]
 {{- with $default := "%$UserProgramFiles%\\Innounp\\innounp.exe" }}
