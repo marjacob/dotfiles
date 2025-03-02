@@ -52,6 +52,11 @@
 -}}
 
 {{- $programFiles := tuple (env "ProgramFiles") -}}
+
+{{- with $programFilesUser := (printf "%s\\Programs" (env "LocalAppData")) -}}
+{{-   $programFiles = append $programFiles $programFilesUser -}}
+{{- end -}}
+
 {{- if eq .chezmoi.arch "amd64" -}}
 {{-   $programFiles = append $programFiles (env "ProgramFiles(x86)") -}}
 {{- end -}}
@@ -88,7 +93,6 @@
 	      "path" (osDir $au3info)) -}}
 {{- end -}}
 
-
 {{/* Error Lookup */}}
 {{- $errlook := "" -}}
 {{- range $i, $dir := $programFiles -}}
@@ -119,6 +123,23 @@
                   "menu" "GUID Generator"
                   "path" (osDir $guidgen)) -}}
 {{-       break -}}
+{{-     end -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Hacker's View */}}
+{{- range $i, $directory := $programFiles -}}
+{{-   with $pattern := printf "%s\\Hiew\\hiew*.exe" $directory -}}
+{{-     range $i, $exe := glob $pattern -}}
+{{-       with $hiew := osClean $exe -}}
+{{-         $buttons = append $buttons
+              (dict "args" "%P%S"
+                    "exec" $hiew
+                    "icon" "%$ComSpec%"
+                    "menu" "Hacker's View"
+                    "path" (osDir $hiew)) -}}
+{{-         break -}}
+{{-       end -}}
 {{-     end -}}
 {{-   end -}}
 {{- end -}}
