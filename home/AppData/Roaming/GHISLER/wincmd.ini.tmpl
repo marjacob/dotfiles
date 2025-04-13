@@ -1,9 +1,15 @@
 {{- /* vim: set ft=dosini: */ -}}
 
-{{- $programFiles := tuple (env "ProgramFiles") -}}
-{{- if eq .chezmoi.arch "amd64" -}}
-{{-   $programFiles = append $programFiles (env "ProgramFiles(x86)") -}}
+{{- $localAppData     := env "LocalAppData" -}}
+{{- $programFiles32   := env "ProgramFiles(x86)" -}}
+{{- $programFiles64   := env "ProgramFiles" -}}
+{{- $programFilesUser := printf "%s\\Programs" $localAppData -}}
+
+{{- $programFiles := tuple $programFilesUser $programFiles64 -}}
+{{- if or (eq .chezmoi.arch "amd64") (eq .chezmoi.arch "arm64") -}}
+{{-   $programFiles = append $programFiles $programFiles32 -}}
 {{- end -}}
+{{- $programFiles = append $programFiles $localAppData -}}
 
 {{/* GVim */}}
 {{- $gvim := "" -}}
@@ -15,6 +21,81 @@
 {{-   end -}}
 {{- end -}}
 
+{{/* Adobe Flash Player */}}
+{{- $exeAdobeFlash := "" -}}
+{{- range $i, $dir := $programFiles -}}
+{{-   $path := printf "%s\\FlashPlayer\\flashplayer_32_sa.exe" $dir -}}
+{{-   if (lookPath $path) -}}
+{{-     $exeAdobeFlash = osClean $path -}}
+{{-     break -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Imagine - Image & Animation Viewer */}}
+{{- $exeImagine := "" -}}
+{{- range $i, $dir := $programFiles -}}
+{{-   $pattern := printf "%s\\Imagine\\Imagine*.exe" $dir -}}
+{{-   range $i, $exe := glob $pattern -}}
+{{-     $exeImagine = osClean $exe -}}
+{{-     break -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* PDF-XChange Editor */}}
+{{- $exePDFXEdit := "" -}}
+{{- range $i, $dir := $programFiles -}}
+{{-   $path := printf "%s\\Tracker Software\\PDF Editor\\PDFXEdit.exe" $dir -}}
+{{-   if (lookPath $path) -}}
+{{-     $exePDFXEdit = osClean $path -}}
+{{-     break -}}
+{{-   end -}}
+{{- end -}}
+
+{{/* Sumatra PDF */}}
+{{- $exeSumatraPDF := "" -}}
+{{- range $i, $dir := $programFiles -}}
+{{-   $path := (printf "%s\\SumatraPDF\\SumatraPDF.exe" $dir) -}}
+{{-   if (lookPath $path) -}}
+{{-     $exeSumatraPDF = osClean $path -}}
+{{-     break -}}
+{{-   end -}}
+{{- end -}}
+
+{{- $associations := tuple -}}
+
+{{/* Register association for PDF. */}}
+{{- $myPDFEditor := (dict "filter" "*.pdf") -}}
+{{- with $exePDFXEdit -}}
+{{-   $myPDFEditor = set $myPDFEditor "command" $exePDFXEdit -}}
+{{- else -}}
+{{-   with $exeSumatraPDF -}}
+{{-     $myPDFEditor = set $myPDFEditor "command" $exeSumatraPDF -}}
+{{-   end -}}
+{{- end -}}
+{{- if index $myPDFEditor "command" -}}
+{{-   $associations = append $associations $myPDFEditor -}}
+{{- end -}}
+
+{{/* Register association for SWF. */}}
+{{- $myFlashPlayer := (dict "filter" "*.swf") -}}
+{{- with $exeAdobeFlash -}}
+{{-   $myFlashPlayer = set $myFlashPlayer "command" $exeAdobeFlash -}}
+{{-   $associations = append $associations $myFlashPlayer -}}
+{{- end -}}
+
+{{/* Register association for images. */}}
+{{- $myImageViewer := (dict "filter" ">Image") -}}
+{{- with $exeImagine -}}
+{{-   $myImageViewer = set $myImageViewer "command" $exeImagine -}}
+{{- else -}}
+{{-   $myImageViewer = set $myImageViewer
+        "icon" `%$ProgramFiles%\Windows Photo Viewer\PhotoViewer.dll` -}}
+{{-   $myImageViewer = set $myImageViewer "invoke"
+        (dict "module" `%$ProgramFiles%\Windows Photo Viewer\PhotoViewer.dll`
+	      "export" "ImageView_Fullscreen") -}}
+{{- end -}}
+{{- $associations = append $associations $myImageViewer -}}
+
 [Alias]
 
 [AllResolutions]
@@ -22,26 +103,21 @@ dx=1024
 dy=768
 
 [Associations]
-Filter1=*.pdf
-
-{{- with $exePDFXEdit   := (printf "%s\\Tracker Software\\PDF Editor\\PDFXEdit.exe" (env "ProgramFiles")) -}}
-{{-   with $exeSumatraPDF := (printf "%s\\Programs\\SumatraPDF\\SumatraPDF.exe" (env "LocalAppData")) }}
-{{-     if (lookPath $exePDFXEdit) }}
-Filter1_open=""{{- $exePDFXEdit -}}" "%1""
-{{-     else if (lookPath $exeSumatraPDF) }}
-Filter1_open=""{{- $exeSumatraPDF -}}" "%1""
+{{- $index := 0 }}
+{{- range $filter := $associations }}
+{{-   if and (index $filter "filter") (or (index $filter "command") (index $filter "invoke")) }}
+{{-     $index = (add1 $index) }}
+Filter{{- $index -}}={{- $filter.filter }}
+{{-   if index $filter "command" }}
+Filter{{- $index -}}_open=""{{- $filter.command }}" "%1""
+{{-   else }}
+Filter{{- $index -}}_open="%$System%\rundll32.exe" "{{- $filter.invoke.module -}}", {{ $filter.invoke.export }} %1
+{{-   end }}
+{{-     if index $filter "icon" }}
+Filter{{- $index -}}_icon={{- $filter.icon }}
 {{-     end }}
 {{-   end }}
 {{- end }}
-Filter2=*.swf
-{{- with $default := "%$UserProgramFiles%\\FlashPlayer\\flashplayer_32_sa.exe" }}
-{{-   with $program := (default $default (lookPath "flashplayer_32_sa.exe")) }}
-Filter2_open=""{{- $program -}}" "%1""
-{{-   end }}
-{{- end }}
-Filter3=>Image
-Filter3_open="%$System%\rundll32.exe" "%$ProgramFiles%\Windows Photo Viewer\PhotoViewer.dll", ImageView_Fullscreen %1
-Filter3.icon=%$ProgramFiles%\Windows Photo Viewer\PhotoViewer.dll
 
 [Buttonbar]
 Buttonheight=29
