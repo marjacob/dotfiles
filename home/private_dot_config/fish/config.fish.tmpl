@@ -29,25 +29,24 @@ fish_add_path /Applications/010 Editor.app/Contents/CmdLine
 {{- end }}
 fish_add_path /opt/bin
 
-{{ if not (lookPath "bat") -}}
-{{  $bat := lookPath "batcat" -}}
-{{  if not $bat -}}
-{{    $bat = "cat" -}}
-{{  end -}}
-{{  printf "alias bat=%q\n" $bat -}}
-{{ end -}}
+{{- if not (lookPath "bat") }}
+{{-  $bat := lookPath "batcat" }}
+{{-  if not $bat }}
+{{-    $bat = "cat" }}
+{{-  end }}
+{{-  printf "alias bat=%q\n" $bat }}
+{{- end }}
 
-{{ $code := lookPath "code-oss" -}}
-{{ if $code -}}
-{{   printf "alias code=%q\n" $code -}}
-{{ end -}}
+{{- $code := lookPath "code-oss" }}
+{{- if $code }}
+{{-   printf "alias code=%q\n" $code }}
+{{- end }}
 
-{{ $lsd  := lookPath "lsd" -}}
-{{ if $lsd -}}
-{{   printf "alias ls=%q\n" $lsd -}}
-{{   printf "alias tree=%q\n" (printf "%s --tree" $lsd) -}}
-{{ end -}}
-{{ printf "\n" -}}
+{{- $lsd  := lookPath "lsd" }}
+{{- if $lsd }}
+{{-   printf "alias ls=%q\n" $lsd }}
+{{-   printf "alias tree=%q\n" (printf "%s --tree" $lsd) }}
+{{- end }}
 
 if test -r {$HOME}/.config.fish
     source {$HOME}/.config.fish

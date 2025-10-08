@@ -39,25 +39,24 @@ search "/Applications/010 Editor.app/Contents/CmdLine"
 {{- end }}
 search "/opt/bin"
 
-{{ if not (lookPath "bat") -}}
-{{   $bat := lookPath "batcat" -}}
-{{   if not $bat -}}
-{{     $bat = "cat" -}}
-{{   end -}}
-{{   printf "alias bat=%q\n" $bat -}}
-{{ end -}}
+{{- if not (lookPath "bat") }}
+{{-   $bat := lookPath "batcat" }}
+{{-   if not $bat }}
+{{-     $bat = "cat" }}
+{{-   end }}
+{{-   printf "alias bat=%q\n" $bat }}
+{{- end }}
 
-{{ $code := lookPath "code-oss" -}}
-{{ if $code -}}
-{{   printf "alias code=%q\n" $code -}}
-{{ end -}}
+{{- $code := lookPath "code-oss" }}
+{{- if $code }}
+{{-   printf "alias code=%q\n" $code }}
+{{- end }}
 
-{{ $lsd  := lookPath "lsd" -}}
-{{ if $lsd -}}
-{{   printf "alias ls=%q\n" $lsd -}}
-{{   printf "alias tree=%q\n" (printf "%s --tree" $lsd) -}}
-{{ end -}}
-{{ printf "\n" -}}
+{{- $lsd  := lookPath "lsd" }}
+{{- if $lsd }}
+{{-   printf "alias ls=%q\n" $lsd }}
+{{-   printf "alias tree=%q\n" (printf "%s --tree" $lsd) }}
+{{- end }}
 
 import "${HOME}/.cargo/env"
 import "${HOME}/.profile.local"
