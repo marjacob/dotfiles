@@ -24,6 +24,9 @@ end
 fish_add_path {$GOPATH}/bin
 fish_add_path {$HOME}/.cargo/bin
 fish_add_path {$HOME}/.local/bin
+{{- if eq .chezmoi.os "darwin" }}
+fish_add_path /Applications/010 Editor.app/Contents/CmdLine
+{{- end }}
 fish_add_path /opt/bin
 
 {{ if not (lookPath "bat") -}}
