@@ -1,0 +1,44 @@
+{
+  "buffer_font_size": 12,
+  "ui_font_size": 16,
+
+  "languages": {
+    "C": {
+      "tab_size": 8,
+      "format_on_save": "on",
+    },
+  },
+
+  "lsp": {
+    "clangd": {
+      "binary": {
+        "arguments": ["--header-insertion=never"],
+      },
+    },
+  },
+
+  "wrap_guides": [80, 100],
+
+  "disable_ai": true,
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false,
+  },
+
+  "collaboration_panel": {
+    "button": false,
+  },
+  "title_bar": { "show_sign_in": false },
+  "theme": {
+    "mode": "system",
+    "light": "Gruvbox Light",
+    "dark": "Gruvbox Dark",
+  },
+  "icon_theme": {
+    "mode": "system",
+    "light": "Zed (Default)",
+    "dark": "Zed (Default)",
+  },
+
+  "vim_mode": true,
+}
