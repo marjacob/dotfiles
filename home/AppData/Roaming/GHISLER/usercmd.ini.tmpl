@@ -49,13 +49,13 @@ menu=Windows Explorer
 param=/select,%P%S
 
 {{- with $hexEditors := tuple
-  (dict "name" "010 Editor"
-        "home" (printf "%s\\010 Editor" (env "ProgramFiles"))
-        "exec" "010Editor.exe")
   (dict "icon" "%$ComSpec%"
         "name" "Hacker's View"
         "home" (printf "%s\\Programs\\Hiew" (env "LocalAppData"))
-        "exec" "hiew.exe") -}}
+        "exec" "hiew.exe")
+  (dict "name" "010 Editor"
+        "home" (printf "%s\\010 Editor" (env "ProgramFiles"))
+        "exec" "010Editor.exe") -}}
 {{- "" }}
 {{-   range $editor := $hexEditors }}
 {{-     with $defaultPath := printf "%s\\%s" $editor.home $editor.exec }}
