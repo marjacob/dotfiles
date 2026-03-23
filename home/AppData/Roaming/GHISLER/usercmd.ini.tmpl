@@ -61,6 +61,7 @@ param=/select,%P%S
 {{-     with $defaultPath := printf "%s\\%s" $editor.home $editor.exec }}
 {{-       with $programPath := (default $defaultPath (lookPath $editor.exec)) }}
 {{-         if (lookPath $programPath) }}
+
 [em_hex]
 {{-           if index $editor "icon" }}
 button={{ $editor.icon }}
