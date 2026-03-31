@@ -30,7 +30,7 @@ fish_add_path /opt/homebrew/opt/llvm/bin
 {{- end }}
 fish_add_path /opt/bin
 
-{{- if not (lookPath "bat") }}
+{{  if not (lookPath "bat") }}
 {{-  $bat := lookPath "batcat" }}
 {{-  if not $bat }}
 {{-    $bat = "cat" }}

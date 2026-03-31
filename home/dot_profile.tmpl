@@ -40,7 +40,7 @@ search "/opt/homebrew/opt/llvm/bin"
 {{- end }}
 search "/opt/bin"
 
-{{- if not (lookPath "bat") }}
+{{  if not (lookPath "bat") }}
 {{-   $bat := lookPath "batcat" }}
 {{-   if not $bat }}
 {{-     $bat = "cat" }}
