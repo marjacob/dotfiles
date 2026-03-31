@@ -36,6 +36,7 @@ search "${HOME}/.cargo/bin"
 search "${HOME}/.local/bin"
 {{- if eq .chezmoi.os "darwin" }}
 search "/Applications/010 Editor.app/Contents/CmdLine"
+search "/opt/homebrew/opt/llvm/bin"
 {{- end }}
 search "/opt/bin"
 
