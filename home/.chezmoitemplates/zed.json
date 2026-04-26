@@ -2,6 +2,14 @@
   "buffer_font_size": 12,
   "ui_font_size": 16,
 
+  "project_panel": {
+    "hide_root": true,
+    "git_status_indicator": true,
+    "diagnostic_badges": true,
+    "entry_spacing": "standard",
+    "dock": "left"
+  },
+
   "languages": {
     "C": {
       "tab_size": 8,
