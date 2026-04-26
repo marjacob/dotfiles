@@ -5,16 +5,20 @@
   "languages": {
     "C": {
       "tab_size": 8,
-      "format_on_save": "on",
+      "format_on_save": "on"
     },
+    "C++": {
+      "tab_size": 8,
+      "format_on_save": "on"
+    }
   },
 
   "lsp": {
     "clangd": {
       "binary": {
-        "arguments": ["--header-insertion=never"],
-      },
-    },
+        "arguments": ["--header-insertion=never"]
+      }
+    }
   },
 
   "wrap_guides": [80, 100],
@@ -22,23 +26,23 @@
   "disable_ai": true,
   "telemetry": {
     "diagnostics": false,
-    "metrics": false,
+    "metrics": false
   },
 
   "collaboration_panel": {
-    "button": false,
+    "button": false
   },
   "title_bar": { "show_sign_in": false },
   "theme": {
     "mode": "system",
     "light": "Gruvbox Light",
-    "dark": "Gruvbox Dark",
+    "dark": "Gruvbox Dark"
   },
   "icon_theme": {
     "mode": "system",
     "light": "Zed (Default)",
-    "dark": "Zed (Default)",
+    "dark": "Zed (Default)"
   },
 
-  "vim_mode": true,
+  "vim_mode": true
 }
