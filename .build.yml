@@ -1,6 +1,7 @@
 environment:
   BAKE: dotfiles/home/private_dot_local/bin/executable_bake
   GIST: 728cef658cd0057fc912cf1a2bff7912
+  GITHUB_MIRROR: marjacob/dotfiles
   SECRET: secrets/github.com.txt
 image: alpine/edge
 packages:
@@ -9,9 +10,29 @@ packages:
 secrets:
   - 63cdfb1c-820b-4770-a7b7-5f5299ea54fc
 tasks:
+  - preflight: |
+      branch=${GIT_REF#refs/heads/}
+
+      if [ "${branch}" = "master" ]; then
+        echo "GIT_BRANCH=${branch}" >> ~/.buildenv
+      else
+        complete-build
+      fi
+
   - github-login: |
       gh auth login --with-token < "${SECRET}"
       rm -fv "${SECRET}"
+  - github-mirror: |
+      cd dotfiles
+      gh auth setup-git
+      if ! gh repo view "${GITHUB_MIRROR}" >/dev/null 2>&1; then
+        gh repo create "${GITHUB_MIRROR}" \
+           --description "Mirror of https://git.sr.ht/~mrj/dotfiles" \
+           --public
+      fi
+      git remote add github "https://github.com/${GITHUB_MIRROR}.git"
+      git push --mirror github
+      gh repo edit "${GITHUB_MIRROR}" --default-branch "${GIT_BRANCH}"
   - github-publish: |
       gh gist view "${GIST}" --raw > "/tmp/${GIST}.txt"
       if ! diff "/tmp/${GIST}.txt" "${BAKE}" > "/tmp/${GIST}.diff"; then
