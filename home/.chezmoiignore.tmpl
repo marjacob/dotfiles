@@ -23,6 +23,7 @@ Library/
 {{- if ne .chezmoi.os "linux" }}
 .chezmoiscripts/linux/**
 .hushlogin
+.xprofile
 {{- end }}
 
 {{- if ne .chezmoi.os "windows" }}
@@ -35,9 +36,3 @@ vsvimrc
 .config/sublime-merge/
 .config/sublime-text/
 {{- end }}
-
-{{- if ne .chezmoi.hostname "miporin" }}
-.config/sway/
-.config/xkb/
-{{- end }}
-

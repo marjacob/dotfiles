@@ -8,3 +8,9 @@ Code
 Code - OSS
 {{-   end }}
 {{- end }}
+
+{{- if ne .chezmoi.os "linux" }}
+environment.d/
+sway/
+xkb/
+{{- end }}

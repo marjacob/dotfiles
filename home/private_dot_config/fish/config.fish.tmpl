@@ -15,6 +15,9 @@ set -gx RUBYOPT "-E utf-8:utf-8"
 set -gx SVDIR {$HOME}/.local/var/service
 {{- end }}
 set -gx VISUAL {$EDITOR}
+{{- if eq .chezmoi.os "linux" }}
+set -gx XKB_DEFAULT_LAYOUT {{ .xkb.layout }}
+{{- end }}
 
 {{- if eq .chezmoi.os "darwin" }}
 
