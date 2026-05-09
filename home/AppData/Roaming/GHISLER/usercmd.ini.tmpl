@@ -119,7 +119,7 @@ menu=Sumatra PDF
 {{- with $default := "%$UserProgramFiles%\\UPX\\upx.exe" }}
 {{-   with $program := (default $default (lookPath "upx.exe")) }}
 button=%$System%\zipfldr.dll
-cmd=%$UserProgramFiles%\UPX\upx.exe
+cmd={{ $program }}
 {{-   end }}
 {{- end }}
 menu=Compress executable
@@ -129,7 +129,7 @@ param=--best %P%S
 {{- with $default := "%$UserProgramFiles%\\UPX\\upx.exe" }}
 {{-   with $program := (default $default (lookPath "upx.exe")) }}
 button=%$System%\zipfldr.dll
-cmd=%$UserProgramFiles%\UPX\upx.exe
+cmd={{ $program }}
 {{-   end }}
 {{- end }}
 menu=Decompress executable
