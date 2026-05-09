@@ -1,5 +1,5 @@
 #!/bin/sh
 
-yes n | ssh-keygen -N "" -f ~/.ssh/id_ecdsa -q -t ecdsa > /dev/null || true
+yes n | ssh-keygen -N "" -f ~/.ssh/id_ed25519 -q -t ed25519 > /dev/null || true
 
 # vim: ft=sh:
