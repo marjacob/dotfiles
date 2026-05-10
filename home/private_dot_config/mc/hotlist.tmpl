@@ -1,0 +1,33 @@
+{{- /* vim: set ft=conf: */ -}}
+
+{{- $home := .chezmoi.homeDir -}}
+{{- $chezmoi := printf "%s/.local/share/chezmoi/home" $home -}}
+
+ENTRY "Home"      URL "{{ $home }}"
+{{- if stat $chezmoi }}
+ENTRY "Chezmoi"   URL "{{ $chezmoi }}"
+{{- end }}
+{{- if stat (printf "%s/src" $home) }}
+ENTRY "Source"    URL "{{ $home }}/src"
+{{- end }}
+ENTRY "Desktop"   URL "{{ $home }}/Desktop"
+ENTRY "Downloads" URL "{{ $home }}/Downloads"
+ENTRY "Temp"      URL "/tmp"
+
+{{- if eq .chezmoi.os "linux" }}
+
+GROUP "System"
+    ENTRY "/etc"       URL "/etc"
+    ENTRY "/var/log"   URL "/var/log"
+    ENTRY "/usr/share" URL "/usr/share"
+ENDGROUP
+{{- end }}
+
+{{- if eq .chezmoi.os "darwin" }}
+
+GROUP "macOS"
+    ENTRY "Library"             URL "{{ $home }}/Library"
+    ENTRY "Application Support" URL "{{ $home }}/Library/Application Support"
+    ENTRY "Applications"        URL "/Applications"
+ENDGROUP
+{{- end }}

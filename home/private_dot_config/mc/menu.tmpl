@@ -1,0 +1,77 @@
+{{- /* vim: set ft=conf: */ -}}
+
+{{- /* darwin */ -}}
+{{- $copy  := "pbcopy"  -}}
+{{- $paste := "pbpaste" -}}
+{{- if eq .chezmoi.os "linux" -}}
+{{-   if eq (env "XDG_SESSION_TYPE") "wayland" -}}
+{{-     $copy  = "wl-copy"  -}}
+{{-     $paste = "wl-paste" -}}
+{{-   else -}}
+{{-     $copy  = "xclip -selection clipboard -in"  -}}
+{{-     $paste = "xclip -selection clipboard -out" -}}
+{{-   end -}}
+{{- end }}
+
+# F2 user menu. Format: <hotkey><tab>Label, then commands indented.
+# Variables: %f current file, %s selection, %d current dir, %D other panel dir.
+
++ t r & ! t t
+p       Copy full path to clipboard
+        printf '%%s' "%d/%f" | {{ $copy }}
+
++ t t
+P       Copy tagged file paths to clipboard
+        for i in %t ; do
+            printf '%%s\n' "%d/$i"
+        done | {{ $copy }}
+
++ t r & ! t t
+h       Hash file (SHA-256, copy)
+        sha256sum %f | {{ $copy }}
+        %view{ascii} {{ $paste }}
+
++ t t
+H       Hash tagged files (SHA-256, copy)
+        sha256sum %t | {{ $copy }}
+        %view{ascii} {{ $paste }}
+
++ t r & ! t t
+b       Base64 encode the selected file
+        base64 < %f > "%f.b64"
+
++ t t
+B       Base64 encode tagged files
+        for i in %t ; do
+            base64 < "$i" > "$i.b64"
+        done
+
++ t r & ! t t
+d       Base64 decode the selected file
+        base64 -d < %f > "$(basename %f .b64)"
+
++ t t
+D       Base64 decode tagged files
+        for i in %t ; do
+            base64 -d < "$i" > "$(basename "$i" .b64)"
+        done
+
++ t r & ! t t
+y       Copy file contents to clipboard
+        if [ $(wc -c < %f) -gt 10485760 ]; then
+            echo "File larger than 10 MiB; aborting." | %view{ascii} cat
+            exit 1
+        fi
+        {{ $copy }} < %f
+
++ t t
+Y       Concatenate tagged file contents to clipboard
+        TOTAL=0
+        for i in %t ; do
+            TOTAL=$((TOTAL + $(wc -c < "$i")))
+        done
+        if [ "${TOTAL}" -gt 10485760 ]; then
+            echo "Tagged files total >10 MiB; aborting." | %view{ascii} cat
+            exit 1
+        fi
+        cat %t | {{ $copy }}
