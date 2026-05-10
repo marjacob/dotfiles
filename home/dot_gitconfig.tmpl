@@ -5,10 +5,39 @@
 	name = {{ .git.user }}
 [core]
 	editor = vim
-{{ if lookPath "vimdiff" -}}
+{{- $bc := lookPath "bcomp" -}}
+{{- if not $bc -}}
+{{-   if eq .chezmoi.os "darwin" -}}
+{{-     if stat "/Applications/Beyond Compare.app/Contents/MacOS/bcomp" -}}
+{{-       $bc = "/Applications/Beyond Compare.app/Contents/MacOS/bcomp" -}}
+{{-     end -}}
+{{-   else if eq .chezmoi.os "linux" -}}
+{{-     $bc = lookPath "bcompare" -}}
+{{-   else if eq .chezmoi.os "windows" -}}
+{{-     range $path := list
+              "C:/Program Files/Beyond Compare 5/BCompare.exe"
+              "C:/Program Files/Beyond Compare 4/BCompare.exe"
+              "C:/Program Files (x86)/Beyond Compare 5/BCompare.exe"
+              "C:/Program Files (x86)/Beyond Compare 4/BCompare.exe" -}}
+{{-       if and (not $bc) (stat $path) -}}
+{{-         $bc = $path -}}
+{{-       end -}}
+{{-     end -}}
+{{-   end -}}
+{{- end  }}
+{{- $vimdiff := lookPath "vimdiff"  }}
+{{  if or $bc $vimdiff -}}
 [diff]
+{{-   if $bc  }}
+	tool = beyondcompare
+{{-   else  }}
 	tool = vimdiff
-{{ end -}}
+{{-   end  }}
+{{  end -}}
+{{  if $bc -}}
+[difftool "beyondcompare"]
+	cmd = "\"{{ $bc }}\" \"$LOCAL\" \"$REMOTE\""
+{{  end -}}
 [init]
 	defaultBranch = master
 [fetch]
