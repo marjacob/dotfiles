@@ -1,20 +1,25 @@
 {{- /* vim: set ft=conf: */ -}}
 
-{{- /* darwin */ -}}
+{{- $clip  := true      -}}
 {{- $copy  := "pbcopy"  -}}
 {{- $paste := "pbpaste" -}}
+
 {{- if eq .chezmoi.os "linux" -}}
-{{-   if eq (env "XDG_SESSION_TYPE") "wayland" -}}
+{{-   $session := env "XDG_SESSION_TYPE" -}}
+{{-   if eq $session "wayland" -}}
 {{-     $copy  = "wl-copy"  -}}
 {{-     $paste = "wl-paste" -}}
-{{-   else -}}
+{{-   else if eq $session "x11" -}}
 {{-     $copy  = "xclip -selection clipboard -in"  -}}
 {{-     $paste = "xclip -selection clipboard -out" -}}
+{{-   else -}}
+{{-     $clip = false -}}
 {{-   end -}}
 {{- end }}
 
-# F2 user menu. Format: <hotkey><tab>Label, then commands indented.
-# Variables: %f current file, %s selection, %d current dir, %D other panel dir.
+# F2 user menu.
+
+{{- if $clip }}
 
 + t r & ! t t
 p       Copy full path to clipboard
@@ -25,16 +30,25 @@ P       Copy tagged file paths to clipboard
         for i in %t ; do
             printf '%%s\n' "%d/$i"
         done | {{ $copy }}
+{{- end }}
 
 + t r & ! t t
-h       Hash file (SHA-256, copy)
+h       Hash file (SHA-256{{ if $clip }}, copy{{ end }})
+{{- if $clip }}
         sha256sum %f | {{ $copy }}
         %view{ascii} {{ $paste }}
+{{- else }}
+        %view{ascii} sha256sum %f
+{{- end }}
 
 + t t
-H       Hash tagged files (SHA-256, copy)
+H       Hash tagged files (SHA-256{{ if $clip }}, copy{{ end }})
+{{- if $clip }}
         sha256sum %t | {{ $copy }}
         %view{ascii} {{ $paste }}
+{{- else }}
+        %view{ascii} sha256sum %t
+{{- end }}
 
 + t r & ! t t
 b       Base64 encode the selected file
@@ -56,6 +70,8 @@ D       Base64 decode tagged files
             base64 -d < "$i" > "$(basename "$i" .b64)"
         done
 
+{{- if $clip }}
+
 + t r & ! t t
 y       Copy file contents to clipboard
         if [ $(wc -c < %f) -gt 10485760 ]; then
@@ -75,3 +91,4 @@ Y       Concatenate tagged file contents to clipboard
             exit 1
         fi
         cat %t | {{ $copy }}
+{{- end }}
