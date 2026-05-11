@@ -8,8 +8,9 @@
 {{- $bc := lookPath "bcomp" -}}
 {{- if not $bc -}}
 {{-   if eq .chezmoi.os "darwin" -}}
-{{-     if stat "/Applications/Beyond Compare.app/Contents/MacOS/bcomp" -}}
-{{-       $bc = "/Applications/Beyond Compare.app/Contents/MacOS/bcomp" -}}
+{{-     $bcomp := "/Applications/Beyond Compare.app/Contents/MacOS/bcomp" -}}
+{{-     if stat $bcomp -}}
+{{-       $bc = $bcomp -}}
 {{-     end -}}
 {{-   else if eq .chezmoi.os "linux" -}}
 {{-     $bc = lookPath "bcompare" -}}
