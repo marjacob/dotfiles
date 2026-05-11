@@ -35,6 +35,7 @@
 	tool = "Beyond Compare"
 [difftool "Beyond Compare"]
 	cmd = {{ printf "\"%s\" \"$LOCAL\" \"$REMOTE\"" $bc | quote }}
+	trustexitcode = true
 {{  end -}}
 [init]
 	defaultBranch = master
