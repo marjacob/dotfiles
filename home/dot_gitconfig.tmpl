@@ -14,14 +14,18 @@
 {{-   else if eq .chezmoi.os "linux" -}}
 {{-     $bc = lookPath "bcompare" -}}
 {{-   else if eq .chezmoi.os "windows" -}}
-{{-     range $path := list
-              "C:/Program Files/Beyond Compare 5/BCompare.exe"
-              "C:/Program Files/Beyond Compare 4/BCompare.exe"
-              "C:/Program Files (x86)/Beyond Compare 5/BCompare.exe"
-              "C:/Program Files (x86)/Beyond Compare 4/BCompare.exe" -}}
-{{-       if and (not $bc) (stat $path) -}}
-{{-         $bc = $path -}}
+{{-     $programFiles32 := env "ProgramFiles(x86)" -}}
+{{-     $programFiles64 := env "ProgramFiles" -}}
+{{-     $candidates := list -}}
+{{-     range $base := list $programFiles64 $programFiles32 -}}
+{{-       if $base -}}
+{{-         range glob (printf "%s/Beyond Compare */BComp.exe" $base) -}}
+{{-           $candidates = append $candidates . -}}
+{{-         end -}}
 {{-       end -}}
+{{-     end -}}
+{{-     if $candidates -}}
+{{-       $bc = $candidates | sortAlpha | reverse | first -}}
 {{-     end -}}
 {{-   end -}}
 {{- end  }}
@@ -34,10 +38,10 @@
 	tool = vimdiff
 {{-   end  }}
 {{  end -}}
-{{  if $bc -}}
+{{ if $bc -}}
 [difftool "beyondcompare"]
-	cmd = "\"{{ $bc }}\" \"$LOCAL\" \"$REMOTE\""
-{{  end -}}
+	cmd = {{ printf "\"%s\" \"$LOCAL\" \"$REMOTE\"" $bc | quote }}
+{{ end -}}
 [init]
 	defaultBranch = master
 [fetch]
