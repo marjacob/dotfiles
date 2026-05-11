@@ -35,7 +35,7 @@
 	tool = "Beyond Compare"
 [difftool "Beyond Compare"]
 	cmd = {{ printf "\"%s\" \"$LOCAL\" \"$REMOTE\"" $bc | quote }}
-	trustexitcode = true
+	trustExitCode = true
 {{  end -}}
 [init]
 	defaultBranch = master
@@ -46,7 +46,7 @@
 	tool = "Beyond Compare"
 [mergetool "Beyond Compare"]
 	cmd = {{ printf "\"%s\" \"$REMOTE\" \"$LOCAL\" \"$BASE\" \"$MERGED\"" $bc | quote }}
-	trustexitcode = true
+	trustExitCode = true
 {{  end -}}
 [pull]
 	rebase = true
