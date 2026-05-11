@@ -30,19 +30,12 @@
 {{-     end -}}
 {{-   end -}}
 {{- end  }}
-{{- $vimdiff := lookPath "vimdiff"  }}
-{{  if or $bc $vimdiff -}}
+{{  if $bc -}}
 [diff]
-{{-   if $bc  }}
-	tool = beyondcompare
-{{-   else  }}
-	tool = vimdiff
-{{-   end  }}
-{{  end -}}
-{{ if $bc -}}
-[difftool "beyondcompare"]
+	tool = "Beyond Compare"
+[difftool "Beyond Compare"]
 	cmd = {{ printf "\"%s\" \"$LOCAL\" \"$REMOTE\"" $bc | quote }}
-{{ end -}}
+{{  end -}}
 [init]
 	defaultBranch = master
 [fetch]
