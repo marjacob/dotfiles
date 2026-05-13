@@ -70,6 +70,17 @@ D       Base64 decode tagged files
             base64 -d < "$i" > "$(basename "$i" .b64)"
         done
 
+{{- if lookPath "mpv" }}
+
++ t r & ! t t
+p       Play this file in mpv
+        mpv %f
+
++ t t
+P       Play all of these files in mpv
+        mpv %t
+{{- end }}
+
 {{- if $clip }}
 
 + t r & ! t t
