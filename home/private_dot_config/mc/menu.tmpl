@@ -22,11 +22,11 @@
 {{- if $clip }}
 
 + t r & ! t t
-p       Copy full path to clipboard
+c       Copy full path to clipboard
         printf '%%s' "%d/%f" | {{ $copy }}
 
 + t t
-P       Copy tagged file paths to clipboard
+C       Copy tagged file paths to clipboard
         for i in %t ; do
             printf '%%s\n' "%d/$i"
         done | {{ $copy }}
