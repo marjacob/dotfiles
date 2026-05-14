@@ -10,7 +10,6 @@ endif
 scriptencoding utf-8
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""" description
-set autochdir                                              " cd to current file
 set autoread                                               " reload on change
 set backspace=eol,indent,start                             " use backspace
 set belloff=all                                            " no bell
