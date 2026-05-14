@@ -15,34 +15,34 @@ set backspace=eol,indent,start                             " use backspace
 set belloff=all                                            " no bell
 set cindent                                                " indent c source
 set colorcolumn=+1                                         " highlight next
-set complete-=i                                            "
-set display+=lastline                                      "
-set display+=truncate                                      "
+set complete-=i                                            " faster completion
+set display+=lastline                                      " show partial line
+set display+=truncate                                      " mark truncation
 set fillchars+=vert:\ "                                    " no separators
 set formatoptions+=jro                                     " use smart comments
 set hidden                                                 " use hidden buffers
 set history=1000                                           " max command history
-set hlsearch                                               "
+set hlsearch                                               " highlight matches
 set ignorecase                                             " ignore pattern case
-set incsearch                                              "
+set incsearch                                              " incremental search
 set infercase                                              " guess casing
 set laststatus=2                                           " use status line
-set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+  "
-set modeline                                               "
+set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+  " list-mode glyphs
+set modeline                                               " read file modelines
 set mouse=a                                                " use mouse
-set nofoldenable                                           "
+set nofoldenable                                           " no code folding
 set noshowmode                                             " no insert mode
 set nostartofline                                          " preserve cursor
 set noswapfile                                             " no swap file
-set nowrap                                                 "
+set nowrap                                                 " no line wrap
 set number                                                 " use line numbers
 set numberwidth=5                                          " line number columns
 set report=0                                               " always report
 set scrolloff=1                                            " lines from cursor
 set shiftwidth=0                                           " use tabstop value
 set shortmess+=I                                           " no intro message
-set sidescroll=1                                           "
-set sidescrolloff=2                                        "
+set sidescroll=1                                           " smooth side scroll
+set sidescrolloff=2                                        " columns from cursor
 set smartcase                                              " use case for upper
 set smarttab                                               " use smart tabs
 set splitbelow                                             " split below
