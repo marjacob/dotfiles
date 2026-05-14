@@ -64,6 +64,18 @@ else
 endif
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Persistent undo across vim sessions.
+
+if has('persistent_undo')
+  let s:undodir = expand('~/.cache/vim/undo')
+  if isdirectory(s:undodir) == 0
+    call mkdir(s:undodir, 'p', 0700)
+  endif
+  let &undodir = s:undodir
+  set undofile
+endif
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Internal helper functions.
 
 function! s:OnBufWritePost() abort
