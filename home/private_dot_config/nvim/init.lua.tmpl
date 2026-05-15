@@ -1,0 +1,628 @@
+-- vim: set ft=lua:
+
+--------------------------------------------------------------------------------
+-- Settings
+
+vim.opt.clipboard = "unnamed,unnamedplus"
+vim.opt.colorcolumn = "+1" -- highlight next
+vim.opt.completeopt = "menuone,noinsert,popup,fuzzy" -- completion UX
+vim.opt.display:append("truncate") -- mark truncation
+vim.opt.fillchars:append({ vert = " " }) -- no separators
+vim.opt.formatoptions:append("ro") -- continue comments
+vim.opt.foldenable = false -- no code folding
+vim.opt.ignorecase = true -- ignore pattern case
+vim.opt.infercase = true -- guess casing
+vim.opt.laststatus = 2 -- per-window statusline
+vim.opt.listchars:append({ extends = ">", precedes = "<" })
+vim.opt.mouse = "a" -- also command + help
+vim.opt.number = true -- use line numbers
+vim.opt.numberwidth = 5 -- line number columns
+vim.opt.report = 0 -- always report
+vim.opt.scrolloff = 1 -- lines from cursor
+vim.opt.shiftwidth = 0 -- use tabstop value
+vim.opt.shortmess:append("I") -- no intro message
+vim.opt.showmode = false -- statusline shows it
+vim.opt.sidescrolloff = 2 -- columns from cursor
+vim.opt.smartcase = true -- use case for upper
+vim.opt.splitbelow = true -- split below
+vim.opt.splitright = true -- split right
+vim.opt.swapfile = false -- no swap file
+vim.opt.textwidth = 80 -- max text width
+vim.opt.ttimeoutlen = 100 -- wait 100 ms
+vim.opt.undofile = true -- persistent undo
+vim.opt.updatetime = 500 -- ms until CursorHold
+vim.opt.virtualedit = "block" -- block mode
+vim.opt.wildmode = "list:longest,full" -- autocompletion
+vim.opt.wrap = false -- no line wrap
+
+--------------------------------------------------------------------------------
+-- Helper functions
+
+function _G.get_encoding()
+  return vim.bo.fileencoding ~= "" and vim.bo.fileencoding or vim.o.encoding
+end
+
+function _G.get_mode()
+  local modes = {
+    ["\22"] = "V-BLOCK",
+    ["\19"] = "S-BLOCK",
+    R = "REPLACE",
+    S = "S-LINE",
+    V = "V-LINE",
+    c = "COMMAND",
+    i = "INSERT",
+    n = "NORMAL",
+    s = "SELECT",
+    t = "TERMINAL",
+    v = "VISUAL",
+  }
+  return modes[vim.fn.mode()] or vim.fn.mode()
+end
+
+local function strip_trailing_whitespace()
+  local view = vim.fn.winsaveview()
+  vim.cmd([[keeppatterns %s/\s\+$//e]])
+  vim.fn.winrestview(view)
+end
+
+local function format_buffer()
+  local view = vim.fn.winsaveview()
+  vim.cmd.normal({ "gggqG", bang = true })
+  vim.fn.winrestview(view)
+end
+
+local format_error_group =
+  vim.api.nvim_create_augroup("vimrc.formatexpr", { clear = true })
+
+local function on_buf_write_post()
+  vim.api.nvim_clear_autocmds({ group = format_error_group })
+  local msg = vim.b.formatexpr_message
+  if msg and msg ~= "" then
+    vim.b.formatexpr_message = nil
+    vim.api.nvim_echo({ { msg, "ErrorMsg" } }, true, {})
+  end
+end
+
+function _G.format_expression(cmd)
+  local tmp = vim.fn.tempname()
+  vim.cmd("silent noautocmd write " .. vim.fn.fnameescape(tmp))
+  local full = table.concat(cmd, " ") .. " " .. vim.fn.shellescape(tmp)
+  local err = vim.fn.system(full)
+
+  if vim.v.shell_error ~= 0 then
+    vim.b.formatexpr_message =
+      string.format("%s (%d): %s", cmd[1], vim.v.shell_error, err)
+    vim.api.nvim_create_autocmd("BufWritePost", {
+      group = format_error_group,
+      buffer = 0,
+      callback = on_buf_write_post,
+      once = true,
+    })
+  else
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.fn.readfile(tmp))
+  end
+  vim.fn.delete(tmp)
+  return 0
+end
+
+local g_formatters = {}
+
+local function set_formatter(name, default)
+  local formatter = g_formatters[name] or vim.env[name] or default
+  if vim.fn.executable(formatter) == 1 then
+    vim.bo.formatprg = formatter
+    g_formatters[name] = formatter
+    return true
+  end
+  return false
+end
+
+--------------------------------------------------------------------------------
+-- Statusline
+
+vim.opt.statusline = table.concat({
+  -- Highlighted mode indicator.
+  "%#WildMenu#",
+  " %{v:lua.get_mode()} ",
+  "%*",
+
+  -- Paste indicator, shown only when 'paste' is set.
+  "%{&paste?' PASTE':''} ",
+
+  -- Current buffer, file name, and modified state.
+  "%n: %<%F %m ",
+
+  -- Separator for the left and right segments.
+  "%=",
+
+  -- Current byte under the cursor and file format.
+  "0x%02.B | %{&ff} ",
+
+  -- File encoding, shown only when set.
+  "%{empty(v:lua.get_encoding())?'':'| '.v:lua.get_encoding().' '}",
+
+  -- File type, shown only when set.
+  "%{empty(&ft)?'':'| '.&ft.' '}",
+
+  -- Highlighted cursor position.
+  "%#WildMenu#",
+  " %p%% %l:%c ",
+  "%*",
+})
+
+--------------------------------------------------------------------------------
+-- Leader and mappings
+
+vim.g.mapleader = ","
+vim.g.maplocalleader = ";"
+
+if jit.os == "Linux" then
+  vim.keymap.set("c", "w!!", "w !sudo tee > /dev/null %", { silent = false })
+end
+
+vim.keymap.set("i", '<Leader>"', "Æ", { silent = true })
+vim.keymap.set("i", "<Leader>'", "æ", { silent = true })
+vim.keymap.set("i", "<Leader>:", "Ø", { silent = true })
+vim.keymap.set("i", "<Leader>;", "ø", { silent = true })
+vim.keymap.set("i", "<Leader>E", "É", { silent = true })
+vim.keymap.set("i", "<Leader>[", "å", { silent = true })
+vim.keymap.set("i", "<Leader>e", "é", { silent = true })
+vim.keymap.set("i", "<Leader>{", "Å", { silent = true })
+vim.keymap.set("i", "jk", "<Esc>")
+
+vim.keymap.set("i", "<Tab>", function()
+  return vim.fn.pumvisible() == 1 and "<C-N>" or "<Tab>"
+end, { expr = true, silent = true })
+
+vim.keymap.set("i", "<S-Tab>", function()
+  return vim.fn.pumvisible() == 1 and "<C-P>" or "<S-Tab>"
+end, { expr = true, silent = true })
+
+vim.keymap.set("i", "<CR>", function()
+  return vim.fn.pumvisible() == 1 and "<C-Y>" or "<CR>"
+end, { expr = true, silent = true })
+
+vim.keymap.set("n", "<C-L>", function()
+  vim.cmd("nohlsearch")
+  if vim.o.diff then
+    vim.cmd("diffupdate")
+  end
+  vim.cmd("redraw!")
+end, { silent = true })
+
+vim.keymap.set("n", "<Tab>", "<cmd>bnext<CR>", { silent = true })
+vim.keymap.set("n", "<S-Tab>", "<cmd>bprevious<CR>", { silent = true })
+
+vim.keymap.set({ "n", "v" }, "j", "v:count == 0 ? 'gj' : 'j'", { expr = true })
+vim.keymap.set({ "n", "v" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true })
+
+--------------------------------------------------------------------------------
+-- Buffer switcher
+
+vim.keymap.set("n", "<C-P>", function()
+  local buffers = {}
+  for _, b in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(b) and vim.bo[b].buflisted then
+      local name = vim.api.nvim_buf_get_name(b)
+      if name == "" then
+        name = string.format("[Buffer #%d]", b)
+      end
+      table.insert(buffers, { bufnr = b, name = name })
+    end
+  end
+  if #buffers < 2 then
+    return
+  end
+  vim.ui.select(buffers, {
+    prompt = "Switch buffer:",
+    format_item = function(item)
+      local marker = item.bufnr == vim.api.nvim_get_current_buf() and "* "
+        or "  "
+      return marker .. item.name
+    end,
+  }, function(choice)
+    if choice then
+      vim.api.nvim_set_current_buf(choice.bufnr)
+    end
+  end)
+end, { silent = true })
+
+--------------------------------------------------------------------------------
+-- Source/header switcher (LSP-first, manual fallback)
+
+local header_by_lang = {
+  c = { "h" },
+  cpp = { "h++", "hh", "hp", "hpp", "hxx", "h" },
+}
+local source_by_lang = {
+  c = { "c" },
+  cpp = { "c++", "cc", "cpp", "cxx", "c" },
+}
+
+local function switch_source_header()
+  if vim.lsp.get_clients({ bufnr = 0, name = "clangd" })[1] then
+    vim.lsp.buf_request(
+      0,
+      ---@diagnostic disable-next-line: param-type-mismatch
+      "textDocument/switchSourceHeader",
+      { uri = vim.uri_from_bufnr(0) },
+      function(err, result)
+        if not err and result then
+          vim.cmd("edit " .. vim.uri_to_fname(result))
+          return
+        end
+      end
+    )
+    return
+  end
+
+  local basename = vim.fn.expand("%<")
+  local extension = vim.fn.expand("%:e")
+  local filetype = vim.bo.filetype
+  local candidates = vim.tbl_contains(header_by_lang[filetype] or {}, extension)
+      and source_by_lang[filetype]
+    or header_by_lang[filetype]
+  local directory = vim.fn.fnamemodify(vim.fn.expand("%:p:h"), ":p")
+
+  for _, candidate in ipairs(candidates or {}) do
+    local path = directory .. basename .. "." .. candidate
+    if vim.fn.filereadable(path) == 1 then
+      vim.cmd("edit " .. vim.fn.fnameescape(path))
+      return
+    end
+  end
+end
+
+--------------------------------------------------------------------------------
+-- Autocommands
+
+local custom = vim.api.nvim_create_augroup("vimrc.custom", { clear = true })
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = custom,
+  callback = function()
+    if vim.bo.binary then
+      return
+    end
+    if vim.bo.formatprg == "" then
+      strip_trailing_whitespace()
+    else
+      format_buffer()
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufWritePost", {
+  group = custom,
+  pattern = vim.fn.expand("$MYVIMRC"),
+  nested = true,
+  callback = function()
+    dofile(vim.env.MYVIMRC)
+    vim.cmd.redraw({ bang = true })
+    vim.cmd.redrawstatus({ bang = true })
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
+  group = custom,
+  pattern = { "*.sls", ".clang-format" },
+  callback = function()
+    vim.bo.filetype = "yaml"
+  end,
+})
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  group = custom,
+  callback = function()
+    for key, value in pairs({
+      Pmenu = "LineNr",
+      PmenuSel = "CursorLineNr",
+      StatusLine = "LineNr",
+      StatusLineNC = "Title",
+    }) do
+      vim.api.nvim_set_hl(0, key, { link = value })
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = custom,
+  pattern = { "c", "cpp" },
+  callback = function(args)
+    vim.bo.cindent = true
+    vim.bo.keywordprg = ":Man"
+    vim.keymap.set(
+      "n",
+      "<Leader>e",
+      switch_source_header,
+      { buffer = args.buf, silent = true }
+    )
+    vim.cmd("syntax keyword Keyword countof offsetof")
+    if vim.fn.executable("clang-format") == 1 then
+      vim.bo.formatprg = "clang-format"
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = custom,
+  pattern = {
+    "bash",
+    "html",
+    "json",
+    "sh",
+    "swayconfig",
+    "vim",
+    "xml",
+    "yaml",
+  },
+  callback = function()
+    vim.bo.expandtab = true
+    vim.bo.softtabstop = 2
+    vim.bo.tabstop = 2
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = custom,
+  pattern = { "bash", "sh" },
+  callback = function()
+    vim.bo.keywordprg = ":Man"
+    if set_formatter("SHFMT", "shfmt") then
+      vim.bo.formatexpr = "v:lua.format_expression(["
+        .. "&formatprg, '-bn', '-ci',"
+        .. "'-i=' .. &tabstop,"
+        .. "'-ln=' .. get({'bash':'bash','ksh':'auto','posix':'posix','sh':'posix'}, get(b:, 'current_syntax', ''), 'auto'),"
+        .. "'-s', '-sr', '-w'])"
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = custom,
+  pattern = "fish",
+  callback = function()
+    vim.bo.expandtab = true
+    vim.bo.softtabstop = 4
+    vim.bo.tabstop = 4
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = custom,
+  pattern = "go",
+  callback = function()
+    if set_formatter("GOFMT", "gofmt") then
+      vim.bo.formatexpr = "v:lua.format_expression([&formatprg, '-s', '-w'])"
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = custom,
+  pattern = "man",
+  callback = function()
+    vim.bo.textwidth = 0
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = custom,
+  pattern = "lua",
+  callback = function()
+    if vim.fn.executable("stylua") == 1 then
+      vim.bo.formatprg = "stylua -"
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = custom,
+  pattern = "python",
+  callback = function()
+    if set_formatter("BLACK", "black") then
+      vim.bo.formatexpr =
+        "v:lua.format_expression([&formatprg, '-l', &textwidth, '-q'])"
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = custom,
+  pattern = "vim",
+  callback = function()
+    vim.bo.keywordprg = ":help"
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = custom,
+  pattern = { "markdown", "text" },
+  callback = function()
+    vim.wo.linebreak = true
+    vim.wo.showbreak = "+++ "
+    vim.bo.textwidth = 0
+    vim.wo.wrap = true
+  end,
+})
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = custom,
+  nested = true,
+  callback = function()
+    vim.cmd("colorscheme vim")
+  end,
+})
+
+--------------------------------------------------------------------------------
+-- LSP (native)
+
+local lsp = vim.api.nvim_create_augroup("vimrc.lsp", { clear = true })
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = lsp,
+  callback = function(args)
+    local function bmap(mode, lhs, rhs)
+      vim.keymap.set(mode, lhs, rhs, { buffer = args.buf, silent = true })
+    end
+
+    bmap("n", "gd", vim.lsp.buf.definition)
+    bmap("n", "gD", vim.lsp.buf.declaration)
+    bmap("n", "gi", vim.lsp.buf.implementation)
+    bmap("n", "gr", vim.lsp.buf.references)
+    bmap("n", "K", vim.lsp.buf.hover)
+    bmap("n", "<C-K>", vim.lsp.buf.signature_help)
+    bmap("n", "<Leader>r", vim.lsp.buf.rename)
+    bmap("n", "<Leader>a", vim.lsp.buf.code_action)
+    bmap("n", "<Leader>f", function()
+      vim.lsp.buf.format({ async = true })
+    end)
+    bmap("n", "[d", function()
+      vim.diagnostic.jump({ count = -1 })
+    end)
+    bmap("n", "]d", function()
+      vim.diagnostic.jump({ count = 1 })
+    end)
+    bmap("n", "<Leader>d", vim.diagnostic.open_float)
+
+    if vim.lsp.completion and vim.lsp.completion.enable then
+      vim.lsp.completion.enable(true, args.data.client_id, args.buf, {
+        autotrigger = true,
+      })
+    end
+
+    -- Auto-trigger signature help on trigger characters (e.g. `(` and `,`).
+    vim.api.nvim_create_autocmd("InsertCharPre", {
+      buffer = args.buf,
+      callback = function()
+        for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+          local triggers = vim.tbl_get(
+            client,
+            "server_capabilities",
+            "signatureHelpProvider",
+            "triggerCharacters"
+          ) or {}
+          if vim.tbl_contains(triggers, vim.v.char) then
+            vim.defer_fn(vim.lsp.buf.signature_help, 0)
+            return
+          end
+        end
+      end,
+    })
+
+    -- Auto-trigger completion when typing word characters.
+    vim.api.nvim_create_autocmd("InsertCharPre", {
+      buffer = args.buf,
+      callback = function()
+        if vim.fn.pumvisible() == 1 then
+          return
+        end
+        if vim.v.char:match("[%w_]") then
+          vim.schedule(function()
+            if vim.fn.pumvisible() == 0 and vim.fn.mode() == "i" then
+              local keys =
+                vim.api.nvim_replace_termcodes("<C-X><C-O>", true, true, true)
+              vim.api.nvim_feedkeys(keys, "n", false)
+            end
+          end)
+        end
+      end,
+    })
+  end,
+})
+
+local function make_server(filetypes, cmd, root_markers)
+  if vim.fn.executable(cmd[1]) == 1 then
+    vim.api.nvim_create_autocmd("FileType", {
+      group = lsp,
+      pattern = filetypes,
+      callback = function(args)
+        vim.lsp.start({
+          name = cmd[1],
+          cmd = cmd,
+          root_dir = vim.fs.root(args.buf, root_markers) or vim.fn.getcwd(),
+        })
+      end,
+    })
+  end
+end
+
+make_server(
+  -- C/C++
+  { "c", "cpp" },
+  { "clangd" },
+  { ".clangd", "compile_commands.json", ".git" }
+)
+
+make_server(
+  -- Go
+  { "go" },
+  { "gopls" },
+  { "go.mod", ".git" }
+)
+
+make_server(
+  -- Lua
+  { "lua" },
+  { "lua-language-server" },
+  { ".luarc.json", ".git" }
+)
+
+make_server(
+  -- Python
+  { "python" },
+  { "pyright-langserver", "--stdio" },
+  { "pyproject.toml", "setup.py", ".git" }
+)
+
+make_server(
+  -- Rust
+  { "rust" },
+  { "rust-analyzer" },
+  { "Cargo.toml", ".git" }
+)
+
+make_server(
+  -- Shell
+  { "bash", "sh" },
+  { "bash-language-server", "start" },
+  { ".git" }
+)
+
+vim.diagnostic.config({
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = "✘",
+      [vim.diagnostic.severity.WARN] = "▲",
+      [vim.diagnostic.severity.INFO] = "●",
+      [vim.diagnostic.severity.HINT] = "○",
+    },
+  },
+  virtual_text = { prefix = "■", spacing = 2 },
+  severity_sort = true,
+  underline = true,
+  float = { border = "rounded" },
+})
+
+--------------------------------------------------------------------------------
+-- Treesitter (built-in)
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("vimrc.treesitter", { clear = true }),
+  callback = function(args)
+    local lang = vim.treesitter.language.get_lang(vim.bo[args.buf].filetype)
+    if lang and pcall(vim.treesitter.start, args.buf, lang) then
+      vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+      vim.wo.foldmethod = "expr"
+    end
+  end,
+})
+
+--------------------------------------------------------------------------------
+-- Local overrides
+
+local overrides = vim.fn.expand("~/.config/nvim/init.local.lua")
+
+if vim.fn.filereadable(overrides) == 1 then
+  dofile(overrides)
+end
