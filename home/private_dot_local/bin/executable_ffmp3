@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+set -o nounset
+
 for file in *.flac; do
   if [ -e "${file}" ]; then
     (set -x; ${FFMPEG:-ffmpeg} \
