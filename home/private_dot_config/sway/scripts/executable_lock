@@ -4,7 +4,7 @@ IFS=$'\n\t'
 
 umask 077
 declare -r image=$(mktemp -t swaylock-XXXXXXXX.jpg)
-trap "rm -- \"${image}\"" EXIT
+trap 'rm -f -- "${image}"' EXIT
 
 if grim -t jpeg -q 1 "${image}"; then
   ffmpeg \
