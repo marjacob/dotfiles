@@ -1,14 +1,16 @@
 #!/usr/bin/env sh
 
 for file in *.flac; do
-  (set -x; ${FFMPEG:-ffmpeg} \
-    -i "${file}" \
-    -ab 320k \
-    -c:v copy \
-    -fps_mode passthrough \
-    -hide_banner \
-    -id3v2_version 3 \
-    -map_metadata 0 \
-    -y \
-    "${file%.flac}.mp3")
+  if [ -e "${file}" ]; then
+    (set -x; ${FFMPEG:-ffmpeg} \
+      -i "${file}" \
+      -ab 320k \
+      -c:v copy \
+      -fps_mode passthrough \
+      -hide_banner \
+      -id3v2_version 3 \
+      -map_metadata 0 \
+      -y \
+      "${file%.flac}.mp3")
+  fi
 done
