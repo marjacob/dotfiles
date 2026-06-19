@@ -1,0 +1,167 @@
+#!/usr/bin/env sh
+
+set -o nounset
+
+readonly ACODEC="${ACODEC:-aac}"
+readonly FFMPEG="${FFMPEG:-ffmpeg}"
+readonly FFPROBE="${FFPROBE:-ffprobe}"
+readonly book="${PWD##*/}"
+readonly output="${OUTPUT:-${book}.m4b}"
+readonly tmp="${TMPDIR:-/tmp}"
+
+if work="$(mktemp -d "${tmp%/}/m4b.XXXXXX")"; then
+  trap 'rm -rf -- "${work}"' EXIT
+else
+  exit 1
+fi
+
+readonly list="${work}/concat.txt"
+readonly metadata="${work}/metadata.txt"
+
+# Get a string with ffmetadata reserved characters escaped.
+# $1: String to escape.
+escape() {
+  printf '%s' "$1" | sed \
+    -e 's/\\/\\\\/g' \
+    -e 's/#/\\#/g' \
+    -e 's/;/\\;/g' \
+    -e 's/=/\\=/g'
+}
+
+# Get audio bitrate in bits per second.
+# $1: Path to MP3 file.
+gauge() {
+  for entry in stream=bit_rate format=bit_rate; do
+    rate="$("${FFPROBE}" -v error -select_streams a:0 \
+      -show_entries "${entry}" -of default=nk=1:nw=1 "$1")"
+    case "${rate}" in
+      '' | *[!0-9]*) ;;
+      *) printf '%s' "${rate}"; return ;;
+    esac
+  done
+}
+
+# Get a single ffprobe field with no key or wrapper noise.
+# $1: Entry to read, e.g. format=duration.
+# $2: Path to MP3 file.
+probe() {
+  "${FFPROBE}" -v error -show_entries "$1" -of default=nk=1:nw=1 "$2"
+}
+
+# Embed a cover if one is sitting in the directory.
+cover=""
+for candidate in cover.jpg cover.jpeg cover.png folder.jpg; do
+  if [ -e "${candidate}" ]; then
+    cover="${candidate}"
+    break
+  fi
+done
+
+# Find the author from the first file that carries one.
+author=""
+for file in *.mp3; do
+  if [ -e "${file}" ]; then
+    author="$(probe format_tags=artist "${file}")"
+    if [ -n "${author}" ]; then
+      break
+    fi
+  fi
+done
+
+tag="$(escape "${book}")"
+
+# Open the metadata file with the book-level tags.
+{
+  printf '%s\n' \
+    ';FFMETADATA1' \
+    "album=${tag}" \
+    'genre=Audiobook' \
+    "title=${tag}"
+  if [ -n "${author}" ]; then
+    printf 'artist=%s\n' "$(escape "${author}")"
+  fi
+} > "${metadata}"
+
+index=0
+maxrate=0
+offset=0
+
+for file in *.mp3; do
+  if [ -e "${file}" ]; then
+    # Track the loudest source bitrate so we don't encode below it.
+    rate="$(gauge "${file}")"
+    if [ -n "${rate}" ] && [ "${rate}" -gt "${maxrate}" ]; then
+      maxrate="${rate}"
+    fi
+
+    # Point the demuxer at a safe-named symlink instead of escaping the original.
+    link="$(printf '%s/%05d.mp3' "${work}" "${index}")"
+    ln -s -- "${PWD}/${file}" "${link}"
+    printf "file '%s'\n" "${link}" >> "${list}"
+    index=$(( index + 1 ))
+
+    # Advance the running offset by this file's length, in milliseconds.
+    duration="$(probe format=duration "${file}")"
+    milliseconds="$(awk -v d="${duration:-0}" 'BEGIN { printf "%d", d * 1000 }')"
+    start="${offset}"
+    offset="$(( offset + milliseconds ))"
+    title="$(probe format_tags=title "${file}")"
+
+    if [ -z "${title}" ]; then
+      title="${file%.mp3}"
+    fi
+
+    printf '%s\n' \
+      '' \
+      '[CHAPTER]' \
+      'TIMEBASE=1/1000' \
+      "START=${start}" \
+      "END=${offset}" \
+      "title=$(escape "${title}")" >> "${metadata}"
+  fi
+done
+
+if [ ! -s "${list}" ]; then
+  printf '%s: no mp3 files found in %s\n' "${0##*/}" "${PWD}" >&2
+  exit 1
+fi
+
+# Source bitrate wins unless explicitly overridden.
+if [ -n "${BITRATE:-}" ]; then
+  bitrate="${BITRATE}"
+elif [ "${maxrate}" -gt 0 ]; then
+  bitrate="${maxrate}"
+else
+  bitrate="128k"
+fi
+
+set -- \
+  -hide_banner \
+  -f concat -safe 0 -i "${list}" \
+  -i "${metadata}"
+
+if [ -n "${cover}" ]; then
+  set -- "$@" -i "${cover}"
+fi
+
+set -- "$@" \
+  -map 0:a \
+  -map_chapters 1 \
+  -map_metadata 1
+
+if [ -n "${cover}" ]; then
+  set -- "$@" \
+    -c:v copy \
+    -disposition:v:0 attached_pic \
+    -map 2:v
+fi
+
+set -- "$@" \
+  -b:a "${bitrate}" \
+  -c:a "${ACODEC}" \
+  -f ipod \
+  -movflags +faststart \
+  -y \
+  "${output}"
+
+(set -x; "${FFMPEG}" "$@")
