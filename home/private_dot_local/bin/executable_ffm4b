@@ -2,6 +2,40 @@
 
 set -o nounset
 
+# Print usage information.
+usage() {
+  cat << EOF
+Usage: ${0##*/} [options]
+
+Combine the MP3 files in the current directory into a chaptered m4b
+audiobook, with one chapter per file.
+
+Options:
+  -e, --edit  Review the chapter metadata in the editor before encoding.
+  -h, --help  Print this help and exit.
+
+Environment:
+  ACODEC   Audio codec (default: aac).
+  BITRATE  Output bitrate; overrides the highest source bitrate.
+  FFMPEG   ffmpeg binary (default: ffmpeg).
+  FFPROBE  ffprobe binary (default: ffprobe).
+  OUTPUT   Output filename (default: <directory>.m4b).
+  VISUAL   Editor for --edit, falling back to EDITOR then vi.
+EOF
+}
+
+edit=0
+for arg in "$@"; do
+  case "${arg}" in
+    -e | --edit) edit=1 ;;
+    -h | --help) usage; exit 0 ;;
+    *)
+      printf '%s: unknown option: %s\n' "${0##*/}" "${arg}" >&2
+      exit 2
+      ;;
+  esac
+done
+
 readonly ACODEC="${ACODEC:-aac}"
 readonly FFMPEG="${FFMPEG:-ffmpeg}"
 readonly FFPROBE="${FFPROBE:-ffprobe}"
@@ -124,6 +158,16 @@ done
 if [ ! -s "${list}" ]; then
   printf '%s: no mp3 files found in %s\n' "${0##*/}" "${PWD}" >&2
   exit 1
+fi
+
+# Optionally hand the metadata to the editor before muxing.
+# Note: a GUI editor needs a wait flag, e.g. VISUAL="code --wait".
+if [ "${edit}" -eq 1 ]; then
+  editor="${VISUAL:-${EDITOR:-vi}}"
+  if ! "${editor}" "${metadata}"; then
+    printf '%s: aborted by editor\n' "${0##*/}" >&2
+    exit 1
+  fi
 fi
 
 # Source bitrate wins unless explicitly overridden.
