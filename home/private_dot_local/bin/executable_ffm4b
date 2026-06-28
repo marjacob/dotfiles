@@ -28,7 +28,10 @@ edit=0
 for arg in "$@"; do
   case "${arg}" in
     -e | --edit) edit=1 ;;
-    -h | --help) usage; exit 0 ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
     *)
       printf '%s: unknown option: %s\n' "${0##*/}" "${arg}" >&2
       exit 2
@@ -70,7 +73,10 @@ gauge() {
       -show_entries "${entry}" -of default=nk=1:nw=1 "$1")"
     case "${rate}" in
       '' | *[!0-9]*) ;;
-      *) printf '%s' "${rate}"; return ;;
+      *)
+        printf '%s' "${rate}"
+        return
+        ;;
     esac
   done
 }
@@ -132,13 +138,13 @@ for file in *.mp3; do
     link="$(printf '%s/%05d.mp3' "${work}" "${index}")"
     ln -s -- "${PWD}/${file}" "${link}"
     printf "file '%s'\n" "${link}" >> "${list}"
-    index=$(( index + 1 ))
+    index=$((index + 1))
 
     # Advance the running offset by this file's length, in milliseconds.
     duration="$(probe format=duration "${file}")"
     milliseconds="$(awk -v d="${duration:-0}" 'BEGIN { printf "%d", d * 1000 }')"
     start="${offset}"
-    offset="$(( offset + milliseconds ))"
+    offset="$((offset + milliseconds))"
     title="$(probe format_tags=title "${file}")"
 
     if [ -z "${title}" ]; then
@@ -208,4 +214,7 @@ set -- "$@" \
   -y \
   "${output}"
 
-(set -x; "${FFMPEG}" "$@")
+(
+  set -x
+  "${FFMPEG}" "$@"
+)
