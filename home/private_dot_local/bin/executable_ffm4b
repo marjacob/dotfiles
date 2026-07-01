@@ -62,7 +62,9 @@ escape() {
     -e 's/\\/\\\\/g' \
     -e 's/#/\\#/g' \
     -e 's/;/\\;/g' \
-    -e 's/=/\\=/g'
+    -e 's/=/\\=/g' \
+    -e 's/$/\\/' \
+    -e '$ s/\\$//'
 }
 
 # Get audio bitrate in bits per second.
