@@ -1,0 +1,204 @@
+#!/bin/sh
+#
+# git-lint - review commit messages in Vim against the 50/72 rule.
+#
+# Dumps the raw commit messages into a scratch file, opens it read-only in
+# Vim with guides at columns 51 and 73, highlights every character past the
+# limit (50 for subjects, 72 for body lines), and loads the offenders into
+# the quickfix list.
+#
+# Drop it anywhere on PATH as "git-lint" and Git will pick it up as a
+# subcommand: git lint.
+
+set -o errexit
+set -o nounset
+
+readonly PROGRAM_NAME='git-lint'
+
+usage() {
+  cat << EOF
+Usage: ${PROGRAM_NAME} [<git-log-option>...] [<revision-range>]
+
+Reviews commit messages against the 50/72 rule.  Arguments are passed
+through to git-log(1) verbatim, so any revision range or filter works.
+
+  ${PROGRAM_NAME}                  # commits reachable from HEAD
+  ${PROGRAM_NAME} --all            # every ref, including topic branches
+  ${PROGRAM_NAME} origin/main..    # unpushed work only
+  ${PROGRAM_NAME} --author=mrj     # your own commits
+
+In the viewer:
+
+  ]v / [v    jump to the next/previous violation (wraps)
+  :copen     open the full violation list
+  q          quit
+EOF
+}
+
+case "${1:-}" in
+  -h | --help)
+    usage
+    exit 0
+    ;;
+esac
+
+if ! command -v vim > /dev/null 2>&1; then
+  printf '%s: vim not found in PATH\n' "${PROGRAM_NAME}" >&2
+  exit 1
+fi
+
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
+  printf '%s: not inside a git repository\n' "${PROGRAM_NAME}" >&2
+  exit 1
+fi
+
+tmpdir=$(mktemp -d "${TMPDIR:-/tmp}/gitlint.XXXXXX")
+readonly tmpdir
+
+cleanup() {
+  rm -rf "${tmpdir}"
+}
+
+trap cleanup EXIT
+trap 'cleanup; exit 130' INT
+trap 'cleanup; exit 143' TERM
+
+readonly log_file="${tmpdir}/COMMIT_LOG"
+readonly vim_file="${tmpdir}/gitlint.vim"
+
+# Pin the output so the record format below survives whatever is in the
+# repo's config: log.showSignature would inject gpg lines between header
+# and subject, and i18n.logOutputEncoding would hand vim non-UTF-8 bytes
+# it has been told to count as UTF-8.
+git -c log.showSignature=false -c i18n.logOutputEncoding=utf-8 \
+  log --no-merges --no-color --date=short \
+  --pretty=tformat:'commit %h  %ad  %an%n%B' "$@" > "${log_file}"
+
+if [ ! -s "${log_file}" ]; then
+  printf '%s: no commits matched\n' "${PROGRAM_NAME}" >&2
+  exit 1
+fi
+
+cat > "${vim_file}" << 'VIMSCRIPT'
+" Sourced by git-lint(1) into a read-only view of the commit log.
+"
+" Buffer layout, one record per commit:
+"
+"   commit <hash>  <date>  <author>     header, ignored by the linter
+"   <subject>                           limit 50
+"   <blank>
+"   <body>...                           limit 72
+
+" Without this, a Vim running in compatible mode (no user vimrc) has 'C' in
+" cpoptions, line continuations below are parsed as commands, and the whole
+" thing dies with E10.
+let s:save_cpo = &cpoptions
+set cpoptions&vim
+
+let s:header = '^commit \x\{7,}\s'
+
+if !exists('g:syntax_on')
+  syntax enable
+endif
+
+setlocal nomodifiable nowrap
+setlocal colorcolumn=51,73
+setlocal filetype=
+
+syntax clear
+execute 'syntax match gitlintHeader "' . s:header . '.*$" nextgroup=gitlintSubject skipnl'
+syntax match gitlintSubject "^.*$" contained contains=gitlintSubjectOver
+syntax match gitlintSubjectOver "\%>50v.\+" contained
+syntax match gitlintBodyOver "\%>72v.\+"
+
+" The only cross-line dependency is header -> subject, so a tiny sync window
+" is enough; fromstart would be correct too but crawls on long histories.
+syntax sync minlines=10
+
+highlight default link gitlintHeader Comment
+highlight default link gitlintSubjectOver Error
+highlight default link gitlintBodyOver Error
+
+" Columns are counted the way Vim counts them, so 'æøå' and tabs land in the
+" same place here as they do under the cursor.  Byte-oriented tools (mawk,
+" busybox awk) get this wrong on non-ASCII subjects.
+function! s:Lint() abort
+  let l:items = []
+  let l:state = 'body'
+
+  for l:lnum in range(1, line('$'))
+    let l:line = getline(l:lnum)
+
+    if l:line =~# s:header
+      let l:state = 'subject'
+      continue
+    endif
+
+    let l:width = strdisplaywidth(l:line)
+
+    if l:state ==# 'subject'
+      let l:limit = 50
+      let l:what = 'subject'
+      let l:state = 'after_subject'
+    elseif l:state ==# 'after_subject'
+      let l:state = 'body'
+      if l:line !=# ''
+        call add(l:items, s:Item(l:lnum, 1,
+              \ 'subject not followed by a blank line'))
+      endif
+      let l:limit = 72
+      let l:what = 'body line'
+    else
+      let l:limit = 72
+      let l:what = 'body line'
+    endif
+
+    if l:width > l:limit
+      call add(l:items, s:Item(l:lnum, l:limit + 1,
+            \ printf('%s is %d columns, limit %d', l:what, l:width, l:limit)))
+    endif
+  endfor
+
+  call setqflist([], 'r', {'items': l:items, 'title': '50/72 rule violations'})
+  return len(l:items)
+endfunction
+
+function! s:Item(lnum, col, text) abort
+  return {'bufnr': bufnr('%'), 'lnum': a:lnum, 'col': a:col,
+        \ 'type': 'E', 'text': a:text}
+endfunction
+
+function! s:Cycle(cmd) abort
+  if empty(getqflist())
+    return
+  endif
+  try
+    execute a:cmd
+  catch /:E553:/
+    execute a:cmd ==# 'cnext' ? 'cfirst' : 'clast'
+  endtry
+endfunction
+
+" This Vim instance exists only to show the log, so the mappings are
+" global: q must also work from the quickfix window after :copen.
+nnoremap <silent> ]v :call <SID>Cycle('cnext')<CR>
+nnoremap <silent> [v :call <SID>Cycle('cprevious')<CR>
+nnoremap <silent> q :qall!<CR>
+
+let s:violations = s:Lint()
+
+if s:violations > 0
+  cfirst
+endif
+
+let &cpoptions = s:save_cpo
+unlet s:save_cpo
+
+redraw
+echomsg printf('%d violation%s', s:violations, s:violations == 1 ? '' : 's')
+VIMSCRIPT
+
+# Git stores commit messages as UTF-8 unless told otherwise.  Vim derives
+# 'encoding' from the locale, so in a C locale it would count "ø" as two
+# columns; --cmd runs early enough to override that.
+vim -N -R -n --cmd 'set encoding=utf-8' -S "${vim_file}" "${log_file}"
