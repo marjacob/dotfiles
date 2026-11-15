@@ -1,0 +1,17 @@
+// Void's example configuration with a power menu that works without systemd.
+{
+	"include": ["/etc/xdg/waybar/config.jsonc"],
+
+	"custom/power": {
+		"format": "⏻ ",
+		"tooltip": false,
+		"menu": "on-click",
+		"menu-file": "$HOME/.config/waybar/power_menu.xml",
+		"menu-actions": {
+			"suspend": "loginctl suspend",
+			"hibernate": "loginctl hibernate",
+			"reboot": "loginctl reboot",
+			"poweroff": "loginctl poweroff"
+		}
+	}
+}
