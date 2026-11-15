@@ -17,7 +17,7 @@ Configured in [`status.conf`](config.d/status.conf).
 ### Requirements
 
 ```shell
-xbps-install -Su Waybar
+xbps-install -Su nerd-fonts-symbols-ttf Waybar
 ```
 
 Idle
