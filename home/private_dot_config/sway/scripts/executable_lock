@@ -8,6 +8,11 @@ trap 'rm -f -- "${image}"' EXIT
 
 declare -a background=()
 
+# The wallpaper is a fallback for when blurring fails or times out.
+if [[ -r "${HOME}/.wallpaper.jpg" ]]; then
+  background=(--image "${HOME}/.wallpaper.jpg")
+fi
+
 # Blurring is cosmetic and must not delay or prevent locking.
 if timeout 2 grim -t jpeg -q 1 "${image}" &&
   timeout 2 ffmpeg \
