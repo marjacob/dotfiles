@@ -20,6 +20,19 @@ Configured in [`status.conf`](config.d/status.conf).
 xbps-install -Su nerd-fonts-symbols-ttf Waybar
 ```
 
+Displays
+--------
+
+Configured in [`kanshi.conf`](config.d/kanshi.conf) with layouts in
+[`kanshi/config`](../kanshi/config). Profiles for one machine go in
+`~/.config/kanshi/config.d/*.conf` and are not managed by chezmoi.
+
+### Requirements
+
+```shell
+xbps-install -Su kanshi
+```
+
 Idle
 ----
 

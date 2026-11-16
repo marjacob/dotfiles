@@ -1,0 +1,9 @@
+# man 5 kanshi
+# Output names and descriptions come from swaymsg -t get_outputs.
+
+profile laptop {
+	output eDP-1 enable position 0,0
+}
+
+# Profiles for one machine go in config.d and are not managed by chezmoi.
+include ~/.config/kanshi/config.d/*.conf
