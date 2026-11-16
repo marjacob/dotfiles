@@ -1,0 +1,5 @@
+{{- if not (and (eq .chezmoi.os "linux")
+                (eq .chezmoi.osRelease.id "void")
+                (stat "/usr/lib/mpv-mpris/mpris.so")) }}
+scripts/mpris.so
+{{- end }}
