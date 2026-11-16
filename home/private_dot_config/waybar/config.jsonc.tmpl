@@ -2,8 +2,9 @@
 {
 	"include": ["/etc/xdg/waybar/config.jsonc"],
 
-	// The example's list without mpd and sway/language.
+	// The example's list without mpd and sway/language but with mpris.
 	"modules-right": [
+		"mpris",
 		"idle_inhibitor",
 		"pulseaudio",
 		"network",
@@ -19,6 +20,16 @@
 		"tray",
 		"custom/power"
 	],
+
+	// Hidden while no player runs. Click to play or pause.
+	"mpris": {
+		"format": "{status_icon} {dynamic}",
+		"dynamic-len": 40,
+		"status-icons": {
+			"playing": "▶",
+			"paused": "⏸"
+		}
+	},
 
 	"custom/power": {
 		"format": "⏻ ",

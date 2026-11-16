@@ -79,6 +79,20 @@ Configured in [`lock`](scripts/lock).
 xbps-install -Su ffmpeg grim jq swaylock
 ```
 
+Media
+-----
+
+Configured in [`media.conf`](config.d/media.conf). `$mod+p` plays or pauses and
+`$mod+[` and `$mod+]` skip back and forward. The bar shows the player too. On
+Void mpv loads the plugin through a link in `~/.config/mpv/scripts` because the
+package does not install it where mpv looks.
+
+### Requirements
+
+```shell
+xbps-install -Su mpv-mpris playerctl
+```
+
 Notifications
 -------------
 
