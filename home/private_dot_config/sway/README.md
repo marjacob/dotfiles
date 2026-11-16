@@ -20,6 +20,22 @@ Configured in [`status.conf`](config.d/status.conf).
 xbps-install -Su nerd-fonts-symbols-ttf Waybar
 ```
 
+Dark mode
+---------
+
+Configured in [`darkman/config.yaml`](../darkman/config.yaml) and
+[`xdg-desktop-portal/portals.conf`](../xdg-desktop-portal/portals.conf).
+Applications that follow the system colour scheme ask the portal and darkman
+answers. darkman never switches by itself and remembers the mode, so set it once
+on each machine.
+
+### Requirements
+
+```shell
+xbps-install -Su darkman
+darkman set dark
+```
+
 Displays
 --------
 
