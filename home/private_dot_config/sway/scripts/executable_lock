@@ -4,33 +4,52 @@ IFS=$'\n\t'
 
 umask 077
 
-declare -r image=$(mktemp -t swaylock-XXXXXXXX.jpg)
+declare -r workdir=$(mktemp -d -t swaylock-XXXXXXXX)
 declare -a background=()
+declare -a outputs=()
 
-trap 'rm -f -- "${image}"' EXIT
+trap 'rm -rf -- "${workdir}"' EXIT
 
 # A display that is powered off never delivers a frame to capture.
-displays_on() {
+active_outputs() {
   timeout 2 swaymsg -t get_outputs -r |
-    jq -e 'all(.[] | select(.active); .power)' > /dev/null
+    jq -r 'select(all(.[] | select(.active); .power))
+      | .[] | select(.active) | .name'
 }
 
-# Use the wallpaper as a fallback when blurring fails or times out.
+# Rename only after both steps succeed so an unblurred screenshot never shows.
+blur_output() {
+  local -r raw="${workdir}/$1.raw.jpg"
+  local -r tmp="${workdir}/$1.tmp.jpg"
+  timeout 2 grim -o "$1" -t jpeg -q 1 "${raw}" &&
+    timeout 2 ffmpeg \
+      -filter_complex "boxblur=luma_radius=20:luma_power=2" \
+      -hide_banner \
+      -i "${raw}" \
+      -loglevel error \
+      -y "${tmp}" &&
+    mv -- "${tmp}" "${workdir}/$1.jpg"
+}
+
+# The wallpaper covers every output that has no blurred image of its own.
 if [[ -r "${HOME}/.wallpaper.jpg" ]]; then
   background=(--image "${HOME}/.wallpaper.jpg")
 fi
 
 # Blurring is cosmetic and must not delay or prevent locking.
-if displays_on; then
-  if timeout 2 grim -t jpeg -q 1 "${image}" &&
-    timeout 2 ffmpeg \
-      -filter_complex "boxblur=luma_radius=20:luma_power=2" \
-      -hide_banner \
-      -i "${image}" \
-      -loglevel error \
-      -y "${image}"; then
-    background=(--image "${image}")
-  fi
+mapfile -t outputs < <(active_outputs)
+
+# Outputs are blurred in parallel so more displays do not slow down locking.
+if ((${#outputs[@]})); then
+  for output in "${outputs[@]}"; do
+    blur_output "${output}" &
+  done
+  wait
+  for output in "${outputs[@]}"; do
+    if [[ -s "${workdir}/${output}.jpg" ]]; then
+      background+=(--image "${output}:${workdir}/${output}.jpg")
+    fi
+  done
 fi
 
 swaylock \
