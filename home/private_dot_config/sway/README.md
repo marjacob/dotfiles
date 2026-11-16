@@ -55,6 +55,19 @@ Configured in [`config`](config).
 xbps-install -Su fuzzel
 ```
 
+Lid
+---
+
+Configured in [`lid.conf`](config.d/lid.conf) and [`lid`](scripts/lid). Closing
+the lid turns the internal display off only while an external display is
+connected.
+
+### Requirements
+
+```shell
+xbps-install -Su jq
+```
+
 Lock screen
 -----------
 

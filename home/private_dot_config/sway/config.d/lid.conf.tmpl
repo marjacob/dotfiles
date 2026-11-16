@@ -1,0 +1,5 @@
+# Turn the internal display off while the lid is closed and an external display
+# is connected. elogind then counts the laptop as docked and ignores the lid so
+# it keeps running.
+bindswitch --locked --reload lid:on exec ~/.config/sway/scripts/lid closed
+bindswitch --locked --reload lid:off exec ~/.config/sway/scripts/lid open

@@ -1,0 +1,18 @@
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
+
+declare -r panel=eDP-1
+
+# Opening the lid always brings the internal display back.
+if [[ "${1:-}" == open ]]; then
+  exec swaymsg output "${panel}" enable
+fi
+
+# Without another display elogind suspends and the lock screen needs the panel.
+others=$(swaymsg -t get_outputs -r | jq --arg panel "${panel}" \
+  '[.[] | select(.active and .name != $panel)] | length')
+
+if ((others)); then
+  swaymsg output "${panel}" disable
+fi
