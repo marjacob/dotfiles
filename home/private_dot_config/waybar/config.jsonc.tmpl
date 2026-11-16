@@ -2,20 +2,25 @@
 {
 	"include": ["/etc/xdg/waybar/config.jsonc"],
 
-	// The example's list without mpd and sway/language but with mpris.
+	// The example's list without custom/media because mpris replaces it.
+	"modules-left": [
+		"sway/workspaces",
+		"sway/mode",
+		"sway/scratchpad"
+	],
+
+	// The example's list with mpris instead of mpd and only modules that work.
 	"modules-right": [
 		"mpris",
 		"idle_inhibitor",
 		"pulseaudio",
 		"network",
-		"power-profiles-daemon",
 		"cpu",
 		"memory",
 		"temperature",
 		"backlight",
 		"keyboard-state",
 		"battery",
-		"battery#bat2",
 		"clock",
 		"tray",
 		"custom/power"
