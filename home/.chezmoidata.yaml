@@ -1,2 +1,5 @@
 totalcmd:
-  bottle: Total Commander
+  crossover:
+    bottle: Total Commander
+  wine:
+    prefix: .local/share/wineprefixes/totalcmd
