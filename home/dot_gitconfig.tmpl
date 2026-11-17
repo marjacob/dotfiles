@@ -32,9 +32,9 @@
 {{- end  }}
 {{  if $bc -}}
 [diff]
-	tool = "Beyond Compare"
-[difftool "Beyond Compare"]
-	cmd = {{ printf "\"%s\" \"$LOCAL\" \"$REMOTE\"" $bc | quote }}
+	tool = bc
+[difftool "bc"]
+	path = {{ $bc | quote }}
 	trustExitCode = true
 {{  end -}}
 [init]
@@ -43,9 +43,9 @@
 	prune = true
 {{  if $bc -}}
 [merge]
-	tool = "Beyond Compare"
-[mergetool "Beyond Compare"]
-	cmd = {{ printf "\"%s\" \"$REMOTE\" \"$LOCAL\" \"$BASE\" \"$MERGED\"" $bc | quote }}
+	tool = bc
+[mergetool "bc"]
+	path = {{ $bc | quote }}
 	keepBackup = false
 	trustExitCode = true
 {{  end -}}
