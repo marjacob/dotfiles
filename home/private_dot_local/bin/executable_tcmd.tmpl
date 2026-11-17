@@ -1,0 +1,35 @@
+#!/bin/sh
+
+set -o errexit
+set -o nounset
+
+readonly WINE="${WINE:-wine}"
+
+export WINEPREFIX={{ joinPath .chezmoi.homeDir .totalcmd.wine.prefix | quote }}
+
+# Get the Windows path of a file, e.g. on C: inside the prefix, else on Z:.
+# $1: Path to file.
+windows_path() {
+  WINEDEBUG=-all "${WINE}" winepath.exe --windows -- "$1"
+}
+
+config="$(windows_path "${HOME}/.config/totalcmd/wincmd.ini")"
+
+# Convert arguments naming existing files and pass the rest through.
+for arg in "$@"; do
+  shift
+  if [ -e "${arg}" ]; then
+    arg="$(windows_path "${arg}")"
+  fi
+  set -- "$@" "${arg}"
+done
+
+for exe in TOTALCMD64.EXE TOTALCMD.EXE; do
+  path="${WINEPREFIX}/drive_c/Program Files/totalcmd/${exe}"
+  if [ -f "${path}" ]; then
+    exec "${WINE}" "${path}" /i="${config}" "$@"
+  fi
+done
+
+printf '%s: Total Commander not found in %s\n' "${0##*/}" "${WINEPREFIX}" >&2
+exit 1
