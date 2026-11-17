@@ -1,0 +1,11 @@
+{{- /* Remove the entry unless KeePass is installed. */ -}}
+{{- if lookPath "keepass" -}}
+[Desktop Entry]
+Type=Application
+Name=KeePass
+GenericName=Password Manager
+Exec=keepass %f
+Terminal=false
+Categories=Utility;Security;
+MimeType=application/x-keepass2;
+{{  end -}}
