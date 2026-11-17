@@ -20,3 +20,9 @@ exec \
     echo 0 > $WOBSOCK ) || \
     pamixer --get-volume > $WOBSOCK
 
+bindsym XF86AudioMicMute \
+exec \
+  pamixer --default-source --toggle-mute && \
+  ( [ "$(pamixer --default-source --get-mute)" = "true" ] && \
+    echo 0 > $WOBSOCK ) || \
+    pamixer --default-source --get-volume > $WOBSOCK
