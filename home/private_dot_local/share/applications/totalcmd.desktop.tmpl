@@ -1,0 +1,11 @@
+{{- /* Remove the entry unless Total Commander is installed in the prefix. */ -}}
+{{- $home := joinPath .chezmoi.homeDir .totalcmd.wine.prefix "drive_c/Program Files/totalcmd" -}}
+{{- if or (stat (joinPath $home "TOTALCMD64.EXE")) (stat (joinPath $home "TOTALCMD.EXE")) -}}
+[Desktop Entry]
+Type=Application
+Name=Total Commander
+Comment=Two-panel file manager running under Wine
+Exec={{ joinPath .chezmoi.homeDir ".local/bin/tcmd" }}
+Icon=folder
+Categories=System;FileManager;
+{{  end -}}
