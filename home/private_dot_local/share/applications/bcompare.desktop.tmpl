@@ -1,0 +1,17 @@
+{{- /* Remove the entry unless Beyond Compare is installed. */ -}}
+{{- if lookPath "bcompare" -}}
+{{-   $icon := "bcompare" -}}
+{{-   if stat "/opt/bcompare/bcompare.png" -}}
+{{-     $icon = "/opt/bcompare/bcompare.png" -}}
+{{-   end -}}
+[Desktop Entry]
+Type=Application
+Name=Beyond Compare
+Comment=Compare, sync, and merge files and folders
+Exec=bcompare %f
+TryExec=bcompare
+Icon={{ $icon }}
+Terminal=false
+Categories=Qt;Development;
+MimeType=application/beyond.compare.snapshot;
+{{  end -}}
