@@ -1,0 +1,22 @@
+# vim: ft=swayconfig:
+
+# Name saved screenshots like 2026-11-17-234239.png.
+set $screenshot_dir $HOME/Screenshots
+set $screenshot_file $screenshot_dir/$(date +%Y-%m-%d-%H%M%S).png
+
+# Copy an area, save an area, or copy a clicked window or output.
+bindsym Print exec grimshot --notify copy area
+bindsym Shift+Print exec grimshot --notify save area "$screenshot_file"
+bindsym $mod+Print exec grimshot --notify copy anything
+
+# Annotate an area, then copy it with Enter or save it with Ctrl+S.
+bindsym Ctrl+Print \
+exec \
+  geometry="$(slurp)" && \
+  grim -g "$geometry" - | \
+  satty \
+    --actions-on-enter save-to-clipboard \
+    --copy-command wl-copy \
+    --early-exit \
+    --filename - \
+    --output-filename "$screenshot_dir/%Y-%m-%d-%H%M%S.png"

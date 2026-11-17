@@ -137,6 +137,20 @@ ln -s /usr/share/examples/pipewire/20-pipewire-pulse.conf \
   /etc/pipewire/pipewire.conf.d/
 ```
 
+Screenshots
+-----------
+
+Configured in [`screenshot.conf`](config.d/screenshot.conf). `Print` copies an
+area, `Shift+Print` saves one to `~/Screenshots` and `$mod+Print` copies a
+clicked window or output. `Ctrl+Print` opens an area in satty, where `Enter`
+copies it and `Ctrl+S` saves it.
+
+### Requirements
+
+```shell
+xbps-install -Su grim grimshot libnotify satty slurp wl-clipboard
+```
+
 Terminal
 --------
 
