@@ -1,0 +1,41 @@
+#!/bin/sh
+
+set -o errexit
+set -o nounset
+
+{{ if eq .chezmoi.os "darwin" -}}
+# Bottle for all calls to wine (including winepath).
+export CX_BOTTLE={{ .totalcmd.crossover.bottle | squote }}
+readonly CX_BOTTLE
+
+readonly cx_base='/Applications/CrossOver.app'
+readonly cx_bin="${cx_base}/Contents/SharedSupport/CrossOver/bin"
+readonly WINE="${cx_bin}/wine"
+readonly drive_c="${HOME}/Library/Application Support/CrossOver/Bottles/${CX_BOTTLE}/drive_c"
+readonly user='crossover'
+{{- else -}}
+readonly WINE="${WINE:-wine}"
+
+export WINEPREFIX={{ joinPath .chezmoi.homeDir .totalcmd.wine.prefix | quote }}
+
+readonly drive_c="${WINEPREFIX}/drive_c"
+readonly user={{ .chezmoi.username | squote }}
+{{- end }}
+
+readonly hiew="${drive_c}/users/${user}/AppData/Local/Programs/Hiew/hiew.exe"
+
+if [ ! -f "${hiew}" ]; then
+  printf '%s: Hiew not found at %s\n' "${0##*/}" "${hiew}" >&2
+  exit 1
+fi
+
+# Rewrite UNIX paths as Windows paths so that Hiew can open them.
+for argument in "$@"; do
+  shift
+  if [ -e "${argument}" ]; then
+    argument=$(WINEDEBUG=-all "${WINE}" winepath --windows -- "${argument}")
+  fi
+  set -- "$@" "${argument}"
+done
+
+exec "${WINE}" "${hiew}" "$@"
