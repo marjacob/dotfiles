@@ -130,6 +130,8 @@ offset=0
 
 for file in *.mp3; do
   if [ -e "${file}" ]; then
+    printf '%s: scanning %s\n' "${0##*/}" "${file}" >&2
+
     # Track the loudest source bitrate so we don't encode below it.
     rate="$(gauge "${file}")"
     if [ -n "${rate}" ] && [ "${rate}" -gt "${maxrate}" ]; then
