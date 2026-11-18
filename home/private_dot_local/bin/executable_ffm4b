@@ -199,7 +199,9 @@ fi
 # Note: a GUI editor needs a wait flag, e.g. VISUAL="code --wait".
 if [ "${edit}" -eq 1 ]; then
   editor="${VISUAL:-${EDITOR:-vi}}"
-  if ! "${editor}" "${metadata}"; then
+  # Split the editor into words so that it can carry its own flags.
+  # shellcheck disable=SC2086
+  if ! ${editor} "${metadata}"; then
     printf '%s: aborted by editor\n' "${0##*/}" >&2
     exit 1
   fi
