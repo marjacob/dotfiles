@@ -11,8 +11,9 @@ Combine the MP3 files in the current directory into a chaptered m4b
 audiobook, with one chapter per file.
 
 Options:
-  -e, --edit  Review the chapter metadata in the editor before encoding.
-  -h, --help  Print this help and exit.
+  -e, --edit     Review the chapter metadata in the editor before encoding.
+  -h, --help     Print this help and exit.
+  -n, --dry-run  Print the metadata and ffmpeg command instead of encoding.
 
 Environment:
   ACODEC   Audio codec (default: aac).
@@ -24,6 +25,7 @@ Environment:
 EOF
 }
 
+dryrun=0
 edit=0
 for arg in "$@"; do
   case "${arg}" in
@@ -32,6 +34,7 @@ for arg in "$@"; do
       usage
       exit 0
       ;;
+    -n | --dry-run) dryrun=1 ;;
     *)
       printf '%s: unknown option: %s\n' "${0##*/}" "${arg}" >&2
       exit 2
@@ -88,6 +91,17 @@ gauge() {
 # $2: Path to MP3 file.
 probe() {
   "${FFPROBE}" -v error -show_entries "$1" -of default=nk=1:nw=1 "$2"
+}
+
+# Get a string quoted for the shell, unless it is already safe.
+# $1: String to quote.
+quote() {
+  case "$1" in
+    '' | *[!A-Za-z0-9_./:+=-]*)
+      printf "'%s'" "$(printf '%s' "$1" | sed "s/'/'\\\\''/g")"
+      ;;
+    *) printf '%s' "$1" ;;
+  esac
 }
 
 # Get a duration formatted as HH:MM:SS.
@@ -194,10 +208,13 @@ fi
 # Source bitrate wins unless explicitly overridden.
 if [ -n "${BITRATE:-}" ]; then
   bitrate="${BITRATE}"
+  origin="BITRATE"
 elif [ "${maxrate}" -gt 0 ]; then
   bitrate="${maxrate}"
+  origin="highest source"
 else
   bitrate="128k"
+  origin="fallback"
 fi
 
 set -- \
@@ -228,6 +245,23 @@ set -- "$@" \
   -movflags +faststart \
   -y \
   "${output}"
+
+# Report what would be encoded, then stop short of running ffmpeg.
+if [ "${dryrun}" -eq 1 ]; then
+  printf '%s\n' \
+    "Output:  ${output}" \
+    "Cover:   ${cover:-none}" \
+    "Bitrate: ${bitrate} (${origin})" \
+    '' \
+    'Metadata:'
+  cat -- "${metadata}"
+  printf '\nCommand:\n%s' "$(quote "${FFMPEG}")"
+  for arg in "$@"; do
+    printf ' %s' "$(quote "${arg}")"
+  done
+  printf '\n'
+  exit 0
+fi
 
 (
   set -x
