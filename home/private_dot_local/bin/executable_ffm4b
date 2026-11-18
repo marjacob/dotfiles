@@ -90,6 +90,14 @@ probe() {
   "${FFPROBE}" -v error -show_entries "$1" -of default=nk=1:nw=1 "$2"
 }
 
+# Get a duration formatted as HH:MM:SS.
+# $1: Duration in milliseconds.
+clock() {
+  seconds=$(($1 / 1000))
+  printf '%02d:%02d:%02d' \
+    $((seconds / 3600)) $((seconds % 3600 / 60)) $((seconds % 60))
+}
+
 # Embed a cover if one is sitting in the directory.
 cover=""
 for candidate in cover.jpg cover.jpeg cover.png folder.jpg; do
@@ -130,7 +138,7 @@ offset=0
 
 for file in *.mp3; do
   if [ -e "${file}" ]; then
-    printf '%s: scanning %s\n' "${0##*/}" "${file}" >&2
+    printf '%s: scanning %s' "${0##*/}" "${file}" >&2
 
     # Track the loudest source bitrate so we don't encode below it.
     rate="$(gauge "${file}")"
@@ -162,6 +170,9 @@ for file in *.mp3; do
       "START=${start}" \
       "END=${offset}" \
       "title=$(escape "${title}")" >> "${metadata}"
+
+    # Finish the scanning line now that the file has been measured.
+    printf ' (%s bps, %s)\n' "${rate:-unknown}" "$(clock "${milliseconds}")" >&2
   fi
 done
 
