@@ -4,11 +4,15 @@ IFS=$'\n\t'
 
 umask 077
 
-declare -r workdir=$(mktemp -d -t swaylock-XXXXXXXX)
+declare -r blur_timeout=3
+declare -rx branding="${HOME}/.branding.svg"
+declare -rx screen_blur=20
+declare -rx shadow_blur=10
+declare -rx shadow_offset=4
+declare -rx shadow_opacity=0.5
+
 declare -a background=()
 declare -a outputs=()
-
-trap 'rm -rf -- "${workdir}"' EXIT
 
 # A display that is powered off never delivers a frame to capture.
 active_outputs() {
@@ -17,18 +21,64 @@ active_outputs() {
       | .[] | select(.active) | .name'
 }
 
-# Rename only after both steps succeed so an unblurred screenshot never shows.
+# $1: Output name.
+output_scale() {
+  swaymsg -t get_outputs -r |
+    jq -r --arg name "$1" '.[] | select(.name == $name) | .scale'
+}
+
+# Center the logo with a shadow on top of the blurred screenshot.
+# $1: Output scale.
+# $2: Screen blur filter.
+branding_filter() {
+  local -r blur="${shadow_blur}*$1"
+  local -r offset="${shadow_offset}*$1"
+
+  # Pad the logo so the blurred, offset shadow is not clipped.
+  local -r margin="(2*${blur}+${offset})"
+
+  cat << EOF
+[0] $2 [bg];
+[1] format=gbrap,
+    pad=iw+2*${margin}:ih+2*${margin}:${margin}:${margin}:black@0,
+    split [logo][silhouette];
+[silhouette] colorchannelmixer=rr=0:gg=0:bb=0:aa=${shadow_opacity},
+    boxblur=alpha_radius=${blur}:alpha_power=2 [shadow];
+[bg][shadow] overlay=(W-w)/2:(H-h)/2+${offset}:format=rgb [shaded];
+[shaded][logo] overlay=(W-w)/2:(H-h)/2:format=rgb
+EOF
+}
+
+# Rename only after every step succeeds so an unblurred screenshot never shows.
 blur_output() {
+  local -r logo="${workdir}/$1.logo.png"
   local -r raw="${workdir}/$1.raw.jpg"
-  local -r tmp="${workdir}/$1.tmp.jpg"
-  timeout 2 grim -o "$1" -t jpeg -q 1 "${raw}" &&
-    timeout 2 ffmpeg \
-      -filter_complex "boxblur=luma_radius=20:luma_power=2" \
-      -hide_banner \
-      -i "${raw}" \
-      -loglevel error \
-      -y "${tmp}" &&
-    mv -- "${tmp}" "${workdir}/$1.jpg"
+  local -r tmp="${workdir}/$1.tmp.png"
+
+  local filter="boxblur=luma_radius=${screen_blur}:luma_power=2"
+  local -a inputs=(-i "${raw}")
+
+  grim -o "$1" -t jpeg -q 1 "${raw}" || return
+
+  if [[ -r "${branding}" ]]; then
+    local -r scale="$(output_scale "$1")"
+
+    # A broken logo leaves the screenshot blurred without it.
+    if rsvg-convert --output "${logo}" --zoom "${scale}" "${branding}"; then
+      filter="$(branding_filter "${scale}" "${filter}")"
+      inputs+=(-i "${logo}")
+    fi
+  fi
+
+  # Output options such as the PNG compression level follow the inputs.
+  ffmpeg \
+    -filter_complex "${filter}" \
+    -hide_banner \
+    "${inputs[@]}" \
+    -loglevel error \
+    -compression_level 1 \
+    -y "${tmp}" &&
+    mv -- "${tmp}" "${workdir}/$1.png"
 }
 
 # The wallpaper covers every output that has no blurred image of its own.
@@ -37,17 +87,26 @@ if [[ -r "${HOME}/.wallpaper.jpg" ]]; then
 fi
 
 # Blurring is cosmetic and must not delay or prevent locking.
-mapfile -t outputs < <(active_outputs)
+if workdir=$(mktemp -d -t swaylock-XXXXXXXX); then
+  declare -rx workdir
+  trap 'rm -rf -- "${workdir}"' EXIT
+
+  mapfile -t outputs < <(active_outputs)
+fi
 
 # Outputs are blurred in parallel so more displays do not slow down locking.
 if ((${#outputs[@]})); then
+  # timeout kills the whole process group, so no step outlives the limit.
+  export -f blur_output branding_filter output_scale
+
   for output in "${outputs[@]}"; do
-    blur_output "${output}" &
+    # shellcheck disable=SC2016
+    timeout "${blur_timeout}" bash -c 'blur_output "$1"' _ "${output}" &
   done
   wait
   for output in "${outputs[@]}"; do
-    if [[ -s "${workdir}/${output}.jpg" ]]; then
-      background+=(--image "${output}:${workdir}/${output}.jpg")
+    if [[ -s "${workdir}/${output}.png" ]]; then
+      background+=(--image "${output}:${workdir}/${output}.png")
     fi
   done
 fi
