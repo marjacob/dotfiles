@@ -43,13 +43,20 @@
   (dict "exec" "cm_CopyFullNamesToClip"
         "icon" "wcmicons.dll,45")
   (dict)
-  (dict "exec" "em_explorer"
-        "icon" "%$Windows%\\explorer.exe"
-        "menu" "Windows Explorer")
-  (dict "exec" "notepad.exe"
-        "icon" "notepad.exe"
-        "menu" "Notepad")
 -}}
+
+{{/* Wine's Explorer is no use outside Windows. */}}
+{{- if eq .chezmoi.os "windows" -}}
+{{-   $buttons = append $buttons
+        (dict "exec" "em_explorer"
+              "icon" "%$Windows%\\explorer.exe"
+              "menu" "Windows Explorer") -}}
+{{- end -}}
+
+{{- $buttons = append $buttons
+      (dict "exec" "notepad.exe"
+            "icon" "notepad.exe"
+            "menu" "Notepad") -}}
 
 {{- $programFiles := tuple (env "ProgramFiles") -}}
 
