@@ -1,0 +1,53 @@
+#!/bin/sh
+
+# Run a Wine console program in a terminal.
+
+set -o errexit
+set -o nounset
+
+readonly WINE="${WINE:-wine}"
+
+# Run a command in a new terminal.
+# $@: Command and arguments.
+open_terminal() {
+  if command -v xdg-terminal-exec > /dev/null 2>&1; then
+    exec xdg-terminal-exec "$@"
+  fi
+  for terminal in ${TERMINAL:-} alacritty foot kitty xterm; do
+    if command -v "${terminal}" > /dev/null 2>&1; then
+      case "${terminal##*/}" in
+        alacritty | xterm) exec "${terminal}" -e "$@" ;;
+        *) exec "${terminal}" "$@" ;;
+      esac
+    fi
+  done
+  printf '%s: No terminal found\n' "${0##*/}" >&2
+  exit 1
+}
+
+# Wait up to 300 ms for the window manager to resize the terminal.
+wait_for_resize() {
+  resized=0
+  quiet=0
+  ticks=0
+  trap 'resized=1 quiet=0' WINCH
+  while [ "${ticks}" -lt 6 ]; do
+    sleep 0.05
+    ticks=$((ticks + 1))
+    quiet=$((quiet + 1))
+    if [ "${resized}" -eq 1 ] && [ "${quiet}" -ge 2 ]; then
+      break
+    fi
+  done
+  trap - WINCH
+}
+
+if [ -n "${WINE_TERMINAL:-}" ]; then
+  unset WINE_TERMINAL
+  wait_for_resize
+elif [ ! -t 0 ] || [ ! -t 1 ]; then
+  export WINE_TERMINAL=1
+  open_terminal "$0" "$@"
+fi
+
+exec "${WINE}" "$@"

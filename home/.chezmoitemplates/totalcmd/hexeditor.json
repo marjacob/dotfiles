@@ -2,7 +2,8 @@
 {{- $paths := includeTemplate "totalcmd/paths.json" . | fromJson }}
 {{- $result := dict }}
 {{- with $hexEditors := tuple
-  (dict "icon" "%$ComSpec%"
+  (dict "console" true
+        "icon" "%$ComSpec%"
         "name" "Hacker's View"
         "home" (printf "%s\\Programs\\Hiew" $paths.localAppData)
         "exec" "hiew.exe")
@@ -19,6 +20,7 @@
 {{-         end }}
 {{-         if $found }}
 {{-           $result = dict
+                "console" (index $editor "console")
                 "exec" $programPath
                 "icon" (index $editor "icon")
                 "name" $editor.name }}
