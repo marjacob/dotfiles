@@ -61,18 +61,12 @@
 {{-   $programFiles = append $programFiles (env "ProgramFiles(x86)") -}}
 {{- end -}}
 
-{{/* 010 Editor */}}
-{{- range $i, $directory := $programFiles -}}
-{{-   $exe := printf "%s\\010 Editor\\010Editor.exe" $directory -}}
-{{-   if glob $exe -}}
-{{-     $buttons = append $buttons
-          (dict "args" "%P%S"
-                "exec" $exe
-                "icon" $exe
-                "menu" "010 Editor"
-                "path" (osDir $exe)) -}}
-{{-     break -}}
-{{-   end -}}
+{{/* Hex editor */}}
+{{- with $hex := includeTemplate "totalcmd/hexeditor.json" . | fromJson -}}
+{{-   $buttons = append $buttons
+        (dict "exec" "em_hex"
+              "icon" (default $hex.exec $hex.icon)
+              "menu" $hex.name) -}}
 {{- end -}}
 
 {{/* Au3Info */}}
@@ -123,23 +117,6 @@
                   "menu" "GUID Generator"
                   "path" (osDir $guidgen)) -}}
 {{-       break -}}
-{{-     end -}}
-{{-   end -}}
-{{- end -}}
-
-{{/* Hacker's View */}}
-{{- range $i, $directory := $programFiles -}}
-{{-   with $pattern := printf "%s\\Hiew\\hiew*.exe" $directory -}}
-{{-     range $i, $exe := glob $pattern -}}
-{{-       with $hiew := osClean $exe -}}
-{{-         $buttons = append $buttons
-              (dict "args" "%P%S"
-                    "exec" $hiew
-                    "icon" "%$ComSpec%"
-                    "menu" "Hacker's View"
-                    "path" (osDir $hiew)) -}}
-{{-         break -}}
-{{-       end -}}
 {{-     end -}}
 {{-   end -}}
 {{- end -}}

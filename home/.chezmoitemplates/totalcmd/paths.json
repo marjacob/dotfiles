@@ -1,0 +1,24 @@
+{{- /* Windows paths as seen by Total Commander. */}}
+{{- $localAppData := env "LocalAppData" }}
+{{- $programFiles := env "ProgramFiles" }}
+{{- if eq .chezmoi.os "darwin" }}
+{{-   $localAppData = "C:\\users\\crossover\\AppData\\Local" }}
+{{-   $programFiles = "C:\\Program Files" }}
+{{- else if eq .chezmoi.os "linux" }}
+{{-   $localAppData = printf "C:\\users\\%s\\AppData\\Local" .chezmoi.username }}
+{{-   $programFiles = "C:\\Program Files" }}
+{{- end }}
+
+{{- /* The C: drive of the CrossOver bottle on macOS or the Wine prefix on Linux. */}}
+{{- $driveC := "" }}
+{{- if eq .chezmoi.os "darwin" }}
+{{-   $driveC = printf "%s/Library/Application Support/CrossOver/Bottles/%s/drive_c"
+        .chezmoi.homeDir .totalcmd.crossover.bottle }}
+{{- else if eq .chezmoi.os "linux" }}
+{{-   $driveC = joinPath .chezmoi.homeDir .totalcmd.wine.prefix "drive_c" }}
+{{- end }}
+
+{{- dict
+  "driveC" $driveC
+  "localAppData" $localAppData
+  "programFiles" $programFiles | toJson }}

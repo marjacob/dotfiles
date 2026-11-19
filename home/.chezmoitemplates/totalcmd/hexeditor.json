@@ -1,0 +1,32 @@
+{{- /* The first hex editor found, or an empty object. */}}
+{{- $paths := includeTemplate "totalcmd/paths.json" . | fromJson }}
+{{- $result := dict }}
+{{- with $hexEditors := tuple
+  (dict "icon" "%$ComSpec%"
+        "name" "Hacker's View"
+        "home" (printf "%s\\Programs\\Hiew" $paths.localAppData)
+        "exec" "hiew.exe")
+  (dict "name" "010 Editor"
+        "home" (printf "%s\\010 Editor" $paths.programFiles)
+        "exec" "010Editor.exe") }}
+{{-   range $editor := $hexEditors }}
+{{-     with $defaultPath := printf "%s\\%s" $editor.home $editor.exec }}
+{{-       with $programPath := (default $defaultPath (lookPath $editor.exec)) }}
+{{-         $found := lookPath $programPath }}
+{{-         if $paths.driveC }}
+{{-           $hostPath := trimPrefix "C:\\" $programPath | replace "\\" "/" }}
+{{-           $found = stat (printf "%s/%s" $paths.driveC $hostPath) }}
+{{-         end }}
+{{-         if $found }}
+{{-           $result = dict
+                "exec" $programPath
+                "icon" (index $editor "icon")
+                "name" $editor.name }}
+{{-           break }}
+{{-         end }}
+{{-       end }}
+{{-     end }}
+{{-   end }}
+{{- end }}
+
+{{- $result | toJson }}
