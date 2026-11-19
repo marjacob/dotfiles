@@ -93,7 +93,7 @@ centered on each blurred display at its own size times the display scale.
 ### Requirements
 
 ```shell
-xbps-install -Su ffmpeg grim jq librsvg-utils swaylock
+xbps-install -Su ffmpeg grim jq librsvg-utils swaylock util-linux
 ```
 
 Media

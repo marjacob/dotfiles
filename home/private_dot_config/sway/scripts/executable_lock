@@ -14,6 +14,18 @@ declare -rx shadow_opacity=0.5
 declare -a background=()
 declare -a outputs=()
 
+# swaylock inherits the lock and holds it until the screen unlocks.
+# Only a held lock counts, so a missing flock never prevents locking.
+already_locked() {
+  if [[ -z "${XDG_RUNTIME_DIR:-}" ]]; then
+    return 1
+  fi
+
+  exec 9> "${XDG_RUNTIME_DIR}/swaylock.lock" || return
+  flock --conflict-exit-code 75 --nonblock 9
+  (($? == 75))
+}
+
 # A display that is powered off never delivers a frame to capture.
 active_outputs() {
   timeout 2 swaymsg -t get_outputs -r |
@@ -80,6 +92,11 @@ blur_output() {
     -y "${tmp}" &&
     mv -- "${tmp}" "${workdir}/$1.png"
 }
+
+# swayidle runs this again while the screen is already locked.
+if already_locked; then
+  exit 0
+fi
 
 # The wallpaper covers every output that has no blurred image of its own.
 if [[ -r "${HOME}/.wallpaper.jpg" ]]; then
